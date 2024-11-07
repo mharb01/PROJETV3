@@ -20,12 +20,14 @@ package fr.insa.toto.moveINSA.model;
 
 import fr.insa.beuvron.utils.ConsoleFdB;
 import fr.insa.beuvron.utils.list.ListUtils;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Classe "miroir" de la table partenaire.
@@ -54,8 +56,16 @@ import java.util.List;
  *
  * @author francois
  */
-public class Partenaire {
+public class Partenaire implements Serializable{
 
+    /**
+     * permet de tester lors du chargement d'un objet sérialisé que la version
+     * sauvegarder a la même version que la version courante de la classe.
+     * <pre>
+     * </pre>
+     */
+    private static final long serialVersionUID = 1;
+    
     private int id;
     private String refPartenaire;
 
@@ -122,6 +132,22 @@ public class Partenaire {
                 res.add(new Partenaire(rs.getInt(1), rs.getString(2)));
             }
             return res;
+        }
+    }
+
+    public static Optional<Partenaire> trouvePartaire(Connection con,
+            String refPart) throws SQLException {
+        try (PreparedStatement pst = con.prepareStatement(
+                "select id,refPartenaire from partenaire"
+                + "  where refPartenaire = ?")) {
+            pst.setString(1, refPart);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return Optional.of(new Partenaire(rs.getInt(1),
+                        rs.getString(2)));
+            } else {
+                return Optional.empty();
+            }
         }
     }
 

@@ -44,8 +44,8 @@ public class ResultSetUtils {
      * </p>
      *
      * @param rs le ResultSet
-     * @return 
-     * @throws java.lang.Exception 
+     * @return
+     * @throws java.lang.Exception
      */
     public static String formatResultSetAsHTMLTable(ResultSet rs) throws Exception {
         StringBuilder res = new StringBuilder();
@@ -93,7 +93,7 @@ public class ResultSetUtils {
      * </p>
      *
      * @param rs le ResultSet
-     * @return 
+     * @return
      * @throws java.lang.Exception
      */
     public static String formatResultSetAsLatexTabular(ResultSet rs) throws Exception {
@@ -131,7 +131,7 @@ public class ResultSetUtils {
      * retourne une représentation d'un 'ResultSet' au format texte.
      *
      * @param rs le ResultSet
-     * @return 
+     * @return
      * @throws java.sql.SQLException
      */
     public static String formatResultSetAsTxt(ResultSet rs) throws SQLException {
@@ -158,20 +158,25 @@ public class ResultSetUtils {
         return MatriceToText.formatMat(collect, true);
     }
 
-    /** todoDoc. */
+    /**
+     * todoDoc.
+     */
     public static class ResultSetAsArrays {
 
-        /** todoDoc. */
+        /**
+         * todoDoc.
+         */
         public String[] columnNames;
 
-        /** todoDoc. */
+        /**
+         * todoDoc.
+         */
         public Object[][] values;
     }
 
     /**
-     * retourne le contenu du ResultSet dans deux tableau : .un tableau des
- noms de colonnes . un tableau 2D d'objet correspondant au contenu du
- resultset
+     * retourne le contenu du ResultSet dans deux tableau : .un tableau des noms
+     * de colonnes . un tableau 2D d'objet correspondant au contenu du resultset
      *
      * @param rs
      * @return
@@ -193,9 +198,10 @@ public class ResultSetUtils {
     /**
      * retourne le contenu d'un ResultSet comme un tableau (lignes) de tableaux
      * (colonnes) d'objets
+     *
      * @param rs
-     * @return 
-     * @throws java.sql.SQLException 
+     * @return
+     * @throws java.sql.SQLException
      */
     public static Object[][] fromResultSetToMatrix(ResultSet rs) throws SQLException {
         List<Object[]> resl = new ArrayList<Object[]>();
@@ -218,10 +224,11 @@ public class ResultSetUtils {
 
     /**
      * retourne le contenu d'une colonne comme un tableau d'objets
+     *
      * @param rs
      * @param col
-     * @return 
-     * @throws java.sql.SQLException 
+     * @return
+     * @throws java.sql.SQLException
      */
     public static Object[] fromResultSetColumnToArray(ResultSet rs, int col) throws SQLException {
         List<Object> res = new ArrayList<Object>();
@@ -231,4 +238,66 @@ public class ResultSetUtils {
         return res.toArray();
 
     }
+
+    /**
+     * représente un ResultSet avec une {@code List<String>} pour ses noms de
+     * colonne et une {@code List<List<Object>>} pour l'ensemble de ses données
+     * : chaque ligne du ResultSet produisant une {@code List<Object>}
+     * représentant les valeurs de ses colonnes.
+     */
+    public static class ResultSetAsLists {
+
+        private List<String> columnNames;
+        private List<List<Object>> values;
+
+        public ResultSetAsLists(List<String> columnNames, List<List<Object>> values) {
+            this.columnNames = columnNames;
+            this.values = values;
+        }
+
+        /**
+         * @return the columnNames
+         */
+        public List<String> getColumnNames() {
+            return columnNames;
+        }
+
+        /**
+         * @return the values
+         */
+        public List<List<Object>> getValues() {
+            return values;
+        }
+
+    }
+
+    /**
+     * Retourne une représentation du ResultSet sous forme de liste.
+     * <pre>
+     * Attention : ces listes peuvent contenir des éléments null (de java) si le
+     * ResultSet comportait des éléments NULL (de SQL).
+     * </pre>
+     *
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    public static ResultSetAsLists toLists(ResultSet rs) throws SQLException {
+        ResultSetMetaData metadata = rs.getMetaData();
+        int nombreColonnes = metadata.getColumnCount();
+        List<String> names = new ArrayList<>(nombreColonnes);
+        for (int i = 0; i < nombreColonnes; i++) {
+            names.add(metadata.getColumnName(i + 1));
+        }
+        List<List<Object>> datas = new ArrayList<>();
+        while (rs.next()) {
+            List<Object> oneLine = new ArrayList<>(nombreColonnes);
+            for (int i = 1; i <= nombreColonnes; i++) {
+                oneLine.add(rs.getObject(i));
+            }
+            datas.add(oneLine);
+        }
+        return new ResultSetAsLists(names, datas);
+    }
+    
 }
