@@ -21,6 +21,7 @@ package fr.insa.toto.moveINSA.gui.vues;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -86,6 +87,10 @@ public class OffresPanel extends VerticalLayout {
                     new ColumnDescription().colData(3).visible(false) // même chose pour l'id du partenaire
             )));
             this.add(new H3("la même table mais mise en forme"));
+            this.add(new Paragraph("le petit bouton \"Postuler\" n'est pas vraiment opérationel : "
+                    + "je n'ai même pas la notion d'étudiant dans ma base de donnée. Il est là pour que vous puissiez voir dans "
+                    + "le code qu'il est facile d'interagir avec une Grid pour par exemple récupérer la ligne sélectionnée. "
+                    + "Cela montre aussi l'utilité des colonnes non affichées"));
             this.add(this.gOffres);
             this.bPostule = new Button("Postuler");
             this.bPostule.addClickListener((t) -> {
@@ -100,7 +105,7 @@ public class OffresPanel extends VerticalLayout {
                     List<Object> ligne = lignesSelected.iterator().next();
                     // normalement, on ne montre pas les ID à l'utilisateur
                     // ici c'est pour montrer que l'on a bien accès à la colonne 0 même si elle n'est pas visible
-                    Notification.show("vous postulez sur l'offre N° "+ligne.get(0) + " proposé par " + ligne.get(1));
+                    Notification.show("vous postulez sur l'offre N° "+ligne.get(0) + " proposée par " + ligne.get(1));
                 }
             });
             this.add(this.bPostule);
