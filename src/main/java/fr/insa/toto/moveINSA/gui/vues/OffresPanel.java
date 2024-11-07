@@ -19,6 +19,8 @@ along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
 package fr.insa.toto.moveINSA.gui.vues;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -45,6 +47,9 @@ import java.util.Set;
 @Route(value = "offres/liste", layout = MainLayout.class)
 public class OffresPanel extends VerticalLayout {
 
+    /**
+     * Un petit composant qui affiche un entier sous forme d'un ensemble d'icones.
+     */
     public static class IntAsIcon extends HorizontalLayout {
 
         public IntAsIcon(int nbr) {
@@ -59,10 +64,13 @@ public class OffresPanel extends VerticalLayout {
 
     public OffresPanel() {
         try (Connection con = ConnectionPool.getConnection()) {
+            this.add(new H2("Affichage de tables (ResultSet) quelconques à l'aide de ResultSetGrid"));
             PreparedStatement offresAvecPart = con.prepareStatement(
-                    "select offremobilite.id,partenaire.refPartenaire,offremobilite.nbrplaces,partenaire.id \n"
+                    "select offremobilite.id as idOffre,partenaire.refPartenaire,offremobilite.nbrplaces,partenaire.id as idPartenaire \n"
                     + "  from offremobilite \n"
                     + "    join partenaire on offremobilite.proposepar = partenaire.id");
+            this.add(new H3("affichage direct (sans mise en forme) du ResultSet"));
+            this.add(new ResultSetGrid(offresAvecPart));
             this.gOffres = new ResultSetGrid(offresAvecPart, new GridDescription(List.of(
                     new ColumnDescription().colData(0).visible(false), // on veut pouvoir accéder à l'id de l'offre mais non l'afficher
                     new ColumnDescription().colData(1).headerString("Partenaire"),
@@ -73,6 +81,8 @@ public class OffresPanel extends VerticalLayout {
                     new ColumnDescription().colCalculatedObject((t) -> t.get(1) + "/" + t.get(3) + " : " + t.get(2)).headerString("resumé"),
                     new ColumnDescription().colData(3).visible(false) // même chose pour l'id du partenaire
             )));
+            this.add(new H3("la même table mais mise en forme"));
+            this.add(this.gOffres);
             this.bPostule = new Button("Postuler");
             this.bPostule.addClickListener((t) -> {
                 // comme la grille est générique, chaque ligne contient une List<Object> : un Object par colonne
@@ -89,7 +99,34 @@ public class OffresPanel extends VerticalLayout {
                     Notification.show("vous postulez sur l'offre N° "+ligne.get(0) + " proposé par " + ligne.get(1));
                 }
             });
-            this.add(this.gOffres,this.bPostule);
+            this.add(this.bPostule);
+            this.add(new H3("offres groupées par partenaires"));
+            PreparedStatement offresParPartenaire = con.prepareStatement(
+            "select partenaire.id,partenaire.refPartenaire,sum(offremobilite.nbrplaces) as placesPartenaire, ( \n"
+                    + "   select sum(nbrplaces) from offremobilite \n"
+                    + "  ) as totplaces \n"
+                    + "  from offremobilite \n"
+                    + "    join partenaire on offremobilite.proposepar = partenaire.id \n"
+                    + "  group by partenaire.id");
+            this.add(new ResultSetGrid(offresParPartenaire));
+            this.add(new H3("le même, mais avec mise en forme"));
+            ResultSetGrid parPart = new ResultSetGrid(offresParPartenaire, new GridDescription(List.of(
+                    new ColumnDescription().colData(0).visible(false), // on veut pouvoir accéder à l'id du partenaire mais non l'afficher
+                    new ColumnDescription().colData(1).headerString("partenaire"),
+                    new ColumnDescription().colData(2).headerString("total places offertes"),
+                    // calcul du pourcentage
+                    // Note : le type précis de donnée retourné par un opérateur sum n'est pas forcément un Integer
+                    // c'est pourquoi on n'utilise pas un simple cast : (Integer) t.get(2)
+                    // mais on passe plutôt par la forme textuelle : Integer.parseInt(""+t.get(2))
+                    new ColumnDescription().colCalculatedObject((t) -> {
+                        int nbrPart = Integer.parseInt(""+t.get(2));
+                        int nbrTot = Integer.parseInt(""+t.get(3));
+                        double percent = ((double) nbrPart) / nbrTot * 100;
+                        return String.format("%.0f%%", percent);
+                    }).headerString("pourcentage"),
+                    new ColumnDescription().colData(3).visible(false) // même chose pour l'id du partenaire
+            )));
+            this.add(parPart);
         } catch (SQLException ex) {
             System.out.println("Probleme : " + ex.getLocalizedMessage());
             Notification.show("Probleme : " + ex.getLocalizedMessage());
