@@ -127,8 +127,7 @@ public class OffresPanel extends VerticalLayout {
                         int nbrTot = Integer.parseInt(""+t.get(3));
                         double percent = ((double) nbrPart) / nbrTot * 100;
                         return String.format("%.0f%%", percent);
-                    }).headerString("pourcentage"),
-                    new ColumnDescription().colData(3).visible(false) // même chose pour l'id du partenaire
+                    }).headerString("pourcentage")
             )));
             this.add(parPart);
         } catch (SQLException ex) {
