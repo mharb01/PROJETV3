@@ -78,6 +78,10 @@ public class OffresPanel extends VerticalLayout {
                     // pour montrer l'utilisation d'un composant dans une colonne
                     new ColumnDescription().colDataCompo(2, (t) -> new IntAsIcon((Integer) t)).headerString("places"),
                     // pour montrer une colonne calculée à partir de plusieurs colonnes de données
+                    // rappelez vous que le paramètre t de la lambda ci-dessous est de type List<Object>
+                    // on peut donc accéder à la valeur des colonnes simplement par un get
+                    // comme ici, on concatene, la méthode toString définie pour tout objet sera
+                    // appelée, et on n'a donc pas besoin de faire des "cast" en fonction du type réel des colonnes
                     new ColumnDescription().colCalculatedObject((t) -> t.get(1) + "/" + t.get(3) + " : " + t.get(2)).headerString("resumé"),
                     new ColumnDescription().colData(3).visible(false) // même chose pour l'id du partenaire
             )));
