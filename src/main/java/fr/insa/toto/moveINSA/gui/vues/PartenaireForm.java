@@ -27,21 +27,24 @@ import fr.insa.toto.moveINSA.model.Partenaire;
 public class PartenaireForm extends FormLayout {
     
     private Partenaire model;
-
     private TextField tfrefPartenaire = new TextField("refPartenaire");
+    private TextField tfpays = new TextField("pays");
     
     public PartenaireForm(Partenaire model, boolean modifiable) {
         this.model = model;
         this.setEnabled(modifiable);
         this.updateView();
         this.add(this.tfrefPartenaire);
+        this.add(this.tfpays);
     }
     
     public void updateModel() {
-        this.model.setRefPartenaire(this.tfrefPartenaire.getValue()); 
+        this.model.setRefPartenaire(this.tfrefPartenaire.getValue());
+        this.model.setPays(this.tfpays.getValue());
     }
     
     public void updateView() {
         this.tfrefPartenaire.setValue(this.model.getRefPartenaire());
+        this.tfpays.setValue(this.model.getPays());
     }
 }

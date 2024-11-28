@@ -22,6 +22,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.beuvron.vaadin.utils.ConnectionPool;
@@ -40,13 +41,12 @@ import java.sql.SQLException;
 public class NouveauPartenairePanel extends VerticalLayout{
     
     private Partenaire nouveau;
-    
     private PartenaireForm fPartenaire;
     private Button bSave;
     
     public NouveauPartenairePanel() {
         this.add(new H3("Creation d'un nouveau partenaire"));
-        this.nouveau = new Partenaire("");
+        this.nouveau = new Partenaire("" , "");
         this.fPartenaire = new PartenaireForm(this.nouveau, true);
         this.bSave = new Button("Sauvegarder", (t) -> {
             try (Connection con = ConnectionPool.getConnection()) {

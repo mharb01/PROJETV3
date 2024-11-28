@@ -68,30 +68,35 @@ public class Partenaire implements Serializable{
     
     private int id;
     private String refPartenaire;
+    private String pays;
 
     /**
      * création d'un nouveau Partenaire en mémoire, non existant dans la Base de
      * donnée.
      *
      * @param refPartenaire
+     * @param pays
      */
-    public Partenaire(String refPartenaire) {
-        this(-1,refPartenaire);
+    public Partenaire(String refPartenaire, String pays) {
+        this(-1,refPartenaire, pays);
     }
 
     /**
      * création d'un Partenaire retrouvé dans la base de donnée.
      *
+     * @param id
      * @param refPartenaire
+     * @param pays
      */
-    public Partenaire(int id, String refPartenaire) {
+    public Partenaire(int id, String refPartenaire, String pays) {
         this.id = id;
         this.refPartenaire = refPartenaire;
+        this.pays = pays;
     }
 
     @Override
     public String toString() {
-        return "Partenaire{" + "id =" + this.getId() + " ; refPartenaire=" + refPartenaire + '}';
+        return "Partenaire{" + "id =" + this.getId() + " ; refPartenaire=" + refPartenaire + "; pays =" + pays +'}';
     }
 
     /**
@@ -111,9 +116,10 @@ public class Partenaire implements Serializable{
             throw new EntiteDejaSauvegardee();
         }
         try (PreparedStatement insert = con.prepareStatement(
-                "insert into partenaire (refPartenaire) values (?)",
+                "insert into partenaire (refPartenaire, pays) values (?,?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
             insert.setString(1, this.getRefPartenaire());
+            insert.setString(2, this.getPays());
             insert.executeUpdate();
             try (ResultSet rid = insert.getGeneratedKeys()) {
                 rid.next();
@@ -125,26 +131,27 @@ public class Partenaire implements Serializable{
 
     public static List<Partenaire> tousLesPartaires(Connection con) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-                "select id,refPartenaire from partenaire")) {
+                "select id,refPartenaire, pays from partenaire")) {
             ResultSet rs = pst.executeQuery();
             List<Partenaire> res = new ArrayList<>();
             while (rs.next()) {
-                res.add(new Partenaire(rs.getInt(1), rs.getString(2)));
+                res.add(new Partenaire(rs.getInt(1), rs.getString(2), rs.getString(3)));
             }
             return res;
         }
     }
 
     public static Optional<Partenaire> trouvePartaire(Connection con,
-            String refPart) throws SQLException {
+            String refPart, String pays) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-                "select id,refPartenaire from partenaire"
-                + "  where refPartenaire = ?")) {
+                "select id,refPartenaire,pays from partenaire"
+                + " where refPartenaire = ? and pays = ? ")) {
             pst.setString(1, refPart);
+            pst.setString(2, pays);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
                 return Optional.of(new Partenaire(rs.getInt(1),
-                        rs.getString(2)));
+                        rs.getString(2), rs.getString(3)));
             } else {
                 return Optional.empty();
             }
@@ -153,7 +160,8 @@ public class Partenaire implements Serializable{
 
     public static int creeConsole(Connection con) throws SQLException {
         String idP = ConsoleFdB.entreeString("refPartenaire : ");
-        Partenaire nouveau = new Partenaire(idP);
+        String paysP = ConsoleFdB.entreeString("pays : ");
+        Partenaire nouveau = new Partenaire(idP, paysP);
         return nouveau.saveInDB(con);
     }
 
@@ -162,11 +170,20 @@ public class Partenaire implements Serializable{
                 tousLesPartaires(con), (elem) -> elem.getRefPartenaire());
     }
 
+    public static Partenaire selectInConsolePays(Connection con) throws SQLException {
+        return ListUtils.selectOne("choisissez un pays :",
+                tousLesPartaires(con), (elem) -> elem.getPays());
+    }
+    
     /**
      * @return the refPartenaire
      */
     public String getRefPartenaire() {
         return refPartenaire;
+    }
+    
+    public String getPays() {
+        return pays;
     }
 
     /**
@@ -176,6 +193,9 @@ public class Partenaire implements Serializable{
         this.refPartenaire = refPartenaire;
     }
 
+    public void setPays(String pays) {
+        this.pays = pays;    
+    }
     /**
      * @return the id
      */

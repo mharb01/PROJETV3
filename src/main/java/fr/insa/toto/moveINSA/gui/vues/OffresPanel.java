@@ -67,7 +67,7 @@ public class OffresPanel extends VerticalLayout {
         try (Connection con = ConnectionPool.getConnection()) {
             this.add(new H2("Affichage de tables (ResultSet) quelconques à l'aide de ResultSetGrid"));
             PreparedStatement offresAvecPart = con.prepareStatement(
-                    "select offremobilite.id as idOffre,partenaire.refPartenaire,offremobilite.nbrplaces,partenaire.id as idPartenaire \n"
+                    "select offremobilite.id as idOffre,partenaire.refPartenaire,offremobilite.nbrplaces,partenaire.id as idPartenaire, offremobilite.classe\n"
                     + "  from offremobilite \n"
                     + "    join partenaire on offremobilite.proposepar = partenaire.id");
             this.add(new H3("affichage direct (sans mise en forme) du ResultSet"));

@@ -19,6 +19,8 @@ along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
 package fr.insa.toto.moveINSA.model;
 
 import fr.insa.beuvron.utils.ConsoleFdB;
+import fr.insa.beuvron.utils.list.ListUtils;
+import static fr.insa.toto.moveINSA.model.Partenaire.tousLesPartaires;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,27 +42,36 @@ public class OffreMobilite {
     private int id;
     private int nbrPlaces;
     private int proposePar;
+    private String classe;
 
     /**
      * création d'une nouvelle Offre en mémoire, non existant dans la Base de
      * donnée.
+     * @param nbrPlaces
+     * @param proposePar
+     * @param classe
      */
-    public OffreMobilite(int nbrPlaces, int proposePar) {
-        this(-1, nbrPlaces, proposePar);
+    public OffreMobilite(int nbrPlaces, int proposePar, String classe) {
+        this(-1, nbrPlaces, proposePar, classe);
     }
 
     /**
      * création d'une Offre retrouvée dans la base de donnée.
+     * @param id
+     * @param nbrPlaces
+     * @param proposePar
+     * @param classe
      */
-    public OffreMobilite(int id, int nbrPlaces, int proposePar) {
+    public OffreMobilite(int id, int nbrPlaces, int proposePar, String classe) {
         this.id = id;
         this.nbrPlaces = nbrPlaces;
         this.proposePar = proposePar;
+        this.classe = classe;
     }
 
     @Override
     public String toString() {
-        return "OffreMobilite{" + "id=" + this.getId() + " ; nbrPlaces=" + nbrPlaces + " ; proposePar=" + proposePar + '}';
+        return "OffreMobilite{" + "id=" + this.getId() + " ; nbrPlaces=" + nbrPlaces + " ; proposePar=" + proposePar + "; classe = " + classe + '}';
     }
 
     /**
@@ -80,10 +91,11 @@ public class OffreMobilite {
             throw new fr.insa.toto.moveINSA.model.EntiteDejaSauvegardee();
         }
         try (PreparedStatement insert = con.prepareStatement(
-                "insert into offremobilite (nbrplaces,proposepar) values (?,?)",
+                "insert into offremobilite (nbrplaces,proposepar,classe) values (?,?,?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
             insert.setInt(1, this.nbrPlaces);
             insert.setInt(2, this.proposePar);
+            insert.setString(3, this.classe);
             insert.executeUpdate();
             try (ResultSet rid = insert.getGeneratedKeys()) {
                 rid.next();
@@ -95,11 +107,11 @@ public class OffreMobilite {
 
     public static List<OffreMobilite> toutesLesOffres(Connection con) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-                "select id,nbrplaces,proposepar from offremobilite")) {
+                "select id,nbrplaces,proposepar,classe from offremobilite")) {
             ResultSet rs = pst.executeQuery();
             List<OffreMobilite> res = new ArrayList<>();
             while (rs.next()) {
-                res.add(new OffreMobilite(rs.getInt(1), rs.getInt(2), rs.getInt(3)));
+                res.add(new OffreMobilite(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4)));
             }
             return res;
         }
@@ -108,15 +120,117 @@ public class OffreMobilite {
     public static int creeConsole(Connection con) throws SQLException {
         Partenaire p = Partenaire.selectInConsole(con);
         int nbr = ConsoleFdB.entreeInt("nombre de places : ");
-        OffreMobilite nouveau = new OffreMobilite(nbr, p.getId());
+        String clss = ConsoleFdB.entreeString ("Classe :");
+        OffreMobilite nouveau = new OffreMobilite(nbr, p.getId(), clss);
         return nouveau.saveInDB(con);
     }
 
+    public static void modifConsole(Connection con) throws SQLException {
+    try (PreparedStatement update = con.prepareStatement(
+            "update offremobilite set nbrplaces = ? , proposepar = ? , classe = ? where nbrplaces = ? and proposepar = ? and classe = ? ")) {
+        int newnbrPlaces = ConsoleFdB.entreeInt("new nbrplaces :");
+        String newclasse = ConsoleFdB.entreeString("new classe :");
+        Partenaire newp = Partenaire.selectInConsole(con);
+        int lastnbrPlaces = ConsoleFdB.entreeInt("last nbrplaces :");
+        String lastclasse = ConsoleFdB.entreeString("last classe: ");
+        Partenaire lastp = Partenaire.selectInConsole(con);
+        update.setInt(1,newnbrPlaces);
+        update.setInt(2,newp.getId());
+        update.setString(3, newclasse);
+        update.setInt(4,lastnbrPlaces);
+        update.setInt(5,lastp.getId());
+        update.setString(6, lastclasse);
+        update.executeUpdate();
+        }
+    System.out.println("Offre modifiee avec succes !");
+        
+    }
+    
+      public static void suppConsole(Connection con) throws SQLException {
+        try (PreparedStatement update = con.prepareStatement(
+                "delete from offremobilite where nbrplaces = ? and proposepar = ?  and classe = ? ")){ 
+                 int nbrPlaces = ConsoleFdB.entreeInt("nbrPlaces: ");
+                 Partenaire p = Partenaire.selectInConsole(con);
+                 String classe = ConsoleFdB.entreeString("classe: ");
+                 update.setInt(1,nbrPlaces);
+                 update.setInt(2, p.getId());
+                 update.setString(3, classe);
+                 update.execute();       
+                 }
+        System.out.println("Offre supprimee avec succes !");
+    }
+      
+      public static void suppALLConsole(Connection con) throws SQLException {
+        try (PreparedStatement update = con.prepareStatement(
+                "delete from offremobilite")){
+                 update.executeUpdate();       
+                 }
+        System.out.println("Toutes les offres ont ete supprimees avec succes !");
+    }
+      
+      public static List<OffreMobilite> rechercherRef(Connection con) throws SQLException {
+        try (PreparedStatement pst = con.prepareStatement(
+            "select offremobilite.id, offremobilite.nbrplaces, offremobilite.proposepar, offremobilite.classe from offremobilite,partenaire where offremobilite.proposepar = partenaire.id and partenaire.refPartenaire = ? ")) {
+        Partenaire part = Partenaire.selectInConsole(con);
+        pst.setString(1, part.getRefPartenaire());
+        ResultSet rs = pst.executeQuery();
+            List<OffreMobilite> res = new ArrayList<>();
+            while (rs.next()) {
+                res.add(new OffreMobilite(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4)));
+            }
+            System.out.println("Voici toutes les offres venant du partenaire: ' " + part.getRefPartenaire()+ " ' !" );
+            return res;
+    }   
+    }
+      
+      public static List<OffreMobilite> rechercherPays(Connection con) throws SQLException {
+        try (PreparedStatement pst = con.prepareStatement(
+            "select offremobilite.id, offremobilite.nbrplaces, offremobilite.proposepar, offremobilite.classe from offremobilite,partenaire where offremobilite.proposepar = partenaire.id and partenaire.pays = ?  ")) {
+        Partenaire part = Partenaire.selectInConsolePays(con);
+        pst.setString(1, part.getPays());
+        ResultSet rs = pst.executeQuery();
+            List<OffreMobilite> res = new ArrayList<>();
+            while (rs.next()) {
+                res.add(new OffreMobilite(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4)));
+            }
+            System.out.println("Voici toutes les offres venant du pays: ' " + part.getPays() + " ' !" );
+            return res;
+            
+ 
+    }   
+    }
+      
+      public static List<OffreMobilite> rechercherClasse(Connection con) throws SQLException {
+        try (PreparedStatement pst = con.prepareStatement(
+            "select offremobilite.id, offremobilite.nbrplaces, offremobilite.proposepar, offremobilite.classe from offremobilite,partenaire where offremobilite.proposepar = partenaire.id and offremobilite.classe = ?  ")) {
+        OffreMobilite offre = OffreMobilite.selectInConsoleClasse(con);
+        pst.setString(1, offre.getClasse());
+        ResultSet rs = pst.executeQuery();
+            List<OffreMobilite> res = new ArrayList<>();
+            while (rs.next()) {
+                res.add(new OffreMobilite(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4)));
+            }
+            System.out.println("Voici toutes les offres visant la classe: ' " + offre.getClasse() + " ' !" );
+            return res;
+            
+ 
+    }   
+    }
+    
     /**
      * @return the id
      */
     public int getId() {
         return id;
+    }
+    
+    public String getClasse() {
+        return classe;
+    }
+    
+    public static OffreMobilite selectInConsoleClasse(Connection con) throws SQLException {
+        return ListUtils.selectOne("choisissez une classe :",
+                toutesLesOffres(con), (elem) -> elem.getClasse());
     }
 
 }
