@@ -153,6 +153,7 @@ public class Candidature {
                 toutesLesCandidatures(con), (Candidature c) -> "ID: " + c.getIdCandidature() + ", INE: " + c.getINE() + ", Offre mobilite :" + c.getIdOffreMobilite() + ", Date : " + c.getDate());
     }
 
+    //public void updateInConsole(Connection con) throws SQLException{
     public static void updateInConsole(Connection con) throws SQLException{
         try (PreparedStatement update = con.prepareStatement(
             "UPDATE candidature SET INE = ?, idOffreMobilite = ?, date = ?, WHERE idCandidature = ?")){
