@@ -45,11 +45,13 @@ public class GestionBdD {
         con.setAutoCommit(false);
         try (Statement st = con.createStatement()) {
             // creation des tables 
-            st.executeUpdate(
+           st.executeUpdate(
                     "create table partenaire ( \n"
                     + ConnectionSimpleSGBD.sqlForGeneratedKeys(con, "id") + ",\n"
-                    + " refPartenaire varchar(50) not null unique\n"
-                    + " pays varchar(50) not null unique\n"        
+                    + " refPartenaire varchar(50) not null unique,\n"
+                    + " pays varchar(50) not null\n,"
+                    + " idcoPartenaire varchar(50) not null unique,\n"
+                    + " mdpPartenaire varchar(50) not null unique,\n"
                     + ")");
             st.executeUpdate(
                     "create table SRI ( \n"
@@ -59,11 +61,27 @@ public class GestionBdD {
                     + " mdpSRI varchar(50) not null unique\n"
                     + ")");
             st.executeUpdate(
+                    "create table etudiant ( \n"
+                    + ConnectionSimpleSGBD.sqlForGeneratedKeys(con, "idEtudiant") + ",\n"
+                    + " ine varchar(50) not null unique,\n "
+                    + " nom varchar(50) not null,\n "
+                    + " classe varchar(50) not null,\n "
+                    + " classement int not null unique,\n "
+                    + " idcoEtudiant varchar(50) not null unique,\n "        
+                    + " mdpSRI varchar(50) not null unique\n"
+                    + ")");
+            st.executeUpdate(
+                    "create table candidature ( \n"
+                    + ConnectionSimpleSGBD.sqlForGeneratedKeys(con, "idCandidature") + ",\n"
+                    + " ine varchar(50) not null,\n "
+                    + " idOffreMobilite varchar(50) not null,\n "
+                    + " date varchar(50) not null\n "
+                    + ")");
+            st.executeUpdate(
                     "create table offremobilite ( \n"
                     + ConnectionSimpleSGBD.sqlForGeneratedKeys(con, "id") + ",\n"
                     + " nbrplaces int not null,\n"
                     + " proposepar int not null\n"
-                    + " classe varchar(50) not null unique,\n"        
                     + ")");
             // création des liens
             st.executeUpdate(
@@ -108,6 +126,14 @@ public class GestionBdD {
             } catch (SQLException ex) {
             }
             try {
+                st.executeUpdate("drop table etudiant");
+            } catch (SQLException ex) {
+            }
+            try {
+                st.executeUpdate("drop table candidature");
+            } catch (SQLException ex) {
+            }
+            try {
                 st.executeUpdate("drop table SRI");
             } catch (SQLException ex) {
             }
@@ -122,8 +148,13 @@ public class GestionBdD {
      */
     public static void initBdDTest(Connection con) throws SQLException {
         List<Partenaire> partenaires = List.of(
-                new Partenaire("MIT", "USA"),
-                new Partenaire("Oxford", "Angleterre")
+                new Partenaire("MIT", "USA","MIT","provisoire"),
+                new Partenaire("Oxford", "Angleterre","Oxford","provisoire")
+        );
+        List<Etudiant> etudiants;
+        etudiants = List.of(
+                new Etudiant("A0000000001", "Yassine","GT2E2",32,"yassine01","provisoire1"),
+                new Etudiant("A0000000002", "Toto","GM4",52,"toto01","provisoire2")
         );
         for (var p : partenaires) {
             p.saveInDB(con);
@@ -152,7 +183,7 @@ public class GestionBdD {
         initBdDTest(con);
     }
 
-    // à modifier pour partenaire et SRI, base
+
     public static void menuPartenaire(Connection con) {
         int rep = -1;
         while (rep != 0) {
@@ -270,7 +301,7 @@ public class GestionBdD {
             System.out.println((i++) + ") Liste de tous les étudiants");
             System.out.println((i++) + ") Créer un nouvel étudiant");
             System.out.println((i++) + ") Modifier le profil d'un étudiant");
-            System.out.println((i++) + ") Supprimer le profil d'un étudiant");
+//            System.out.println((i++) + ") Supprimer le profil d'un étudiant");
             System.out.println((i++) + ") Supprimer tous les profils des étudiants");
             System.out.println((i++) + ") Rechercher un étudiant"); //rechercher puis modifier ?
             System.out.println("0) Retour");
@@ -290,15 +321,15 @@ public class GestionBdD {
                     Etudiant.supprConsole(con);
                 }else if (rep == j++) {
                     Etudiant.supprallConsole(con);
-                }else if (rep == j++) {
-                    Etudiant.rechercher(con);
-                }
+                }//else if (rep == j++) {
+//                    Etudiant.rechercher(con);
+//                }
             } catch (Exception ex) {
                 System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
             }
         }
     }
-    
+    //à modifier
     public static void menuCandidature(Connection con) {
         int rep = -1;
         while (rep != 0) {
@@ -324,6 +355,37 @@ public class GestionBdD {
             }
         }
     }
+    public static void menuCandidatureSRI(Connection con) throws SQLException{
+        int rep = -1;
+        while (rep!= 0){
+            int i = 1;
+            System.out.println("Menu de gestion de candidature par le SRI");
+            System.out.println("==================");
+            System.out.println((i++) + ") Liste des candidatures déposées");
+            System.out.println((i++) + ") Modifier une candidature");
+            System.out.println((i++) + ") Supprimer une candidature");
+            System.out.println((i++) + ") Supprimer toutes les candidatures");
+            System.out.println("0) Retour");
+            rep = ConsoleFdB.entreeEntier("Votre choix : ");
+            try {
+                int j = 1;
+                if (rep == j++){
+                    List<Candidature> candidatures = Candidature.toutesLesCandidatures(con);
+                    System.out.println(candidatures.size() + " utilisateurs : ");
+                    System.out.println(ListUtils.enumerateList(candidatures, (elem) -> elem.toString()));
+                } else if (rep == j++){
+                    Candidature.updateInConsole(con);               
+                } else if (rep == j++){
+                    Candidature.deleteInConsole(con);
+                } else if (rep == j++){
+                    Candidature.deleteAllConsole(con);
+                }
+            }
+            catch (Exception ex) {
+                System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
+            }
+        }
+    } 
     //a faire
     public static void changermdp (Connection con) {
         System.out.println("to do");
@@ -353,7 +415,9 @@ public class GestionBdD {
             }
             else if (rep2 == 2){
                 String refPartenaire = ConsoleFdB.entreeString("Veuillez indiquer votre reference Partenaire:");
-                Partenaire nouveauPartenaire = new Partenaire(-1, refPartenaire);
+                String pays = ConsoleFdB.entreeString("Veuillez indiquer votre pays :");
+                String mdpP = ConsoleFdB.entreeString("Veuillez indiquer votre mot de passe:");
+                Partenaire nouveauPartenaire = new Partenaire(-1, refPartenaire, pays, refPartenaire,mdpP);
                 nouveauPartenaire.saveInDB(con);
                 menuPrincipalPartenaire(con);
             }
@@ -516,7 +580,14 @@ public class GestionBdD {
     public static void menuPrincipalSRI() {
 
             int rep1 = -1;
-            Connection con = null;        
+            Connection con = null; 
+            try {
+            con = ConnectionSimpleSGBD.defaultCon();
+            System.out.println("Connection OK");
+        } catch (SQLException ex) {
+            System.out.println("Problème de connection : " + ex.getLocalizedMessage());
+            throw new Error(ex);
+        }
             System.out.println("1) Se connecter à mon profil SRI");
             System.out.println("0) Déconnexion");
             rep1 = ConsoleFdB.entreeEntier("Votre choix : ");
@@ -532,6 +603,9 @@ public class GestionBdD {
                 if (j==r){
                     menuEtudiantSRI(con);
                 }
+                else if (r == 3){
+                    menuCandidatureSRI(con);
+                }
                 else if (r == 4){
                     menuBdD(con);
                 }
@@ -539,50 +613,6 @@ public class GestionBdD {
                     System.out.println("Page en cours de création!");
                 }
             }
-//          int rep = -1;
-//          Connection con = null;
-//          try {
-        //            con = ConnectionSimpleSGBD.defaultCon();
-        //            System.out.println("Connection OK");
-        //        } catch (SQLException ex) {
-        //            System.out.println("Problème de connection : " + ex.getLocalizedMessage());
-        //            throw new Error(ex);
-        //        }
-        //        while (rep != 0) {
-        //            int i = 1;
-        //            System.out.println("Menu principal");
-        //            System.out.println("==================");
-        //            System.out.println((i++) + ") test driver mysql");
-        //            System.out.println((i++) + ") menu gestion BdD");
-        //            System.out.println((i++) + ") menu partenaires");
-        //            System.out.println((i++) + ") menu offres");
-        //            System.out.println((i++) + ") menu SRI");
-        //            System.out.println("0) Fin");
-        //            rep = ConsoleFdB.entreeEntier("Votre choix : ");
-        //            try {
-        //                int j = 1;
-        //                if (rep == j++) {
-        //                    try {
-        //                        Class<Driver> mysqlDriver = (Class<Driver>) Class.forName("com.mysql.cj.jdbc.Driver");
-        //                    } catch (ClassNotFoundException ex) {
-        //                        System.out.println("com.mysql.cj.jdbc.Driver not found");
-        //                    }
-        //                    DatabaseMetaData meta = con.getMetaData();
-        //                    System.out.println("jdbc driver version : " + meta.getDriverName() + " ; " + meta.getDriverVersion());
-        //                } else if (rep == j++) {
-        //                    menuBdD(con);
-        //                } else if (rep == j++) {
-        //                    menuPartenaire(con);
-        //                } else if (rep == j++) {
-        //                    menuOffre(con);
-        //                }
-        //                else if (rep == j++) {
-        //                    menuSRI(con);
-        //                }
-        //            } catch (Exception ex) {
-        //                System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
-        //            }
-        //        }
         System.out.println("Connection OK");
              }            
    
@@ -653,8 +683,8 @@ public class GestionBdD {
 //        }
     }
     
-    public static void menuPrincipalCandidature(){
-        System.out.println("Menu Principal Candidature à faire");
+    public static void menuCandidatureSRI(){
+        System.out.println("Menu Candidature pour SRI à faire");
         /*
         int rep = -1;
         while (rep != 0) {
@@ -693,41 +723,4 @@ public class GestionBdD {
         }
         menuConnection(con);
     }
-/*
-            int i = 1;
-            System.out.println("Sous quel type de profil souhaitez vous vous connecter ?");
-            System.out.println("==================");
-            System.out.println((i++) + ") ETUDIANT");
-            System.out.println((i++) + ") SRI");
-            System.out.println((i++) + ") PARTENAIRE");
-            System.out.println((i++) + ") CANDIDATURE");
-            System.out.println((i++) + ") test driver mysql"); // je l'ai mis là pour le moment, jsp si nécessaire
-            System.out.println((i++) + ") Gestion BdD"); // je l'ai mis là pour le moment, jsp si nécessaire
-            r = ConsoleFdB.entreeEntier("Votre choix : ");
-
-         try {
-                int j = 1;
-                if (r == j++) {
-                    menuPrincipalEtudiant();
-                } else if (r == j++) {
-                    menuPrincipalSRI();
-                } else if (r == j++) {
-                    menuPrincipalPartenaire();
-                } else if (r == j++) {
-                    menuPrincipalCandidature();
-                } else if (r== j++) {
-                    try {
-                        Class<Driver> mysqlDriver = (Class<Driver>) Class.forName("com.mysql.cj.jdbc.Driver");
-                    } catch (ClassNotFoundException ex) {
-                        System.out.println("com.mysql.cj.jdbc.Driver not found");
-                    }
-                    DatabaseMetaData meta = con.getMetaData();
-                    System.out.println("jdbc driver version : " + meta.getDriverName() + " ; " + meta.getDriverVersion());
-                }else if (r == j++) {
-                    menuBdD(con);
-                }  
-            } catch (Exception ex) {
-                System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
-            }
-    }*/
 }

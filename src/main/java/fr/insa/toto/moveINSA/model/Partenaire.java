@@ -69,6 +69,9 @@ public class Partenaire implements Serializable{
     private int id;
     private String refPartenaire;
     private String pays;
+    private String idcoPartenaire;
+    private String mdpPartenaire;
+
 
     /**
      * création d'un nouveau Partenaire en mémoire, non existant dans la Base de
@@ -77,8 +80,8 @@ public class Partenaire implements Serializable{
      * @param refPartenaire
      * @param pays
      */
-    public Partenaire(String refPartenaire, String pays) {
-        this(-1,refPartenaire, pays);
+    public Partenaire(String refPartenaire, String pays, String idcoPartenaire, String mdpPartenaire) {
+        this(-1,refPartenaire,pays,idcoPartenaire,mdpPartenaire);
     }
 
     /**
@@ -88,6 +91,14 @@ public class Partenaire implements Serializable{
      * @param refPartenaire
      * @param pays
      */
+    public Partenaire(int id, String refPartenaire, String pays, String idcoPartenaire, String mdpPartenaire) {
+        this.id = id;
+        this.refPartenaire = refPartenaire;
+        this.pays = pays;
+        this.idcoPartenaire = idcoPartenaire;
+        this.mdpPartenaire = mdpPartenaire;        
+    }
+    
     public Partenaire(int id, String refPartenaire, String pays) {
         this.id = id;
         this.refPartenaire = refPartenaire;
@@ -161,7 +172,9 @@ public class Partenaire implements Serializable{
     public static int creeConsole(Connection con) throws SQLException {
         String idP = ConsoleFdB.entreeString("refPartenaire : ");
         String paysP = ConsoleFdB.entreeString("pays : ");
-        Partenaire nouveau = new Partenaire(idP, paysP);
+        String idcoP = ConsoleFdB.entreeString("identifiant de connexion : ");
+        String mdpP = ConsoleFdB.entreeString("mot de passe provisoire : ");
+        Partenaire nouveau = new Partenaire(idP, paysP, idcoP, mdpP);
         return nouveau.saveInDB(con);
     }
 
@@ -202,5 +215,18 @@ public class Partenaire implements Serializable{
     public int getId() {
         return id;
     }
+public String getidco() {
+        return pays;
+    }
 
+    public void setidco(String idco) {
+        this.idcoPartenaire = idco;
+    }
+    public String getmdp() {
+        return mdpPartenaire;
+    }
+
+    public void setmdp(String mdp) {
+        this.mdpPartenaire = mdp;
+    }
 }
