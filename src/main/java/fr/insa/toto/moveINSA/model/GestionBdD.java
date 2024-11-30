@@ -30,6 +30,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.h2.jdbc.meta.DatabaseMetaServer;
 
 public class GestionBdD {
@@ -578,10 +580,9 @@ public class GestionBdD {
     }
     
     public static void menuPrincipalSRI() {
-
-            int rep1 = -1;
-            Connection con = null; 
-            try {
+int rep1 = -1;
+        Connection con = null;
+        try {
             con = ConnectionSimpleSGBD.defaultCon();
             System.out.println("Connection OK");
         } catch (SQLException ex) {
@@ -604,7 +605,11 @@ public class GestionBdD {
                     menuEtudiantSRI(con);
                 }
                 else if (r == 3){
-                    menuCandidatureSRI(con);
+                    try {
+                        menuCandidatureSRI(con);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(GestionBdD.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
                 else if (r == 4){
                     menuBdD(con);
