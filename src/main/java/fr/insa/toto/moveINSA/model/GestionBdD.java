@@ -92,6 +92,16 @@ public class GestionBdD {
                         add constraint fk_offremobilite_proposepar
                         foreign key (proposepar) references partenaire(id)
                         on delete restrict on update restrict
+                    
+                    alter table candidature
+                        add constraint fk_offremobilite_id
+                        foreign key (idOffreMobilite) references offremobilite(id)
+                        on delete restrict on update restrict
+                    
+                    alter table candidature
+                        add constraint fk_etudiant_ine
+                        foreign key (INE) references etudiant(ine)
+                        on delete restrict on update restrict 
                     """);
             con.commit();
         } catch (SQLException ex) {
