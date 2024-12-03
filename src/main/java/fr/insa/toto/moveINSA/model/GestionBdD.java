@@ -342,7 +342,7 @@ public class GestionBdD {
         }
     }
     //à modifier
-    public static void menuCandidature(Connection con) {
+    public static void menuCandidatureEtudiant(Connection con) {
         int rep = -1;
         while (rep != 0) {
             int i = 1;
