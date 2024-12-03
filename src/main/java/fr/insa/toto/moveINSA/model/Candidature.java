@@ -156,7 +156,7 @@ public class Candidature {
     }
 
     //public void updateInConsole(Connection con) throws SQLException{
-    public void updateInConsole(Connection con) throws SQLException{
+    public static void updateInConsole(Connection con) throws SQLException{
         try (PreparedStatement update = con.prepareStatement(
             "UPDATE candidature SET INE = ?, idOffreMobilite = ?, date = ?, WHERE idCandidature = ?")){
             String nouveauINE = ConsoleFdB.entreeString("Nouveau INE (laissez vide pour conserver le précédent): ");
@@ -174,6 +174,23 @@ public class Candidature {
             update.setDate(3, (java.sql.Date) nouvelledate);
             update.setInt(4, this.idCandidature);
             update.executeUpdate();
+            
+            
+            
+//        "update offremobilite set nbrplaces = ? , proposepar = ? , classe = ? where nbrplaces = ? and proposepar = ? and classe = ? ")) {
+//        int newnbrPlaces = ConsoleFdB.entreeInt("new nbrplaces :");
+//        String newclasse = ConsoleFdB.entreeString("new classe :");
+//        Partenaire newp = Partenaire.selectInConsole(con);
+//        int lastnbrPlaces = ConsoleFdB.entreeInt("last nbrplaces :");
+//        String lastclasse = ConsoleFdB.entreeString("last classe: ");
+//        Partenaire lastp = Partenaire.selectInConsole(con);
+//        update.setInt(1,newnbrPlaces);
+//        update.setInt(2,newp.getId());
+//        update.setString(3, newclasse);
+//        update.setInt(4,lastnbrPlaces);
+//        update.setInt(5,lastp.getId());
+//        update.setString(6, lastclasse);
+//        update.executeUpdate();
         }
     }
     

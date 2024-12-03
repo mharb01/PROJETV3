@@ -259,6 +259,7 @@ public class GestionBdD {
             System.out.println((i++) + ") Voir toutes les offres");
             System.out.println((i++) + ") Voir tous les partenaires");
             System.out.println((i++) + ") Rerchercher les offres");
+            System.out.println((i++) + ") Candidater à une offre");
             //System.out.println((i++) + ") Mes favoris");
             System.out.println("0) Retour");
             rep = ConsoleFdB.entreeEntier("Votre choix : ");
@@ -298,11 +299,12 @@ public class GestionBdD {
                     System.out.println(users.size() + " offres : ");
                     System.out.println(ListUtils.enumerateList(users, (elem) -> elem.toString()));
                         }
-                        
                         else if (rep1 == l++) {
-                    List<OffreMobilite> users = OffreMobilite.rechercherClasse(con);
-                    System.out.println(users.size() + " offres : ");
-                    System.out.println(ListUtils.enumerateList(users, (elem) -> elem.toString()));
+                    System.out.println("Choisissez l'offre à laquelle vous souhaitez candidater");
+                    Candidature.selectInConsole(con);
+                    //aller chercher les infos sur les classes
+                    //if () vérifier les classes
+                    Candidature.creeConsole(con); //à voir si modifie pour automatiser avec les paramètres
                         }
                     
                 } catch (Exception ex) {
@@ -371,30 +373,42 @@ public class GestionBdD {
             }
         }
     }
-    //à modifier
-    public static void menuCandidature(Connection con) {
-        int rep = -1;
-        while (rep != 0) {
-            int i = 1;
-            System.out.println("Menu Candidatures");
-            System.out.println("==================");
-            System.out.println((i++) + ") liste de toutes les candidatures");
-            System.out.println((i++) + ") créer une nouvelle candidature");
-            System.out.println("0) Retour");
-            rep = ConsoleFdB.entreeEntier("Votre choix : ");
-            try {
-                i = 1 ;
-                int j = 1;
-                if (rep == j++) {
-                    List<Candidature> candidatures = Candidature.toutesLesCandidatures(con);
-                    System.out.println(candidatures.size() + " offres : ");
-                    System.out.println(ListUtils.enumerateList(candidatures, (elem) -> elem.toString()));
-                } else if (rep == j++) {
-                    Candidature.creeConsole(con);
+    //à enlever
+    public static void menuCandidatureEtudiant(Connection con) {
+        try {
+            int rep = -1;
+            List<Candidature> candidatures = Candidature.toutesLesCandidatures(con);
+            System.out.println(candidatures.size() + " offres : ");
+            System.out.println(ListUtils.enumerateList(candidatures, (elem) -> elem.toString()));
+            
+            System.out.println("Souhaitez-vous supprimer une de vos candidatures");
+            while (rep != 0) {
+                int i = 1;
+                System.out.println("Gerer mes candidatures");
+                System.out.println("==================");
+                System.out.println((i++) + ") Valider ma liste de candidature");
+                System.out.println((i++) + ") Supprimer une candidature");
+                System.out.println((i++) + ") Supprimer toutes mes candidatures");
+                System.out.println("0) Retour");
+                rep = ConsoleFdB.entreeEntier("Votre choix : ");
+                try {
+                    i = 1 ;
+                    int j = 1;
+                    if (rep == j++) {
+                        System.out.println("to do");
+                    } else if (rep == j++) {
+                        Candidature.selectInConsole(con);
+                    }else if (rep == j++) {
+                        Candidature.selectInConsole(con);
+                    }else if (rep == j++) {
+                        Candidature.deleteAllConsole(con);
+                    }
+                } catch (Exception ex) {
+                    System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
                 }
-            } catch (Exception ex) {
-                System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(GestionBdD.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     public static void menuCandidatureSRI(Connection con) throws SQLException{
@@ -407,6 +421,7 @@ public class GestionBdD {
             System.out.println((i++) + ") Modifier une candidature");
             System.out.println((i++) + ") Supprimer une candidature");
             System.out.println((i++) + ") Supprimer toutes les candidatures");
+            System.out.println((i++) + ") Filtrer les offres");
             System.out.println("0) Retour");
             rep = ConsoleFdB.entreeEntier("Votre choix : ");
             try {
@@ -623,7 +638,7 @@ public class GestionBdD {
             System.out.println("==================");
             System.out.println((i++) + ") Mon profil");
             System.out.println((i++) + ") Les offres");
-            //System.out.println((i++) + ") Mes candidatures");
+            System.out.println((i++) + ") Mes candidatures");
             //System.out.println((i++) + ") Mes favoris");
             System.out.println("0) Me déconnecter");
             rep = ConsoleFdB.entreeEntier("Votre choix : ");
@@ -633,9 +648,9 @@ public class GestionBdD {
                     menuProfilEtudiant(con, etudiant); //faire menuProfil commun ?
                 } else if (rep == j++) {
                     menuOffreEtudiant(con);
+                } else if (rep == j++) {
+                    menuCandidatureEtudiant(con);
                 } //else if (rep == j++) {
-//                    menuCandidatureEtudiant(con);
-                //} //else if (rep == j++) {
                     //menuFavori(con);
                // }
             } catch (Exception ex) {
@@ -753,33 +768,7 @@ int rep1 = -1;
 //        }
     }
     
-    public static void menuCandidatureSRI(){
-        System.out.println("Menu Candidature pour SRI à faire");
-        /*
-        int rep = -1;
-        while (rep != 0) {
-            int i = 1;
-            System.out.println("Menu Candidatures");
-            System.out.println("==================");
-            System.out.println((i++) + ") liste de toutes les candidatures");
-            System.out.println((i++) + ") créer une nouvelle candidature");
-            System.out.println("0) Retour");
-            rep = ConsoleFdB.entreeEntier("Votre choix : ");
-            try {
-                int j = 1;
-                if (rep == j++) {
-                    List<Candidature> candidatures = Candidature.toutesLesCandidatures(con);
-                    System.out.println(candidatures.size() + " offres : ");
-                    System.out.println(ListUtils.enumerateList(candidatures, (elem) -> elem.toString()));
-                } else if (rep == j++) {
-                    Candidature.creeConsole(con);
-                }
-            } catch (Exception ex) {
-                System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
-            }
-        }
-*/
-    }
+   
     
     public static void main(String[] args) throws SQLException {
         int r = -1;
