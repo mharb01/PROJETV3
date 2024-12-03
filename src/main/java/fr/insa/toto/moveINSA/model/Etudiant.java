@@ -133,6 +133,37 @@ public class Etudiant {
     public int getId() {
         return idEtudiant;
     }
+
+    public int getIdEtudiant() {
+        return idEtudiant;
+    }
+
+    public String getIne() {
+        return ine;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public String getClasse() {
+        return classe;
+    }
+
+    public int getClassement() {
+        return classement;
+    }
+
+    public String getIdcoEtudiant() {
+        return idcoEtudiant;
+    }
+
+    public String getMdpEtudiant() {
+        return mdpEtudiant;
+    }
+    
+    
+    
     public static void modifConsoleparSRI(Connection con) throws SQLException {
         try (PreparedStatement update = con.prepareStatement(
         "update etudiant set ine = ? , nom = ? , classe = ? , classement = ? , idcoEtudiant = ? , where ine = ?")){
