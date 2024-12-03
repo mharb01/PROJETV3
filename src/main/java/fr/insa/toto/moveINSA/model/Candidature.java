@@ -157,40 +157,38 @@ public class Candidature {
 
     //public void updateInConsole(Connection con) throws SQLException{
     public static void updateInConsole(Connection con) throws SQLException{
-        try (PreparedStatement update = con.prepareStatement(
-            "UPDATE candidature SET INE = ?, idOffreMobilite = ?, date = ?, WHERE idCandidature = ?")){
-            String nouveauINE = ConsoleFdB.entreeString("Nouveau INE (laissez vide pour conserver le précédent): ");
-            if (!nouveauINE.isEmpty()){
-                this.setINE(nouveauINE);
-            } 
-            int nouvelleOffre = ConsoleFdB.entreeInt("Nouveau id d'offre (0 si vous souhaitez conserver l'ancien):");
-            if (nouvelleOffre!=0){
-                this.setIdOffreMobilite(nouvelleOffre);
+        String nouveauINE = ConsoleFdB.entreeString("INE du nouveau candidat (laisser vide si vous souhaitez conserver l'ancien):");
+        int nouvelleOffre = ConsoleFdB.entreeInt("Identifiant de la nouvelle offre (0 pour garder l'ancien):");
+        LocalDate dateNow = LocalDate.now();
+        Date nouvelledate = java.sql.Date.valueOf(dateNow);
+        int idCandidature = ConsoleFdB.entreeInt("Identifiant de la candidature à modifier (0 pour garder l'ancien):");
+        StringBuilder ordresql = new StringBuilder("update candidature set");
+        Boolean first = true;
+        int i = 0;
+        Boolean o = false;
+        if (!nouveauINE.isEmpty()) {
+            ordresql.append("nom = ?");
+            first = false;  // La première colonne a été ajoutée
+            i=1;
+        }
+        if (0==nouvelleOffre) {
+            if (first=false){
+                ordresql.append(", ");
+                o = true;
             }
-           LocalDate dateNow = LocalDate.now();
-            Date nouvelledate = java.sql.Date.valueOf(dateNow);
+            ordresql.append("idOffreMobilite = ?");
+        }
+        ordresql.append("date= ? where idCandidature = ?");
+        String resultatordre = ordresql.toString();
+        try (PreparedStatement update = con.prepareStatement(
+            resultatordre)) {
             update.setString(1, nouveauINE);
-            update.setInt(2, nouvelleOffre);
-            update.setDate(3, (java.sql.Date) nouvelledate);
-            update.setInt(4, this.idCandidature);
+            if (o=true){
+             update.setInt(i++, nouvelleOffre);   
+            }
+            update.setDate(i++, (java.sql.Date) nouvelledate);
+            update.setInt(i++, idCandidature);
             update.executeUpdate();
-            
-            
-            
-//        "update offremobilite set nbrplaces = ? , proposepar = ? , classe = ? where nbrplaces = ? and proposepar = ? and classe = ? ")) {
-//        int newnbrPlaces = ConsoleFdB.entreeInt("new nbrplaces :");
-//        String newclasse = ConsoleFdB.entreeString("new classe :");
-//        Partenaire newp = Partenaire.selectInConsole(con);
-//        int lastnbrPlaces = ConsoleFdB.entreeInt("last nbrplaces :");
-//        String lastclasse = ConsoleFdB.entreeString("last classe: ");
-//        Partenaire lastp = Partenaire.selectInConsole(con);
-//        update.setInt(1,newnbrPlaces);
-//        update.setInt(2,newp.getId());
-//        update.setString(3, newclasse);
-//        update.setInt(4,lastnbrPlaces);
-//        update.setInt(5,lastp.getId());
-//        update.setString(6, lastclasse);
-//        update.executeUpdate();
         }
     }
     
