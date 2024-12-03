@@ -195,7 +195,37 @@ public class GestionBdD {
         initBdDTest(con);
     }
 
+    public static boolean verifierDonneesEtudiant(Connection con, String identifiant, String mdp) throws SQLException{
+        String rech = "SELECT 1 FROM etudiant WHERE idcoEtudiant =? AND mdpEtudiant = ? LIMIT 1";
+        try (PreparedStatement pst = con.prepareStatement(rech)){
+            pst.setString(1, identifiant);
+            pst.setString(2, mdp);
+            try (ResultSet rs = pst.executeQuery()){
+                return rs.next();
+            }
+        }
+    }
 
+    public static Etudiant getEtudiant(Connection con, String idcoEtudiant) throws SQLException{
+        String rech = "SELECT * FROM etudiant WHERE idcoEtudiant = ?";
+        try(PreparedStatement pst = con.prepareStatement(rech)){
+            pst.setString(1, idcoEtudiant);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("id");
+                    String ine = rs.getString("ine");
+                    String nom = rs.getString("nom");
+                    String classe = rs.getString("classe");
+                    int classement = rs.getInt("classement");
+                    String mdpEtudiant = rs.getString("mdpEtudiant");
+                    
+                    return new Etudiant(id, ine, nom, classe, classement, idcoEtudiant, mdpEtudiant);
+                }
+            }     
+        }
+        return null;
+    }
+    
     public static void menuPartenaire(Connection con) {
         int rep = -1;
         while (rep != 0) {
@@ -342,7 +372,7 @@ public class GestionBdD {
         }
     }
     //à modifier
-    public static void menuCandidatureEtudiant(Connection con) {
+    public static void menuCandidature(Connection con) {
         int rep = -1;
         while (rep != 0) {
             int i = 1;
@@ -414,7 +444,16 @@ public class GestionBdD {
         if (r == j++) {
             String identifiant = ConsoleFdB.entreeString("Entrez votre identifiant: ");
             String mdp = ConsoleFdB.entreeString("Entrez votre mot de passe:");
-            menuPrincipalEtudiant();           
+            try (con){
+                boolean OK = verifierDonneesEtudiant(con, identifiant, mdp);
+                if (OK){
+                    Etudiant etudiant = getEtudiant(con, identifiant);
+                    menuPrincipalEtudiant(etudiant);
+                } else {
+                    System.out.println("Identifiant ou mot de passe incorrect, veuillez réessayer");
+                    menuConnection(con);
+                }
+            }
         } else if (r == j++) {
             int k = 1;
             System.out.println((k++) + ") Connection à votre compte Partenaire");
@@ -437,6 +476,22 @@ public class GestionBdD {
             String identifiant = ConsoleFdB.entreeString("Entrez votre identifiant: ");
             String mdp = ConsoleFdB.entreeString("Entrez votre mot de passe:");
             menuPrincipalSRI();
+        }
+    }
+    
+    public static void menuProfilEtudiant (Connection con, Etudiant etudiant) throws SQLException{
+        int i = 1;
+        System.out.println("Nom : " + etudiant.getNom());
+        System.out.println("Classe : " + etudiant.getClasse());
+        System.out.println("INE : " + etudiant.getIne());
+        System.out.println("Classement : " + etudiant.getClassement());
+        System.out.println("ID de connecxion : " + etudiant.getIdcoEtudiant());
+        System.out.println("Mot de passe : " + etudiant.getMdpEtudiant());
+        System.out.println("Veuillez choisir une action :");
+        System.out.println((i++)+ ") Changer de mot de passe");
+        System.out.println("0) Deconnexion");
+        if (i == 1){
+            etudiant.modifConsolemdpEtudiant(con);
         }
     }
     
@@ -552,7 +607,7 @@ public class GestionBdD {
         }
     }
     
-    public static void menuPrincipalEtudiant() {
+    public static void menuPrincipalEtudiant(Etudiant etudiant) {
         int rep = -1;
         Connection con = null;
         try {
@@ -575,7 +630,7 @@ public class GestionBdD {
             try {
                 int j = 1;
                 if (rep == j++) {
-                    menuProfil(con); //faire menuProfil commun ?
+                    menuProfilEtudiant(con, etudiant); //faire menuProfil commun ?
                 } else if (rep == j++) {
                     menuOffreEtudiant(con);
                 } //else if (rep == j++) {
