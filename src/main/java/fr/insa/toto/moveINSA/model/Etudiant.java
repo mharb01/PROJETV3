@@ -183,12 +183,14 @@ public class Etudiant {
         }
     System.out.println("Profil étudiant modifié avec succès !");
     }
-    public static void modifConsolemdpEtudiant (Connection con) throws SQLException {
+   public static void modifConsolemdpEtudiant (Connection con, String idcoEtudiant) throws SQLException {
         try (PreparedStatement update = con.prepareStatement(
-        "update etudiant set mdpEtudiant = ?")) {
-            String mdpEtudiant = ConsoleFdB.entreeString("new mdpEtudiant:") ;
+        "update etudiant set mdpEtudiant = ? WHERE idcoEtudiant = ?")) {
+            String mdpEtudiant = ConsoleFdB.entreeString("Veuillez saisir votre nouveau mot de passe:") ;
             update.setString(1, mdpEtudiant);
+            update.setString(2, idcoEtudiant);
             update.executeUpdate();
+            System.out.println("Changement de mot de passe fait!");
         }
     }
     public static void supprConsole (Connection con) throws SQLException {
