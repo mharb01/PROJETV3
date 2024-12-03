@@ -205,6 +205,16 @@ public class GestionBdD {
             }
         }
     }
+    public static boolean verifierDonneesSRI(Connection con, String identifiant, String mdp) throws SQLException{
+        String rech = "SELECT 1 FROM SRI WHERE idcoSRI =? AND mdpSRI = ? LIMIT 1";
+        try (PreparedStatement pst = con.prepareStatement(rech)){
+            pst.setString(1, identifiant);
+            pst.setString(2, mdp);
+            try (ResultSet rs = pst.executeQuery()){
+                return rs.next();
+            }
+        }
+    }
 
     public static Etudiant getEtudiant(Connection con, String idcoEtudiant) throws SQLException{
         String rech = "SELECT * FROM etudiant WHERE idcoEtudiant = ?";
@@ -220,6 +230,24 @@ public class GestionBdD {
                     String mdpEtudiant = rs.getString("mdpEtudiant");
                     
                     return new Etudiant(id, ine, nom, classe, classement, idcoEtudiant, mdpEtudiant);
+                }
+            }     
+        }
+        return null;
+    }
+    
+    public static SRI getSRI(Connection con, String idcoSRI) throws SQLException{
+        String rech = "SELECT * FROM SRI WHERE idcoSRI = ?";
+        try(PreparedStatement pst = con.prepareStatement(rech)){
+            pst.setString(1, idcoSRI);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("idSRI");
+                    String refSRI = rs.getString("refSRI");
+                    String idco = rs.getString("idcoSRI");
+                    String mdpSRI = rs.getString("mdpSRI");
+                    
+                    return new SRI(id, idco, refSRI, mdpSRI); 
                 }
             }     
         }
@@ -490,6 +518,16 @@ public class GestionBdD {
         } else if (r == j++) {
             String identifiant = ConsoleFdB.entreeString("Entrez votre identifiant: ");
             String mdp = ConsoleFdB.entreeString("Entrez votre mot de passe:");
+            try (con){
+                boolean OK = verifierDonneesSRI(con, identifiant, mdp);
+                if (OK){
+                    SRI sri = getSRI(con, identifiant);
+                    menuPrincipalSRI();
+                } else {
+                    System.out.println("Identifiant ou mot de passe incorrect, veuillez réessayer");
+                    menuConnection(con);
+                }
+            }
             menuPrincipalSRI();
         }
     }
