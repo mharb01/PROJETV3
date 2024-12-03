@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 import java.time.LocalDate;
 
@@ -66,7 +67,7 @@ public class Candidature {
     private int idCandidature;
     private String INE;
     private int idOffreMobilite;
-    private String date;
+    private Date date;
 
     /**
      * création d'une nouvelle Candidature en mémoire, non existant dans la Base de
@@ -75,7 +76,7 @@ public class Candidature {
      * @param id
      */
     
-    public Candidature(String INE, int idOffreMobilite, String date) {
+    public Candidature(String INE, int idOffreMobilite, Date date){
         this(-1,INE, idOffreMobilite, date);
     }
    
@@ -84,7 +85,7 @@ public class Candidature {
      *
      * @param INE, idOffreMobilite
      */
-    public Candidature(int idCandidature, String INE, int idOffreMobilite, String date) {
+    public Candidature(int idCandidature, String INE, int idOffreMobilite, Date date){
         this.idCandidature = idCandidature;
         this.INE = INE;
         this.idOffreMobilite = idOffreMobilite;
@@ -117,7 +118,7 @@ public class Candidature {
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
             insert.setString(1, this.getINE());
             insert.setInt(2, this.getIdOffreMobilite());
-            insert.setString(3, this.getDate());
+            insert.setDate(3, (java.sql.Date) this.getDate());
             insert.executeUpdate();
             try (ResultSet rid = insert.getGeneratedKeys()) {
                 rid.next();
@@ -133,7 +134,7 @@ public class Candidature {
             ResultSet rs = pst.executeQuery();
             List<Candidature> res = new ArrayList<>();
             while (rs.next()) {
-                res.add(new Candidature(rs.getInt(1), rs.getString(2),rs.getInt(3), rs.getString(4)));
+                res.add(new Candidature(rs.getInt(1), rs.getString(2),rs.getInt(3), rs.getDate(4)));
             }
             return res;
         }
@@ -142,9 +143,10 @@ public class Candidature {
     public static int creeConsole(Connection con) throws SQLException {
         String nouveauINE = ConsoleFdB.entreeString("Entrez l'INE de l'etudiant : ");
         String nouvelleOffre = ConsoleFdB.entreeString("Entrez l'ID de l'offre de mobilite :");
-        LocalDate currentDate = LocalDate.now();
-        String dateCandidature = currentDate.toString();
-        Candidature nouveau = new Candidature(nouveauINE,Integer.parseInt(nouvelleOffre), dateCandidature);
+        LocalDate dateNow=LocalDate.now();
+        Date dateCandidature;
+        dateCandidature = java.sql.Date.valueOf(dateNow);
+        Candidature nouveau = new Candidature(nouveauINE,Integer.parseInt(nouvelleOffre),dateCandidature);
         return nouveau.saveInDB(con);
     }
 
@@ -154,17 +156,24 @@ public class Candidature {
     }
 
     //public void updateInConsole(Connection con) throws SQLException{
-    public static void updateInConsole(Connection con) throws SQLException{
+    public void updateInConsole(Connection con) throws SQLException{
         try (PreparedStatement update = con.prepareStatement(
             "UPDATE candidature SET INE = ?, idOffreMobilite = ?, date = ?, WHERE idCandidature = ?")){
             String nouveauINE = ConsoleFdB.entreeString("Nouveau INE (laissez vide pour conserver le précédent): ");
             if (!nouveauINE.isEmpty()){
                 this.setINE(nouveauINE);
             } 
-            String nouvelleOffre = ConsoleFdB.entreeString("Nouveau id d'offre (laissez vide pour conserver le précédent) :");
-            if (!nouvelleOffre.isEmpty()){
-                this.setIdOffreMobilite(Integer.parseInt(nouvelleOffre));
-            } 
+            int nouvelleOffre = ConsoleFdB.entreeInt("Nouveau id d'offre (0 si vous souhaitez conserver l'ancien):");
+            if (nouvelleOffre!=0){
+                this.setIdOffreMobilite(nouvelleOffre);
+            }
+           LocalDate dateNow = LocalDate.now();
+            Date nouvelledate = java.sql.Date.valueOf(dateNow);
+            update.setString(1, nouveauINE);
+            update.setInt(2, nouvelleOffre);
+            update.setDate(3, (java.sql.Date) nouvelledate);
+            update.setInt(4, this.idCandidature);
+            update.executeUpdate();
         }
     }
     
@@ -197,7 +206,7 @@ public class Candidature {
     public void setINE(String INE) {
         this.INE = INE;
     }
-
+    
     /**
      * @return the idCandidature
      */
@@ -209,7 +218,7 @@ public class Candidature {
         return idOffreMobilite;
     }
 
-    public String getDate() {
+    public Date getDate(){
         return date;
     }
 
