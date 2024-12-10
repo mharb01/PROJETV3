@@ -128,24 +128,7 @@ public class OffreMobilite {
     }
 
     public static void modifConsole(Connection con) throws SQLException {
-//    try (PreparedStatement update = con.prepareStatement(
-//            "update offremobilite set nbrplaces = ? , proposepar = ? , classe = ? where nbrplaces = ? and proposepar = ? and classe = ? ")) {
-//        int newnbrPlaces = ConsoleFdB.entreeInt("new nbrplaces :");
-//        String newclasse = ConsoleFdB.entreeString("new classe :");
-//        Partenaire newp = Partenaire.selectInConsole(con);
-//        int lastnbrPlaces = ConsoleFdB.entreeInt("last nbrplaces :");
-//        String lastclasse = ConsoleFdB.entreeString("last classe: ");
-//        Partenaire lastp = Partenaire.selectInConsole(con);
-//        update.setInt(1,newnbrPlaces);
-//        update.setInt(2,newp.getId());
-//        update.setString(3, newclasse);
-//        update.setInt(4,lastnbrPlaces);
-//        update.setInt(5,lastp.getId());
-//        update.setString(6, lastclasse);
-//        update.executeUpdate();
-//        }
-//    System.out.println("Offre modifiee avec succes !");
-//        
+
         System.out.println("Selectionner l'offre à modifier");
         OffreMobilite offremodif = selectInConsoleOffre(con);
         int nouveaunbrplaces = ConsoleFdB.entreeInt("Nouveau nombre de places (0 si vous souhaitez conserver l'ancien):");
