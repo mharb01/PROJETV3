@@ -83,6 +83,7 @@ public class GestionBdD {
                     "create table offremobilite ( \n"
                     + ConnectionSimpleSGBD.sqlForGeneratedKeys(con, "id") + ",\n"
                     + " nbrplaces int not null,\n"
+                    + " classe ivarchar(50) not null,\n"    
                     + " proposepar int not null\n"
                     + ")");
             // création des liens
@@ -391,9 +392,9 @@ public class GestionBdD {
                     Etudiant.supprConsole(con);
                 }else if (rep == j++) {
                     Etudiant.supprallConsole(con);
-                }//else if (rep == j++) {
-//                    Etudiant.rechercher(con);
-//                }
+                }else if (rep == j++) {
+                    Etudiant.rechercher(con);
+                }
             } catch (Exception ex) {
                 System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
             }

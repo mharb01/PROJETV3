@@ -92,6 +92,8 @@ public class Partenaire implements Serializable{
      * @param id
      * @param refPartenaire
      * @param pays
+     * @param idcoPartenaire
+     * @param mdpPartenaire
      */
     public Partenaire(int id, String refPartenaire, String pays, String idcoPartenaire, String mdpPartenaire) {
         this.id = id;
@@ -184,38 +186,65 @@ public class Partenaire implements Serializable{
 
     
     public static void updateInConsole(Connection con) throws SQLException{
+        System.out.println("Selectionner le partenaire à modifier");
+        Partenaire partenairemodif = selectInConsole(con);
+        int idPartenaire = partenairemodif.getId();
         String nouvelleref = ConsoleFdB.entreeString("Référence du nouveau  partenaire (laisser vide si vous souhaitez conserver l'ancien):");
         String nouveaupays = ConsoleFdB.entreeString("Pays du nouveau partenaire (laisser vide si vous souhaitez conserver l'ancien):");
         String nouveauidco = ConsoleFdB.entreeString("Identifiant de connexion du nouveau partenaire (laisser vide si vous souhaitez conserver l'ancien):");
         String nouveaumdp = ConsoleFdB.entreeString("Mot de passe provisoire du nouveau partenaire (laisser vide si vous souhaitez conserver l'ancien):");
         StringBuilder ordresql = new StringBuilder("update partenaire set");
         Boolean first = true;
-        int i = 0;
-        Boolean o = false;
+        int i = 1;
         if (!nouvelleref.isEmpty()) {
-            ordresql.append("nom = ?");
+            ordresql.append("refPartenaire = ?");
             first = false;  // La première colonne a été ajoutée
-            i=1;
         }
-        if (0==nouvelleOffre) {
+        if (!nouveaupays.isEmpty()) {
             if (first=false){
                 ordresql.append(", ");
-                o = true;
             }
-            ordresql.append("idOffreMobilite = ?");
+            first = false ;
+            ordresql.append("pays = ?");
         }
-        ordresql.append("date= ? where idCandidature = ?");
+        if (!nouveauidco.isEmpty()) {
+            if (first = false){
+                ordresql.append(", ");
+            }
+            ordresql.append("idcoPartenaire = ?");
+            first = false ;
+        }
+        if (!nouveaumdp.isEmpty()) {
+            if (first = false){
+                ordresql.append(", ");
+            }
+            ordresql.append("mdpPartenaire = ?");
+            first = false;
+        }
+        ordresql.append("where id = ?");
         String resultatordre = ordresql.toString();
         try (PreparedStatement update = con.prepareStatement(
             resultatordre)) {
-            update.setString(1, nouveauINE);
-            if (o=true){
-             update.setInt(i++, nouvelleOffre);   
+            if (!nouvelleref.isEmpty()) {
+            update.setString(i, nouvelleref);
+            i++;
             }
-            update.setDate(i++, (java.sql.Date) nouvelledate);
-            update.setInt(i++, idCandidature);
+            if (!nouveaupays.isEmpty()) {
+            update.setString(i, nouveaupays); 
+            i++;
+            }
+            if (!nouveauidco.isEmpty()) {
+            update.setString(i, nouveauidco);
+            i++;
+            }
+            if (!nouveaumdp.isEmpty()) {
+            update.setString(i, nouveaumdp); 
+            i++;
+            }
+            update.setInt(i, idPartenaire);
             update.executeUpdate();
         }
+        System.out.println("Profil partenaire modifié avec succès !");
     }
     
     public static Partenaire selectInConsole(Connection con) throws SQLException {

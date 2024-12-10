@@ -20,6 +20,7 @@ package fr.insa.toto.moveINSA.model;
 
 import fr.insa.beuvron.utils.ConsoleFdB;
 import fr.insa.beuvron.utils.list.ListUtils;
+import static fr.insa.toto.moveINSA.model.Partenaire.selectInConsole;
 import static fr.insa.toto.moveINSA.model.Partenaire.tousLesPartaires;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -117,6 +118,7 @@ public class OffreMobilite {
         }
     }
 
+    
     public static int creeConsole(Connection con) throws SQLException {
         Partenaire p = Partenaire.selectInConsole(con);
         int nbr = ConsoleFdB.entreeInt("nombre de places : ");
@@ -126,24 +128,63 @@ public class OffreMobilite {
     }
 
     public static void modifConsole(Connection con) throws SQLException {
-    try (PreparedStatement update = con.prepareStatement(
-            "update offremobilite set nbrplaces = ? , proposepar = ? , classe = ? where nbrplaces = ? and proposepar = ? and classe = ? ")) {
-        int newnbrPlaces = ConsoleFdB.entreeInt("new nbrplaces :");
-        String newclasse = ConsoleFdB.entreeString("new classe :");
-        Partenaire newp = Partenaire.selectInConsole(con);
-        int lastnbrPlaces = ConsoleFdB.entreeInt("last nbrplaces :");
-        String lastclasse = ConsoleFdB.entreeString("last classe: ");
-        Partenaire lastp = Partenaire.selectInConsole(con);
-        update.setInt(1,newnbrPlaces);
-        update.setInt(2,newp.getId());
-        update.setString(3, newclasse);
-        update.setInt(4,lastnbrPlaces);
-        update.setInt(5,lastp.getId());
-        update.setString(6, lastclasse);
-        update.executeUpdate();
-        }
-    System.out.println("Offre modifiee avec succes !");
+//    try (PreparedStatement update = con.prepareStatement(
+//            "update offremobilite set nbrplaces = ? , proposepar = ? , classe = ? where nbrplaces = ? and proposepar = ? and classe = ? ")) {
+//        int newnbrPlaces = ConsoleFdB.entreeInt("new nbrplaces :");
+//        String newclasse = ConsoleFdB.entreeString("new classe :");
+//        Partenaire newp = Partenaire.selectInConsole(con);
+//        int lastnbrPlaces = ConsoleFdB.entreeInt("last nbrplaces :");
+//        String lastclasse = ConsoleFdB.entreeString("last classe: ");
+//        Partenaire lastp = Partenaire.selectInConsole(con);
+//        update.setInt(1,newnbrPlaces);
+//        update.setInt(2,newp.getId());
+//        update.setString(3, newclasse);
+//        update.setInt(4,lastnbrPlaces);
+//        update.setInt(5,lastp.getId());
+//        update.setString(6, lastclasse);
+//        update.executeUpdate();
+//        }
+//    System.out.println("Offre modifiee avec succes !");
+//        
+        System.out.println("Selectionner l'offre à modifier");
+        OffreMobilite offremodif = selectInConsoleOffre(con);
+        int nouveaunbrplaces = ConsoleFdB.entreeInt("Nouveau nombre de places (0 si vous souhaitez conserver l'ancien):");
+        String nouvelleclasse = ConsoleFdB.entreeString("Nouvelleclasse (laisser vide si vous souhaitez conserver l'ancien):");
+        System.out.println("Selectionner le nouveau partenaire");
+        Partenaire nouveaupartenaire = Partenaire.selectInConsole(con);
         
+        StringBuilder ordresql = new StringBuilder("update offremobilite set");
+        Boolean first = true;
+        int i = 1;
+        if (nouveaunbrplaces!=0) {
+            ordresql.append("nbrplaces = ?");
+            first = false;  // La première colonne a été ajoutée
+        }
+        if (!nouvelleclasse.isEmpty()) {
+            if (first=false){
+                ordresql.append(", ");
+            }
+            first = false ;
+            ordresql.append("classe = ?");
+        }
+        ordresql.append("proposepar = ? where id = ?");
+        String resultatordre = ordresql.toString();
+        try (PreparedStatement update = con.prepareStatement(
+            resultatordre)) {
+            if (nouveaunbrplaces!=0) {
+            update.setInt(i, nouveaunbrplaces);
+            i++;
+            }
+            if (!nouvelleclasse.isEmpty()) {
+            update.setString(i, nouvelleclasse); 
+            i++;
+            }
+            update.setInt(i, nouveaupartenaire.getId());
+            i++;
+            update.setInt(i, offremodif.getId());
+            update.executeUpdate();
+        }
+        System.out.println("Offre modifiée avec succès !");
     }
     
       public static void suppConsole(Connection con) throws SQLException {
@@ -182,7 +223,8 @@ public class OffreMobilite {
             return res;
     }   
     }
-      
+
+
       public static List<OffreMobilite> rechercherPays(Connection con) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
             "select offremobilite.id, offremobilite.nbrplaces, offremobilite.proposepar, offremobilite.classe from offremobilite,partenaire where offremobilite.proposepar = partenaire.id and partenaire.pays = ?  ")) {
@@ -227,7 +269,13 @@ public class OffreMobilite {
     public String getClasse() {
         return classe;
     }
-    
+    public String getPartenaire() {
+        return Integer.toString(proposePar); 
+    }
+    public static OffreMobilite selectInConsoleOffre(Connection con) throws SQLException {
+        return ListUtils.selectOne("choisissez une offre :",
+                toutesLesOffres(con), (elem) -> elem.getPartenaire()); //a voir si compréhensible
+    }
     public static OffreMobilite selectInConsoleClasse(Connection con) throws SQLException {
         return ListUtils.selectOne("choisissez une classe :",
                 toutesLesOffres(con), (elem) -> elem.getClasse());
