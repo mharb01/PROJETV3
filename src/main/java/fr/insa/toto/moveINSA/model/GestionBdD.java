@@ -53,7 +53,7 @@ public class GestionBdD {
                     + " refPartenaire varchar(50) not null unique,\n"
                     + " pays varchar(50) not null,\n,"
                     + " idcoPartenaire varchar(50) not null unique,\n"
-                    + " mdpPartenaire varchar(50) not null unique\n"
+                    + " mdpPartenaire varchar(50) not null \n"
                     + ")");
             st.executeUpdate(
                     "create table SRI ( \n"
