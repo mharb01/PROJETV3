@@ -36,6 +36,7 @@ public class PartenaireGrid extends Grid<Partenaire> {
         this.setColumnReorderingAllowed(true);
         this.addColumn(Partenaire::getRefPartenaire).setHeader("refPartenaire").setSortable(true).setResizable(true);
         this.addColumn(Partenaire::getPays).setHeader("pays").setSortable(true).setResizable(true);
+        this.addColumn(Partenaire::getidco).setHeader("idco").setSortable(true).setResizable(true);
         this.setItems(partenaires);
     }
     

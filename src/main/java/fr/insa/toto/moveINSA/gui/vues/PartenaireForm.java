@@ -29,6 +29,8 @@ public class PartenaireForm extends FormLayout {
     private Partenaire model;
     private TextField tfrefPartenaire = new TextField("refPartenaire");
     private TextField tfpays = new TextField("pays");
+    private TextField tfidco = new TextField("identification de connection");
+    private TextField tfmdp = new TextField("mot de passe");
     
     public PartenaireForm(Partenaire model, boolean modifiable) {
         this.model = model;
@@ -36,15 +38,21 @@ public class PartenaireForm extends FormLayout {
         this.updateView();
         this.add(this.tfrefPartenaire);
         this.add(this.tfpays);
+        this.add(this.tfidco);
+        this.add(this.tfmdp);
     }
     
     public void updateModel() {
         this.model.setRefPartenaire(this.tfrefPartenaire.getValue());
         this.model.setPays(this.tfpays.getValue());
+        this.model.setidco(this.tfidco.getValue());
+        this.model.setmdp(this.tfmdp.getValue());
     }
     
     public void updateView() {
         this.tfrefPartenaire.setValue(this.model.getRefPartenaire());
         this.tfpays.setValue(this.model.getPays());
+        this.tfidco.setValue(this.model.getidco());
+        this.tfmdp.setValue(this.model.getmdp());
     }
 }

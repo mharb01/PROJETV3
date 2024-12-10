@@ -71,7 +71,7 @@ public class VuePrincipale extends VerticalLayout {
        Button SRIButton = new Button (SRI);
        SRIButton.setWidthFull();
        SRIButton.setHeight("100px");
-       SRIButton.setText("Système informatique");        
+       SRIButton.setText("Système des Relations Internationales");        
        SRIButton.addClickListener(event -> { choisirRole("SRI");});
         
         VerticalLayout buttonLayout = new VerticalLayout (etudiantButton, partenaireButton, SRIButton);
