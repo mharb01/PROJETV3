@@ -76,7 +76,7 @@ public class GestionBdD {
                     "create table candidature ( \n"
                     + ConnectionSimpleSGBD.sqlForGeneratedKeys(con, "idCandidature") + ",\n"
                     + " ine varchar(50) not null,\n "
-                    + " idOffreMobilite varchar(50) not null,\n "
+                    + " idOffreMobilite int not null,\n "
                     + " date varchar(50) not null\n "
                     + ")");
             st.executeUpdate(
@@ -94,11 +94,16 @@ public class GestionBdD {
                         foreign key (proposepar) references partenaire(id)
                         on delete restrict on update restrict
                     
+                   """);
+            st.executeUpdate(
+                    """        
                     alter table candidature
                         add constraint fk_offremobilite_id
                         foreign key (idOffreMobilite) references offremobilite(id)
                         on delete restrict on update restrict
-                    
+                    """);
+            st.executeUpdate(
+                    """
                     alter table candidature
                         add constraint fk_etudiant_ine
                         foreign key (INE) references etudiant(ine)
