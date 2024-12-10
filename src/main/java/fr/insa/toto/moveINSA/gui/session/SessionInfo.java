@@ -78,6 +78,11 @@ public class SessionInfo implements Serializable {
      * le refPartenaire du partenaire connecté; null si non connecté.
      */
     private String partRef;
+    
+    private Integer loggedEtudiantld;
+    
+    private String userRole;  //"partenaire","etudiant","SRI"
+    
 
     public SessionInfo() {
         this.loggedPart = null;
@@ -128,4 +133,12 @@ public class SessionInfo implements Serializable {
         return cur.partRef;
     }
 
+    public String getUserRole() {
+        SessionInfo cur = getOrCreateCurSessionInfo();
+        return userRole;
+    }
+    
+    public void setUserRole(String userRole){
+        this.userRole = userRole;
+    }
 }
