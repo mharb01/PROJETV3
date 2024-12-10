@@ -337,15 +337,13 @@ public class GestionBdD {
                     
                 } catch (Exception ex) {
                 System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
-                }
-               
+                }            
                 }
                 }
                  
             }catch (Exception ex) {
                 System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
             }
-            
     }
     }
     
@@ -541,10 +539,10 @@ public class GestionBdD {
         System.out.println("ID de connecxion : " + etudiant.getIdcoEtudiant());
         System.out.println("Mot de passe : " + etudiant.getMdpEtudiant());
         System.out.println("Veuillez choisir une action :");
-        System.out.println((i++)+ ") Changer de mot de passe");
+        System.out.println( i + ") Changer de mot de passe");
         System.out.println("0) Deconnexion");
         if (i == 1){
-            etudiant.modifConsolemdpEtudiant(con);
+            Etudiant.modifConsolemdpEtudiant(con, etudiant.getIdcoEtudiant());
         }
     }
     
