@@ -161,35 +161,39 @@ public class Candidature {
         int nouvelleOffre = ConsoleFdB.entreeInt("Identifiant de la nouvelle offre (0 pour garder l'ancien):");
         LocalDate dateNow = LocalDate.now();
         Date nouvelledate = java.sql.Date.valueOf(dateNow);
-        int idCandidature = ConsoleFdB.entreeInt("Identifiant de la candidature à modifier (0 pour garder l'ancien):");
+        int idCandidature = ConsoleFdB.entreeInt("Identifiant de la candidature à modifier:");
         StringBuilder ordresql = new StringBuilder("update candidature set");
         Boolean first = true;
-        int i = 0;
-        Boolean o = false;
+        int i = 1;
         if (!nouveauINE.isEmpty()) {
-            ordresql.append("nom = ?");
+            ordresql.append("ine = ?");
             first = false;  // La première colonne a été ajoutée
-            i=1;
-        }
+            }
         if (0!=nouvelleOffre) {
             if (first=false){
                 ordresql.append(", ");
-                o = true;
             }
             ordresql.append("idOffreMobilite = ?");
+            first = false;
         }
         ordresql.append("date= ? where idCandidature = ?");
         String resultatordre = ordresql.toString();
-        try (PreparedStatement update = con.prepareStatement(
+            try (PreparedStatement update = con.prepareStatement(
             resultatordre)) {
-            update.setString(1, nouveauINE);
-            if (o=true){
-             update.setInt(i++, nouvelleOffre);   
+            if (!nouveauINE.isEmpty()) {
+            update.setInt(i, nouvelleOffre);
+            i++;
             }
-            update.setDate(i++, (java.sql.Date) nouvelledate);
-            update.setInt(i++, idCandidature);
+            if (nouvelleOffre!=0) {
+            update.setInt(i, nouvelleOffre);
+            i++;
+            }
+            update.setDate(i, (java.sql.Date) nouvelledate);
+            i++;
+            update.setInt(i, idCandidature);
             update.executeUpdate();
         }
+        System.out.println("Candidature modifiée avec succès !");
     }
     
     public static void deleteInConsole(Connection con) throws SQLException{

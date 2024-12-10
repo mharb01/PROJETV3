@@ -165,20 +165,85 @@ public class Etudiant {
     
     
     public static void modifConsoleparSRI(Connection con) throws SQLException {
+    String inemodif = ConsoleFdB.entreeString("INE du profil élève à modifier:");
+    String nouveline = ConsoleFdB.entreeString("Nouvel INE (laisser vide si vous souhaitez conserver l'ancien):");
+    String nouveaunom = ConsoleFdB.entreeString("Nouveau nom (laisser vide si vous souhaitez conserver l'ancien):");
+    String nouvelleclasse = ConsoleFdB.entreeString("Nouvelle classe (laisser vide si vous souhaitez conserver l'ancienne):");
+    int nouveauclassement = ConsoleFdB.entreeInt("Nouveau classement (0 vous souhaitez conserver l'ancien):");
+    String nouveauidco = ConsoleFdB.entreeString("Nouvel identifiant de connexion (laisser vide si vous souhaitez conserver l'ancien):");
+    String nouveaumdp = ConsoleFdB.entreeString("Nouveau mot de passe provisoire (laisser vide si vous souhaitez conserver l'ancien):");
+    StringBuilder ordresql = new StringBuilder("update etudiant set");
+        Boolean first = true;
+        int i = 1;
+        if (!nouveline.isEmpty()) {
+            ordresql.append("ine = ?");
+            first = false;  // La première colonne a été ajoutée
+            i=1;
+        }
+        if (!nouveaunom.isEmpty()) {
+            if (first=false){
+                ordresql.append(", ");
+            }
+            first = false ;
+            ordresql.append("nom = ?");
+        }
+        if (!nouvelleclasse.isEmpty()) {
+            if (first=false){
+                ordresql.append(", ");
+            }
+            first = false ;
+            ordresql.append("classe = ?");
+        }
+        if (nouveauclassement!=0) {
+            if (first = false){
+                ordresql.append(", ");
+            }
+            ordresql.append("classement = ?");
+            first = false ;
+        }
+        if (!nouveauidco.isEmpty()) {
+            if (first = false){
+                ordresql.append(", ");
+            }
+            ordresql.append("idcoEtudiant = ?");
+            first = false;
+        }
+        if (!nouveaumdp.isEmpty()) {
+            if (first = false){
+                ordresql.append(", ");
+            }
+            ordresql.append("mdpEtudiant = ?");
+            first = false;
+        }
+        ordresql.append("where ine = ?");
+        String resultatordre = ordresql.toString();
         try (PreparedStatement update = con.prepareStatement(
-        "update etudiant set ine = ? , nom = ? , classe = ? , classement = ? , idcoEtudiant = ? , where ine = ?")){
-            String ine = ConsoleFdB.entreeString("new ine:") ;
-            String nom = ConsoleFdB.entreeString("new nom:") ;
-            String classe = ConsoleFdB.entreeString("new classe:") ;
-            int classement = ConsoleFdB.entreeInt("new classement:") ;
-            String idcoEtudiant = ConsoleFdB.entreeString("new idcoEtudiant:") ;
-            String lastine = ConsoleFdB.entreeString("last ine:") ;
-            update.setString(1, ine);
-            update.setString(2, nom);
-            update.setString(3, classe);
-            update.setInt(4, classement);
-            update.setString(5, idcoEtudiant);
-            update.setString(6, lastine);
+            resultatordre)) {
+            if (!nouveline.isEmpty()) {
+            update.setString(i, nouveline);
+            i++;
+            }
+            if (!nouveaunom.isEmpty()) {
+            update.setString(i, nouveaunom); 
+            i++;
+            }
+            if (!nouvelleclasse.isEmpty()) {
+            update.setString(i, nouvelleclasse);
+            i++;
+            }
+            if (nouveauclassement!=0) {
+            update.setInt(i, nouveauclassement);
+            i++;
+            }
+            if (!nouveauidco.isEmpty()) {
+            update.setString(i, nouveauidco); 
+            i++;
+            }
+            if (!nouveaumdp.isEmpty()) {
+            update.setString(i, nouveaumdp); 
+            i++;
+            }
+            update.setString(i, inemodif);
             update.executeUpdate();
         }
     System.out.println("Profil étudiant modifié avec succès !");
