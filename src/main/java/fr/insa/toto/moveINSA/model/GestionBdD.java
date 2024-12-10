@@ -83,7 +83,7 @@ public class GestionBdD {
                     "create table offremobilite ( \n"
                     + ConnectionSimpleSGBD.sqlForGeneratedKeys(con, "id") + ",\n"
                     + " nbrplaces int not null,\n"
-                    + " classe ivarchar(50) not null,\n"    
+                    + " classe varchar(50) not null,\n"    
                     + " proposepar int not null\n"
                     + ")");
             // création des liens
