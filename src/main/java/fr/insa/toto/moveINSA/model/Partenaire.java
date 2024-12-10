@@ -25,7 +25,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,10 +129,12 @@ public class Partenaire implements Serializable{
             throw new EntiteDejaSauvegardee();
         }
         try (PreparedStatement insert = con.prepareStatement(
-                "insert into partenaire (refPartenaire, pays) values (?,?)",
+                "insert into partenaire (refPartenaire, pays, idcoPartenaire, mdpPartenaire) values (?,?,?,?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
             insert.setString(1, this.getRefPartenaire());
             insert.setString(2, this.getPays());
+            insert.setString(3, this.getidco());
+            insert.setString(4, this.getmdp());
             insert.executeUpdate();
             try (ResultSet rid = insert.getGeneratedKeys()) {
                 rid.next();
@@ -178,6 +182,42 @@ public class Partenaire implements Serializable{
         return nouveau.saveInDB(con);
     }
 
+    
+    public static void updateInConsole(Connection con) throws SQLException{
+        String nouvelleref = ConsoleFdB.entreeString("Référence du nouveau  partenaire (laisser vide si vous souhaitez conserver l'ancien):");
+        String nouveaupays = ConsoleFdB.entreeString("Pays du nouveau partenaire (laisser vide si vous souhaitez conserver l'ancien):");
+        String nouveauidco = ConsoleFdB.entreeString("Identifiant de connexion du nouveau partenaire (laisser vide si vous souhaitez conserver l'ancien):");
+        String nouveaumdp = ConsoleFdB.entreeString("Mot de passe provisoire du nouveau partenaire (laisser vide si vous souhaitez conserver l'ancien):");
+        StringBuilder ordresql = new StringBuilder("update partenaire set");
+        Boolean first = true;
+        int i = 0;
+        Boolean o = false;
+        if (!nouvelleref.isEmpty()) {
+            ordresql.append("nom = ?");
+            first = false;  // La première colonne a été ajoutée
+            i=1;
+        }
+        if (0==nouvelleOffre) {
+            if (first=false){
+                ordresql.append(", ");
+                o = true;
+            }
+            ordresql.append("idOffreMobilite = ?");
+        }
+        ordresql.append("date= ? where idCandidature = ?");
+        String resultatordre = ordresql.toString();
+        try (PreparedStatement update = con.prepareStatement(
+            resultatordre)) {
+            update.setString(1, nouveauINE);
+            if (o=true){
+             update.setInt(i++, nouvelleOffre);   
+            }
+            update.setDate(i++, (java.sql.Date) nouvelledate);
+            update.setInt(i++, idCandidature);
+            update.executeUpdate();
+        }
+    }
+    
     public static Partenaire selectInConsole(Connection con) throws SQLException {
         return ListUtils.selectOne("choisissez un partenaire :",
                 tousLesPartaires(con), (elem) -> elem.getRefPartenaire());

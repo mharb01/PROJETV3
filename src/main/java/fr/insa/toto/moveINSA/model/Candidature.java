@@ -155,7 +155,7 @@ public class Candidature {
                 toutesLesCandidatures(con), (Candidature c) -> "ID: " + c.getIdCandidature() + ", INE: " + c.getINE() + ", Offre mobilite :" + c.getIdOffreMobilite() + ", Date : " + c.getDate());
     }
 
-    //public void updateInConsole(Connection con) throws SQLException{
+
     public static void updateInConsole(Connection con) throws SQLException{
         String nouveauINE = ConsoleFdB.entreeString("INE du nouveau candidat (laisser vide si vous souhaitez conserver l'ancien):");
         int nouvelleOffre = ConsoleFdB.entreeInt("Identifiant de la nouvelle offre (0 pour garder l'ancien):");
@@ -171,7 +171,7 @@ public class Candidature {
             first = false;  // La première colonne a été ajoutée
             i=1;
         }
-        if (0==nouvelleOffre) {
+        if (0!=nouvelleOffre) {
             if (first=false){
                 ordresql.append(", ");
                 o = true;
