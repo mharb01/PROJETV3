@@ -24,27 +24,75 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import java.util.List;
+import com.vaadin.flow.component.button.Button; 
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 
+
+import fr.insa.toto.moveINSA.gui.session.SessionInfo;
 @PageTitle("MoveINSA")
 @Route(value = "", layout = MainLayout.class)
 public class VuePrincipale extends VerticalLayout {
 
-    public VuePrincipale() {
-        this.add(new H3("Petit programme pour démarrer le projet M3 2024"));
+    public VuePrincipale () {
+        this.setWidthFull();
+        this.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        this.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+
+        this.add(new H3("Mov'INSA: l'application de l'avenir"));
         List<Paragraph> attention = List.of(
-                new Paragraph("Attention : la base de donnée utilisée par défaut "
-                        + "est créée en mémoire."),
-                new Paragraph("Vous devez la réinitialiser après chaque démarrage."
-                        + "Pour cela, allez dans le menu debug;RAZ BdD et cliquez sur le bouton"),
-                new Paragraph("Dans cette version, les connexions à la base de donnée sont gérées par un pool de connexion"),
-                new Paragraph("Pour utiliser une autre base de donnée, vous devez modifier la classe "
-                        + "fr.insa.beuvron.vaadin.utils.ConnectionPool"),
-                new Paragraph("Si vous utilisez le serveur MySQL fourni pour M3, "
-                        + "il vous suffit de commenter la def pour H2 et de dé-commenter "
-                        + "la def pour le serveur mysql de M3. Pensez évidemment à modifier pour donner VOS login/pass")
+                new Paragraph("Veuillez vous identifier")
         );
-        attention.get(0).getStyle().set("color", "red");
+        attention.get(0).getStyle().set("color", "grey");
         attention.forEach((p) -> this.add(p));
 
+        Image etudiant = new Image("https://cdn.icon-icons.com/icons2/1861/PNG/512/student3_118124.png", "Etudiant");
+        etudiant.setWidth("100px");
+        etudiant.setHeight("100px");
+        
+        Button etudiantButton = new Button (etudiant);
+        etudiantButton.setWidthFull();
+        etudiantButton.setHeight("100px");
+        etudiantButton.setText("Je suis Etudiant"); 
+        etudiantButton.addClickListener(event -> { choisirRole("Etudiant");});
+        
+        Image partenaire = new Image("https://cdn-icons-png.flaticon.com/512/167/167707.png", "Partenaire");
+        partenaire.setWidth("100px");
+        partenaire.setHeight("100px");
+        Button partenaireButton = new Button (partenaire); 
+        partenaireButton.setWidthFull();
+        partenaireButton.setHeight("100px");
+        partenaireButton.setText("Je suis Partenaire");
+        partenaireButton.addClickListener(event -> { choisirRole("Partenaire");});
+        
+       Image SRI = new Image("https://cdn-icons-png.flaticon.com/512/1794/1794733.png", "SRI");
+       SRI.setWidth("100px");
+       SRI.setHeight("100px");
+       Button SRIButton = new Button (SRI);
+       SRIButton.setWidthFull();
+       SRIButton.setHeight("100px");
+       SRIButton.setText("Système informatique");        
+       SRIButton.addClickListener(event -> { choisirRole("SRI");});
+        
+        VerticalLayout buttonLayout = new VerticalLayout (etudiantButton, partenaireButton, SRIButton);
+        buttonLayout.setSpacing(true);
+        this.add(buttonLayout);
     }
-}
+    
+    private void choisirRole(String role) {
+        SessionInfo sessionInfo = SessionInfo.getOrCreateCurSessionInfo();
+        sessionInfo.setUserRole(role);
+        
+        switch (role) {
+            case "Etudiant" -> this.getUI().ifPresent(ui ->ui.navigate("etudiant/vue"));
+            case "Partenaire" -> this.getUI().ifPresent(ui ->ui.navigate("partenaire/vue"));
+            case "SRI" -> this.getUI().ifPresent(ui ->ui.navigate("SRI/vue"));
+            default -> 
+                this.add(new Paragraph("Erreur : Role inconnu"));
+               
+                }
+        }
+        
+    }
+    
+
