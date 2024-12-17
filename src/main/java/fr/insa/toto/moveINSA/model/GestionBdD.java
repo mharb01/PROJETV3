@@ -389,9 +389,9 @@ public class GestionBdD {
             System.out.println((i++) + ") Liste de tous les étudiants");
             System.out.println((i++) + ") Créer un nouvel étudiant");
             System.out.println((i++) + ") Modifier le profil d'un étudiant");
-//            System.out.println((i++) + ") Supprimer le profil d'un étudiant");
+            System.out.println((i++) + ") Supprimer le profil d'un étudiant");
             System.out.println((i++) + ") Supprimer tous les profils des étudiants");
-            System.out.println((i++) + ") Rechercher un étudiant"); //rechercher puis modifier ?
+            System.out.println((i++) + ") Rechercher un ou plusieurs étudiants"); //rechercher puis modifier ?
             System.out.println("0) Retour");
             rep = ConsoleFdB.entreeEntier("Votre choix : ");
             try {
@@ -410,13 +410,38 @@ public class GestionBdD {
                 }else if (rep == j++) {
                     Etudiant.supprallConsole(con);
                 }else if (rep == j++) {
-                    Etudiant.rechercher(con);
+                    int rep1 = -1;
+                    int k = 1;
+                    while (rep1 != 0) { 
+                    System.out.println((k++) + ") Rechercher via INE"); 
+                    System.out.println((k++) + ") Rechercher via classe");
+                    System.out.println("0) Retour");
+                    rep1 = ConsoleFdB.entreeEntier("Votre choix : ");
+                    try {
+                        int l = 1;
+                        k = 1;
+                        if (rep1 == l++) {
+                            
+                    List<Etudiant> users = Etudiant.rechercherINE(con);
+                    System.out.println(users.size() + " Etudiants : ");
+                    System.out.println(ListUtils.enumerateList(users, (elem) -> elem.toString()));
+                        
+                        } else if (rep1 == l++) {
+                    List<Etudiant> users = Etudiant.rechercherClasse(con);
+                    System.out.println(users.size() + " Etudiants : ");
+                    System.out.println(ListUtils.enumerateList(users, (elem) -> elem.toString()));
+                        }
+                } catch (Exception ex) {
+                System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
+            }
+                    }
                 }
             } catch (Exception ex) {
                 System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
             }
         }
     }
+       
     //à enlever
     public static void menuCandidatureEtudiant(Connection con) {
         try {
