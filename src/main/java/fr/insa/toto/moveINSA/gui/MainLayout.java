@@ -51,10 +51,10 @@ public class MainLayout extends AppLayout implements BeforeEnterObserver {
 //        Scroller scroller = new Scroller(pourScroll);
 //        scroller.setScrollDirection(Scroller.ScrollDirection.VERTICAL);
 //        scroller.setHeightFull();
-//        this.addToDrawer(this.menuGauche);
+        this.addToDrawer(this.menuGauche);
         DrawerToggle toggle = new DrawerToggle();
-//        this.addToNavbar(toggle,new EnteteInitiale());
-        this.addToNavbar(new EnteteInitiale());
+        this.addToNavbar(toggle,new EnteteInitiale());
+//        this.addToNavbar(new EnteteInitiale());
     }
     
 

@@ -30,6 +30,8 @@ import fr.insa.toto.moveINSA.gui.vues.NouveauPartenairePanel;
 import fr.insa.toto.moveINSA.gui.vues.NouvelleOffrePanel;
 import fr.insa.toto.moveINSA.gui.vues.OffresPanel;
 import fr.insa.toto.moveINSA.gui.vues.PartenairesPanel;
+import fr.insa.toto.moveINSA.gui.vues.EtudiantPanel;
+import fr.insa.toto.moveINSA.gui.vues.NouveauEtudiantPanel;
 import fr.insa.toto.moveINSA.gui.vues.RAZBdDPanel;
 import fr.insa.toto.moveINSA.gui.vues.TestDriverPanel;
 
@@ -47,6 +49,9 @@ import fr.insa.toto.moveINSA.gui.vues.TestDriverPanel;
         SideNavItem offres = new SideNavItem("offres");
         offres.addItem(new SideNavItem("liste", OffresPanel.class));
         offres.addItem(new SideNavItem("nouvelle", NouvelleOffrePanel.class));
+        SideNavItem etudiant = new SideNavItem("etudiant");
+        etudiant.addItem(new SideNavItem("liste", EtudiantPanel.class));
+        etudiant.addItem(new SideNavItem("nouveau", NouveauEtudiantPanel.class));       
         SideNavItem debug = new SideNavItem("debug");
         debug.addItem(new SideNavItem("test driver", TestDriverPanel.class));
         debug.addItem(new SideNavItem("raz BdD", RAZBdDPanel.class));
@@ -56,7 +61,7 @@ import fr.insa.toto.moveINSA.gui.vues.TestDriverPanel;
         SideNavItem jeux = new SideNavItem("jeux");
         jeux.addItem(new SideNavItem("boite à coucou", BoiteACoucou.class));
         jeux.addItem(new SideNavItem("trouve", TrouveEntier.class));
-       this.addItem(main,partenaires,offres,jeux,debug);
+       this.addItem(main,etudiant,partenaires,offres,jeux,debug);
     }
 }
 

@@ -52,6 +52,7 @@ public class NouveauPartenairePanel extends VerticalLayout{
             try (Connection con = ConnectionPool.getConnection()) {
                 this.fPartenaire.updateModel();
                  this.nouveau.saveInDB(con);
+                 Notification.show("Nouveau Partenaire enregistré !");
             } catch (SQLException ex) {
                 System.out.println("Probleme : " + ex.getLocalizedMessage());
                 Notification.show("Probleme : " + ex.getLocalizedMessage());

@@ -16,13 +16,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.insa.toto.moveINSA.gui.vueetudiant;
+package fr.insa.toto.moveINSA.gui;
 
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import fr.insa.toto.moveINSA.gui.EnteteInitiale;
+import fr.insa.toto.moveINSA.gui.vueetudiant.MenuGaucheEt;
 
 /**
  *

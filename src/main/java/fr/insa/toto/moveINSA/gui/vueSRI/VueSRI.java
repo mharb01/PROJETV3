@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
 package fr.insa.toto.moveINSA.gui.vueSRI;
+import fr.insa.toto.moveINSA.gui.MainLayoutSRI;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -29,7 +30,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import fr.insa.toto.moveINSA.gui.MainLayout;
 
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import fr.insa.toto.moveINSA.gui.vueetudiant.MainLayoutEt;
+import fr.insa.toto.moveINSA.gui.MainLayoutEt;
 
 /**
  *
@@ -51,7 +52,7 @@ public class VueSRI extends VerticalLayout {
        add(SRI);
        
     this.add(new H3("Mov'INSA: l'application de l'avenir"));
-    this.add(new H3("Bienvenu cher étudiant !"));
+    this.add(new H3("Bienvenu !"));
     this.add(new H3("Que voulez vous faire ?"));
     }
 }

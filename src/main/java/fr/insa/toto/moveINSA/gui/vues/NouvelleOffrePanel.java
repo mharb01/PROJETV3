@@ -64,7 +64,7 @@ public class NouvelleOffrePanel extends VerticalLayout {
                     OffreMobilite nouvelle = new OffreMobilite(places, partId, classe);
                     try (Connection con = ConnectionPool.getConnection()) {
                         nouvelle.saveInDB(con);
-                        Notification.show("Nouvelle offre enregistrée");
+                        Notification.show("Nouvelle offre enregistrée !");
                     } catch (SQLException ex) {
                         Notification.show("Probleme interne : " + ex.getLocalizedMessage());
                     }
