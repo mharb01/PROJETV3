@@ -87,7 +87,7 @@ public class Etudiant {
             throw new fr.insa.toto.moveINSA.model.EntiteDejaSauvegardee();
         }
         try (PreparedStatement insert = con.prepareStatement(
-                "insert into etudiant (ine,nom,classe, classement,idco,mdp) values (?,?,?,?,?,?)",
+                "insert into etudiant (ine,nom,classe, classement, idcoEtudiant, mdpEtudiant) values (?,?,?,?,?,?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
             insert.setString(1, this.ine);
             insert.setString(2, this.nom);
@@ -106,7 +106,7 @@ public class Etudiant {
 
     public static List<Etudiant> tousLesEtudiants(Connection con) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-                "select ine,nom,classe,classement,idco,mdp from etudiant")) {
+                "select ine,nom,classe,classement,idcoEtudiant,mdpEtudiant from etudiant")) {
             ResultSet rs = pst.executeQuery();
             List<Etudiant> res = new ArrayList<>();
             while (rs.next()) {
@@ -130,11 +130,8 @@ public class Etudiant {
     /**
      * @return the id
      */
-    public int getId() {
-        return idEtudiant;
-    }
 
-    public int getIdEtudiant() {
+    public int getId() {
         return idEtudiant;
     }
 
@@ -161,7 +158,34 @@ public class Etudiant {
     public String getMdpEtudiant() {
         return mdpEtudiant;
     }
-    
+
+    public void setIdEtudiant(int idEtudiant) {
+        this.idEtudiant = idEtudiant;
+    }
+
+    public void setIne(String ine) {
+        this.ine = ine;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public void setClasse(String classe) {
+        this.classe = classe;
+    }
+
+    public void setClassement(int classement) {
+        this.classement = classement;
+    }
+
+    public void setIdcoEtudiant(String idcoEtudiant) {
+        this.idcoEtudiant = idcoEtudiant;
+    }
+
+    public void setMdpEtudiant(String mdpEtudiant) {
+        this.mdpEtudiant = mdpEtudiant;
+    }
     
     
     public static void modifConsoleparSRI(Connection con) throws SQLException {
@@ -273,5 +297,38 @@ public class Etudiant {
                  update.executeUpdate();       
                  }
         System.out.println("Tous les etudiants ont ete supprimés avec succès !");
+    }
+          
+          
+          
+          public static List<Etudiant> rechercherINE(Connection con) throws SQLException {
+        try (PreparedStatement pst = con.prepareStatement(
+            "select ine,nom,classe,classement,idcoEtudiant,mdpEtudiant from etudiant where ine = ? ")) {
+            String ine = ConsoleFdB.entreeString("INE: ");
+        pst.setString(1, ine);
+        ResultSet rs = pst.executeQuery();
+            List<Etudiant> res = new ArrayList<>();
+            while (rs.next()) {
+                res.add(new Etudiant(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6)));
+            }
+            System.out.println("Voici l'étudiant recherché: ");
+            return res;
+    }   
+    }
+
+
+      public static List<Etudiant> rechercherClasse(Connection con) throws SQLException {
+        try (PreparedStatement pst = con.prepareStatement(
+            "select ine,nom,classe,classement,idcoEtudiant,mdpEtudiant from etudiant where classe = ? ")) {
+        String classe = ConsoleFdB.entreeString("Classe: ");
+        pst.setString(1, classe);
+        ResultSet rs = pst.executeQuery();
+            List<Etudiant> res = new ArrayList<>();
+            while (rs.next()) {
+                res.add(new Etudiant(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6)));
+            }
+            System.out.println("Voici l'étudiant recherché: ");
+            return res;
+    }   
     }
 }
