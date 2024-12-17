@@ -140,14 +140,71 @@ public class Candidature {
         }
     }
 
-    public static int creeConsole(Connection con) throws SQLException {
-        String nouveauINE = ConsoleFdB.entreeString("Entrez l'INE de l'etudiant : ");
-        String nouvelleOffre = ConsoleFdB.entreeString("Entrez l'ID de l'offre de mobilite :");
-        LocalDate dateNow=LocalDate.now();
-        Date dateCandidature;
-        dateCandidature = java.sql.Date.valueOf(dateNow);
-        Candidature nouveau = new Candidature(nouveauINE,Integer.parseInt(nouvelleOffre),dateCandidature);
-        return nouveau.saveInDB(con);
+    public static OffreMobilite getOffre(Connection con, int idOffre) throws SQLException{
+        String rech = "SELECT * FROM offremobilite WHERE id = ?";
+        try(PreparedStatement pst = con.prepareStatement(rech)){
+            pst.setInt(1, idOffre);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("id");
+                    int nbr = rs.getInt("nbrplaces");
+                    String classe = rs.getString("classe");
+                    int proposepar = rs.getInt("proposepar");
+                    
+                    return new OffreMobilite(id, nbr, proposepar, classe);
+                }
+            }     
+        }
+        return null;
+    }
+    
+    public static Boolean controleCandidature(Connection con, String ine, int idOffre) throws SQLException {
+    String rechEtudiant = "SELECT classe FROM etudiant WHERE ine = ?";
+    String rechOffre = "SELECT classeRequise FROM offremobilite WHERE id = ?";
+    
+    String classeEtudiant = null;
+    String classeOffre = null;
+
+    try (PreparedStatement pstEtudiant = con.prepareStatement(rechEtudiant)) {
+        pstEtudiant.setString(1, ine);
+        try (ResultSet rsEtudiant = pstEtudiant.executeQuery()) {
+            rsEtudiant.next(); 
+            classeEtudiant = rsEtudiant.getString("classe");
+        }
+    }
+
+    try (PreparedStatement pstOffre = con.prepareStatement(rechOffre)) {
+        pstOffre.setInt(1, idOffre);
+        try (ResultSet rsOffre = pstOffre.executeQuery()) {
+            rsOffre.next(); 
+            classeOffre = rsOffre.getString("classeRequise");
+        }
+    }
+    return classeEtudiant.equals(classeOffre);
+}
+
+    
+    public static int creeConsole(Connection con, Etudiant etudiant) throws SQLException {
+        String ine = etudiant.getIne();
+        OffreMobilite offre;        
+        
+        System.out.println("A quelle offre souhaitez-vous candidater?");
+        List<OffreMobilite> users = OffreMobilite.toutesLesOffres(con);
+        System.out.println(users.size() + " offres : ");
+        System.out.println(ListUtils.enumerateList(users, (elem) -> elem.toString()));
+        int idOffre = ConsoleFdB.entreeEntier("Saisir l'id de l'offre voulue: ");
+        offre = getOffre(con, idOffre);
+        
+        if (controleCandidature(con, ine, offre.getId()) == true){
+            LocalDate dateNow = LocalDate.now();
+            Date dateCandidature;
+            dateCandidature = java.sql.Date.valueOf(dateNow);
+            Candidature nouveau = new Candidature(ine,offre.getId(),dateCandidature);
+            return nouveau.saveInDB(con);
+        } else {
+            System.out.println("Vous ne pouvez pas candidater à cette offre: vous n'etes pas dans la bonne classe");
+            return -1;
+        }
     }
 
     public static Candidature selectInConsole(Connection con) throws SQLException {
