@@ -135,13 +135,13 @@ public class GestionBdD {
             }
             try {
                 st.executeUpdate(
-                        "alter table offremobilite drop constraint fk_offremobilite_id");
+                        "alter table candidature drop constraint fk_offremobilite_id");
             } catch (SQLException ex) {
                 // nothing to do : maybe the constraint was not created
             }
             try {
                 st.executeUpdate(
-                        "alter table offremobilite drop constraint fk_etudiant_ine");
+                        "alter table candidature drop constraint fk_etudiant_ine");
             } catch (SQLException ex) {
                 // nothing to do : maybe the constraint was not created
             }
@@ -181,13 +181,16 @@ public class GestionBdD {
                 new Partenaire("MIT", "USA","MIT","provisoire"),
                 new Partenaire("Oxford", "Angleterre","Oxford","provisoire")
         );
+        for (var p : partenaires) {
+            p.saveInDB(con);
+        }
         List<Etudiant> etudiants;
         etudiants = List.of(
                 new Etudiant("A0000000001", "Yassine","GT2E2",32,"yassine01","provisoire1"),
                 new Etudiant("A0000000002", "Toto","GM4",52,"toto01","provisoire2")
         );
-        for (var p : partenaires) {
-            p.saveInDB(con);
+        for (var e : etudiants) {
+            e.saveInDB(con);
         }
         List<OffreMobilite> offres = List.of(
                 new OffreMobilite(1, partenaires.get(0).getId(), "GT2E2"),
@@ -198,8 +201,8 @@ public class GestionBdD {
             o.saveInDB(con);
         }
         List<SRI> SRI = List.of(
-                new SRI(1, "coInfo1", "Info1", "mdp1"),
-                new SRI(2, "coInfo2", "info2", "mdp2")
+                new SRI("SRI1", "SRI1", "mdp1"),
+                new SRI("SRI2", "SRI2", "mdp2")
         );
         for (var s : SRI) {
             s.saveInDB(con);
