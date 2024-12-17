@@ -70,7 +70,7 @@ public class GestionBdD {
                     + " classe varchar(50) not null,\n "
                     + " classement int not null unique,\n "
                     + " idcoEtudiant varchar(50) not null unique,\n "        
-                    + " mdpSRI varchar(50) not null unique\n"
+                    + " mdpEtudiant varchar(50) not null unique\n"
                     + ")");
             st.executeUpdate(
                     "create table candidature ( \n"
@@ -130,6 +130,18 @@ public class GestionBdD {
             try {
                 st.executeUpdate(
                         "alter table offremobilite drop constraint fk_offremobilite_proposepar");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the constraint was not created
+            }
+            try {
+                st.executeUpdate(
+                        "alter table offremobilite drop constraint fk_offremobilite_id");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the constraint was not created
+            }
+            try {
+                st.executeUpdate(
+                        "alter table offremobilite drop constraint fk_etudiant_ine");
             } catch (SQLException ex) {
                 // nothing to do : maybe the constraint was not created
             }
