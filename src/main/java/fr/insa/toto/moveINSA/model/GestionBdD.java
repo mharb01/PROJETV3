@@ -301,7 +301,7 @@ public class GestionBdD {
         }
     }
     
-    public static void menuOffreEtudiant (Connection con) {
+    public static void menuOffreEtudiant (Connection con, Etudiant etudiant) {
         int rep = -1;
         int i = 1;
         while (rep != 0) {
@@ -349,11 +349,8 @@ public class GestionBdD {
                     System.out.println(ListUtils.enumerateList(users, (elem) -> elem.toString()));
                         }
                         else if (rep1 == l++) {
-                    System.out.println("Choisissez l'offre à laquelle vous souhaitez candidater");
-                    Candidature.selectInConsole(con);
-                    //aller chercher les infos sur les classes
-                    //if () vérifier les classes
-                    Candidature.creeConsole(con); //à voir si modifie pour automatiser avec les paramètres
+                    Candidature candidature;
+                    candidature.creeConsole(con, etudiant);
                         }
                     
                 } catch (Exception ex) {
@@ -704,7 +701,7 @@ public class GestionBdD {
                 if (rep == j++) {
                     menuProfilEtudiant(con, etudiant); //faire menuProfil commun ?
                 } else if (rep == j++) {
-                    menuOffreEtudiant(con);
+                    menuOffreEtudiant(con, etudiant);
                 } else if (rep == j++) {
                     menuCandidatureEtudiant(con);
                 } //else if (rep == j++) {
