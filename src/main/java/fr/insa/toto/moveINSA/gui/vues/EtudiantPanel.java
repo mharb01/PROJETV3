@@ -42,8 +42,9 @@ import java.util.logging.Logger;
 @PageTitle("MoveINSA")
 @Route(value = "SRI/vue/etudiant/liste", layout = MainLayoutSRI.class)
 public class EtudiantPanel extends VerticalLayout {
-    
+    private EtudiantGrid etudiantGrid;
     public EtudiantPanel() {
+
              Image liste = new Image("https://cdn-icons-png.flaticon.com/512/1472/1472457.png", "Voir tout");
              liste.setWidth("100px");
              liste.setHeight("100px");
@@ -53,7 +54,11 @@ public class EtudiantPanel extends VerticalLayout {
              etudiantListe.setText("Voir tous les étudiants"); 
              etudiantListe.addClickListener(event -> 
              {  try (Connection con = ConnectionPool.getConnection()) {                 
-                 this.add(new EtudiantGrid(Etudiant.tousLesEtudiants(con)));
+                 if (etudiantGrid != null) {
+                this.removeAll();  }  //Efface la liste précédente 
+                this.add(new H3("Tous les étudiants"));
+                 etudiantGrid = new EtudiantGrid(Etudiant.tousLesEtudiants(con));
+                 this.add(etudiantGrid);
                 } catch (SQLException ex) {
                     System.out.println("Probleme : " + ex.getLocalizedMessage());
                     Notification.show("Probleme : " + ex.getLocalizedMessage());

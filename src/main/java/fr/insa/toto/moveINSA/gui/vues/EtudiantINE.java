@@ -50,6 +50,7 @@ public class EtudiantINE extends VerticalLayout {
     
     private TextField tfIne = new TextField("INE");
     private Button bSave;
+    private EtudiantGrid etudiantGrid;
     
     @Autowired
     public EtudiantINE(){
@@ -58,7 +59,11 @@ public class EtudiantINE extends VerticalLayout {
     this.add(this.tfIne);
     this.bSave = new Button("Rechercher", (t) -> {
             try (Connection con = ConnectionPool.getConnection()) {
-                this.add(new EtudiantGrid(EtudiantINE.rechercherINE(con, this.tfIne.getValue())));
+                if (etudiantGrid != null) {
+                this.remove(etudiantGrid);  }  //Efface la liste précédente 
+                               
+                etudiantGrid = new EtudiantGrid(EtudiantINE.rechercherINE(con, this.tfIne.getValue()));
+                this.add(etudiantGrid);
             } catch (SQLException ex) {
                 System.out.println("Probleme : " + ex.getLocalizedMessage());
                 Notification.show("Probleme : " + ex.getLocalizedMessage());

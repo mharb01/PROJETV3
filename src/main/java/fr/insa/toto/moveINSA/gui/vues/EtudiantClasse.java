@@ -47,6 +47,8 @@ import org.springframework.stereotype.Component;
 public class EtudiantClasse extends VerticalLayout {
     private ChoixClasseCombo cbClasse;
     private Button bSave;
+    private String classe;
+    private EtudiantGrid etudiantGrid;
     
     @Autowired
     public EtudiantClasse(){
@@ -54,10 +56,16 @@ public class EtudiantClasse extends VerticalLayout {
        this.add(new H3("Recherche d'étudiant par Classe"));
     this.cbClasse = new ChoixClasseCombo();
     this.add(this.cbClasse);
-    String classe = this.cbClasse.getValue();
     this.bSave = new Button("Rechercher", (t) -> {
             try (Connection con = ConnectionPool.getConnection()) {
-                this.add(new EtudiantGrid(EtudiantClasse.rechercherClasse(con, classe)));
+                
+                this.classe = this.cbClasse.getValue();
+                
+                if (etudiantGrid != null) {
+                this.remove(etudiantGrid);  }  //Efface la liste précédente 
+               
+                etudiantGrid =new EtudiantGrid(EtudiantClasse.rechercherClasse(con, this.classe));
+                this.add(etudiantGrid);
             } catch (SQLException ex) {
                 System.out.println("Probleme : " + ex.getLocalizedMessage());
                 Notification.show("Probleme : " + ex.getLocalizedMessage());
