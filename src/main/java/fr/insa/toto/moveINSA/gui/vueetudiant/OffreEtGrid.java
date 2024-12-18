@@ -62,7 +62,7 @@ public class OffreEtGrid extends Grid <OffreMobilite> {
                 
                 // Boutons pour confirmer ou annuler
                 Button confirmButton = new Button("Oui", e -> {
-                    // Si l'utilisateur confirme, effectuer l'action souhaitée (par exemple, envoyer une notification)
+                    
                     Notification.show("Candidature envoyée pour l'offre : " + offre.getId() + " ! ");
                     dialog.close(); // Fermer le dialog
                 });
@@ -82,7 +82,7 @@ public class OffreEtGrid extends Grid <OffreMobilite> {
             });
 
             return candidaterButton;
-        }).setHeader("Actions");
+        }).setHeader("Action");
 
         // Définir les éléments de la grille
         this.setItems(offremobilite);

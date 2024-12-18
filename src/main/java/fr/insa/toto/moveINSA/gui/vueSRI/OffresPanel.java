@@ -18,9 +18,12 @@ along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
 package fr.insa.toto.moveINSA.gui.vueSRI;
 
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -34,6 +37,9 @@ import fr.insa.beuvron.vaadin.utils.dataGrid.ColumnDescription;
 import fr.insa.beuvron.vaadin.utils.dataGrid.GridDescription;
 import fr.insa.beuvron.vaadin.utils.dataGrid.ResultSetGrid;
 import fr.insa.toto.moveINSA.gui.MainLayoutSRI;
+import fr.insa.toto.moveINSA.gui.session.SessionInfo;
+import fr.insa.toto.moveINSA.gui.vueetudiant.OffreEtGrid;
+import fr.insa.toto.moveINSA.model.OffreMobilite;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -59,86 +65,116 @@ public class OffresPanel extends VerticalLayout {
             }
         }
     }
-
+    private OffreGrid offresGrid;
     private ResultSetGrid gOffres;
     private Button bPostule;
 
-    public OffresPanel() {
-        try (Connection con = ConnectionPool.getConnection()) {
-            this.add(new H2("Affichage de tables (ResultSet) quelconques à l'aide de ResultSetGrid"));
-            PreparedStatement offresAvecPart = con.prepareStatement(
-                    "select offremobilite.id as idOffre,partenaire.refPartenaire,offremobilite.nbrplaces,partenaire.id as idPartenaire, offremobilite.classe\n"
-                    + "  from offremobilite \n"
-                    + "    join partenaire on offremobilite.proposepar = partenaire.id");
-            this.add(new H3("affichage direct (sans mise en forme) du ResultSet"));
-            this.add(new ResultSetGrid(offresAvecPart));
-            this.gOffres = new ResultSetGrid(offresAvecPart, new GridDescription(List.of(
-                    new ColumnDescription().colData(0).visible(false), // on veut pouvoir accéder à l'id de l'offre mais non l'afficher
-                    new ColumnDescription().colData(1).headerString("Partenaire"),
-                    new ColumnDescription().colData(2).headerString("nbr places"),
-                    // pour montrer l'utilisation d'un composant dans une colonne
-                    new ColumnDescription().colDataCompo(2, (t) -> new IntAsIcon((Integer) t)).headerString("places"),
-                    // pour montrer une colonne calculée à partir de plusieurs colonnes de données
-                    // rappelez vous que le paramètre t de la lambda ci-dessous est de type List<Object>
-                    // on peut donc accéder à la valeur des colonnes simplement par un get
-                    // comme ici, on concatene, la méthode toString définie pour tout objet sera
-                    // appelée, et on n'a donc pas besoin de faire des "cast" en fonction du type réel des colonnes
-                    new ColumnDescription().colCalculatedObject((t) -> t.get(1) + "/" + t.get(3) + " : " + t.get(2)).headerString("resumé"),
-                    new ColumnDescription().colData(3).visible(false) // même chose pour l'id du partenaire
-            )));
-            this.add(new H3("la même table mais mise en forme"));
-            this.add(new Paragraph("le petit bouton \"Postuler\" n'est pas vraiment opérationel : "
-                    + "je n'ai même pas la notion d'étudiant dans ma base de donnée. Il est là pour que vous puissiez voir dans "
-                    + "le code qu'il est facile d'interagir avec une Grid pour par exemple récupérer la ligne sélectionnée. "
-                    + "Cela montre aussi l'utilité des colonnes non affichées"));
-            this.add(this.gOffres);
-            this.bPostule = new Button("Postuler");
-            this.bPostule.addClickListener((t) -> {
-                // comme la grille est générique, chaque ligne contient une List<Object> : un Object par colonne
-                // par défaut une grille est en mono-selection
-                // mais comme on peut fixer en multi-selection, on a potentiellement un ensemble d'item selectionnés
-                Set<List<Object>> lignesSelected = this.gOffres.getSelectedItems();
-                // dans notre cas 0 ou 1 item selectionné
-                if (lignesSelected.isEmpty()) {
-                    Notification.show("selectionnez une offre");
-                } else {
-                    List<Object> ligne = lignesSelected.iterator().next();
-                    // normalement, on ne montre pas les ID à l'utilisateur
-                    // ici c'est pour montrer que l'on a bien accès à la colonne 0 même si elle n'est pas visible
-                    Notification.show("vous postulez sur l'offre N° "+ligne.get(0) + " proposée par " + ligne.get(1));
+    public OffresPanel(){
+        
+        Image liste = new Image("https://cdn-icons-png.flaticon.com/512/1472/1472457.png", "Voir tout");
+             liste.setWidth("100px");
+             liste.setHeight("100px");
+             Button offreListe = new Button (liste);
+             offreListe.setWidthFull();
+             offreListe.setHeight("100px");
+             offreListe.setText("Voir toutes les offres");
+             offreListe.addClickListener(event -> 
+             {  try (Connection con = ConnectionPool.getConnection()) {                 
+                 if (offresGrid != null) {
+                this.removeAll();  }  //Efface la liste précédente 
+                this.add(new H3("Voici toutes les offres"));
+                 offresGrid = new OffreGrid(OffreMobilite.toutesLesOffres(con));
+                 this.add(offresGrid);
+                } catch (SQLException ex) {
+                    System.out.println("Probleme : " + ex.getLocalizedMessage());
+                    Notification.show("Probleme : " + ex.getLocalizedMessage());
                 }
+             });
+             
+             
+             
+        Image pays = new Image("https://i.pinimg.com/originals/e8/97/63/e8976376980363ea178ca2a5894ad68a.png", "Voir selon pays");
+             pays.setWidth("110px");
+             pays.setHeight("100px");
+             Button offrePays = new Button (pays);
+             offrePays.setWidthFull();
+             offrePays.setHeight("100px");
+             offrePays.setText("Voir les offres selon les pays");
+             offrePays.addClickListener(event -> { choisir("pays");});
+             
+             
+        Image part = new Image("https://cdn-icons-png.flaticon.com/512/167/167707.png", "Voir selon partenaire");
+             part.setWidth("100px");
+             part.setHeight("100px");
+             Button offrePart = new Button (part);
+             offrePart.setWidthFull();
+             offrePart.setHeight("100px");
+             offrePart.setText("Voir les offres selon le partenaire"); 
+             offrePart.addClickListener(event -> { choisir("part");});
+             
+             
+             
+        Image supp = new Image("https://icons.veryicon.com/png/o/education-technology/learning-to-bully-the-king/delete-351.png", "Voir selon partenaire");
+             supp.setWidth("100px");
+             supp.setHeight("100px");
+             Button supprimer = new Button (supp);
+             supprimer.setWidthFull();
+             supprimer.setHeight("100px");
+             supprimer.setText("Supprimer toutes les offres"); 
+             supprimer.addClickListener(event -> { // Créer le dialog
+                Dialog dialog = new Dialog();
+                dialog.setWidth("400px");  // Définir la largeur du dialog
+
+                // Ajouter un message de confirmation
+                VerticalLayout layout = new VerticalLayout();
+                layout.add(new H3("Attention"));
+                layout.add(new Text("Êtes-vous sûr de vouloir supprimer toutes les offres ?"));
+                
+                // Boutons pour confirmer ou annuler
+                Button confirmButton = new Button("Oui", e -> {
+                    
+                    try (Connection con = ConnectionPool.getConnection()) {
+                    OffreMobilite.suppALLConsole(con);
+                    Notification.show("Toutes les offres ont été supprimées avec succès ! ");
+                    dialog.close(); // Fermer le dialog
+                
+                    } catch (SQLException ex) {
+                System.out.println("Probleme : " + ex.getLocalizedMessage());
+                Notification.show("Probleme : " + ex.getLocalizedMessage());
+            }
+                    });
+                
+                Button cancelButton = new Button("Non", e -> {
+                    dialog.close(); // Fermer le dialog sans faire d'action
+                });
+
+                // Ajouter les boutons au layout
+                layout.add(confirmButton, cancelButton);
+
+                // Ajouter le layout au dialog
+                dialog.add(layout);
+
+                // Afficher le dialog
+                dialog.open();
             });
-            this.add(this.bPostule);
-            this.add(new H3("offres groupées par partenaires"));
-            PreparedStatement offresParPartenaire = con.prepareStatement(
-            "select partenaire.id,partenaire.refPartenaire,sum(offremobilite.nbrplaces) as placesPartenaire, ( \n"
-                    + "   select sum(nbrplaces) from offremobilite \n"
-                    + "  ) as totplaces \n"
-                    + "  from offremobilite \n"
-                    + "    join partenaire on offremobilite.proposepar = partenaire.id \n"
-                    + "  group by partenaire.id");
-            this.add(new ResultSetGrid(offresParPartenaire));
-            this.add(new H3("le même, mais avec mise en forme"));
-            ResultSetGrid parPart = new ResultSetGrid(offresParPartenaire, new GridDescription(List.of(
-                    new ColumnDescription().colData(0).visible(false), // on veut pouvoir accéder à l'id du partenaire mais non l'afficher
-                    new ColumnDescription().colData(1).headerString("partenaire"),
-                    new ColumnDescription().colData(2).headerString("total places offertes"),
-                    // calcul du pourcentage
-                    // Note : le type précis de donnée retourné par un opérateur sum n'est pas forcément un Integer
-                    // c'est pourquoi on n'utilise pas un simple cast : (Integer) t.get(2)
-                    // mais on passe plutôt par la forme textuelle : Integer.parseInt(""+t.get(2))
-                    new ColumnDescription().colCalculatedObject((t) -> {
-                        int nbrPart = Integer.parseInt(""+t.get(2));
-                        int nbrTot = Integer.parseInt(""+t.get(3));
-                        double percent = ((double) nbrPart) / nbrTot * 100;
-                        return String.format("%.0f%%", percent);
-                    }).headerString("pourcentage")
-            )));
-            this.add(parPart);
-        } catch (SQLException ex) {
-            System.out.println("Probleme : " + ex.getLocalizedMessage());
-            Notification.show("Probleme : " + ex.getLocalizedMessage());
-        }
+             
+             
+             VerticalLayout buttonLayout = new VerticalLayout (offreListe, offrePart, offrePays, supprimer);
+             buttonLayout.setSpacing(true);
+             this.add(buttonLayout);     
     }
 
+    private void choisir(String role) {
+        SessionInfo sessionInfo = SessionInfo.getOrCreateCurSessionInfo();
+        sessionInfo.setUserRole(role);
+        
+        switch (role) {
+            case "pays" -> this.getUI().ifPresent(ui ->ui.navigate("SRI/vue/offre/rechercher/pays"));
+            case "part" -> this.getUI().ifPresent(ui ->ui.navigate("SRI/vue/offre/rechercher/partenaire"));
+            default -> 
+                this.add(new Paragraph("Erreur : Role inconnu"));
+               
+                }
+        }
+    
 }

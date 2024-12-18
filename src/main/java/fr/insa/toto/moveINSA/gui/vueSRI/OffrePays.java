@@ -16,12 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.insa.toto.moveINSA.gui.vueetudiant;
-
-/**
- *
- * @author HP
- */
+package fr.insa.toto.moveINSA.gui.vueSRI;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H3;
@@ -32,11 +27,13 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.beuvron.utils.ConsoleFdB;
 import fr.insa.beuvron.vaadin.utils.ConnectionPool;
-import fr.insa.toto.moveINSA.gui.MainLayoutEt;
+import fr.insa.toto.moveINSA.gui.MainLayoutSRI;
 import fr.insa.toto.moveINSA.gui.vueSRI.EtudiantClasse;
 import fr.insa.toto.moveINSA.gui.vues.ChoixClasseCombo;
-import fr.insa.toto.moveINSA.gui.vueetudiant.OffreEtGrid;
+import fr.insa.toto.moveINSA.gui.vueSRI.OffreGrid;
 import fr.insa.toto.moveINSA.gui.vueSRI.PartenaireGrid;
+import fr.insa.toto.moveINSA.gui.vueetudiant.OffreEtGrid;
+import fr.insa.toto.moveINSA.gui.vueetudiant.OffreEtPays;
 import fr.insa.toto.moveINSA.model.OffreMobilite;
 import fr.insa.toto.moveINSA.model.Partenaire;
 import fr.insa.toto.moveINSA.gui.vues.ChoixPaysCombo;
@@ -48,20 +45,23 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+/**
+ *
+ * @author HP
+ */
 @PageTitle("MoveINSA")
-@Route(value = "etudiant/vue/offre/rechercher/pays", layout = MainLayoutEt.class)
+@Route(value = "SRI/vue/offre/rechercher/pays", layout = MainLayoutSRI.class)
 @Component
-public class OffreEtPays extends VerticalLayout {
+public class OffrePays extends VerticalLayout {
     private ChoixPaysCombo cpCombo;
     private Button bSave;
     private String pays;
-    private OffreEtGrid offreGrid;
-   
+    private OffreGrid offreGrid;
+    
     @Autowired
-    public OffreEtPays(){
+    public OffrePays() {
         
-        this.add(new H3("Recherche d'offres par pays"));
+      this.add(new H3("Recherche d'offres par pays"));
         
        this.cpCombo = new ChoixPaysCombo();
        this.add(this.cpCombo);
@@ -73,7 +73,7 @@ public class OffreEtPays extends VerticalLayout {
                 if (offreGrid != null) {
                 this.remove(offreGrid);  }  //Efface la liste précédente 
                
-                offreGrid =new OffreEtGrid(OffreEtPays.rechercherPays(con, this.pays));
+                offreGrid =new OffreGrid(OffrePays.rechercherPays(con, this.pays));
                 this.add(offreGrid);
             } catch (SQLException ex) {
                 System.out.println("Probleme : " + ex.getLocalizedMessage());
@@ -94,6 +94,6 @@ public class OffreEtPays extends VerticalLayout {
             }
             System.out.println("Voici les offres venant provenant du pays: " + pays);
             return res;
-    }   
+    }  
     }
 }

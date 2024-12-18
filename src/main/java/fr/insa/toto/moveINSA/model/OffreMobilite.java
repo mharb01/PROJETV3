@@ -259,6 +259,10 @@ public class OffreMobilite {
     public String getPartenaire() {
         return Integer.toString(proposePar); 
     }
+    public int getProposePar() {
+        return proposePar;
+    }
+    
     public static OffreMobilite selectInConsoleOffre(Connection con) throws SQLException {
         return ListUtils.selectOne("choisissez une offre :",
                 toutesLesOffres(con), (elem) -> elem.getPartenaire()); //a voir si compréhensible
