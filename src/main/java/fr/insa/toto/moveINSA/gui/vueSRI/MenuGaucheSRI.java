@@ -26,14 +26,8 @@ import fr.insa.toto.moveINSA.gui.jeu.TrouveEntier;
 import fr.insa.toto.moveINSA.gui.testDataGrid.TestDataGrid;
 import fr.insa.toto.moveINSA.gui.testDataGrid.TestGridDirect;
 import fr.insa.toto.moveINSA.gui.testDataGrid.TestResultSetGrid;
-import fr.insa.toto.moveINSA.gui.vues.NouveauPartenairePanel;
-import fr.insa.toto.moveINSA.gui.vues.NouvelleOffrePanel;
-import fr.insa.toto.moveINSA.gui.vues.OffresPanel;
-import fr.insa.toto.moveINSA.gui.vues.PartenairesPanel;
-import fr.insa.toto.moveINSA.gui.vues.EtudiantPanel;
-import fr.insa.toto.moveINSA.gui.vues.NouveauEtudiantPanel;
-import fr.insa.toto.moveINSA.gui.vues.RAZBdDPanel;
-import fr.insa.toto.moveINSA.gui.vues.TestDriverPanel;
+import fr.insa.toto.moveINSA.gui.RAZBdDPanel;
+import fr.insa.toto.moveINSA.gui.TestDriverPanel;
 
 /**
  *
@@ -42,16 +36,20 @@ import fr.insa.toto.moveINSA.gui.vues.TestDriverPanel;
    public class MenuGaucheSRI extends SideNav {
 
     public MenuGaucheSRI () {
-        SideNavItem main = new SideNavItem("main",VuePrincipale.class);
-        SideNavItem partenaires = new SideNavItem("partenaires");
+        SideNavItem main = new SideNavItem("Main",VuePrincipale.class);
+        SideNavItem partenaires = new SideNavItem("Partenaires");
         partenaires.addItem(new SideNavItem("liste", PartenairesPanel.class));
         partenaires.addItem(new SideNavItem("nouveau", NouveauPartenairePanel.class));
-        SideNavItem offres = new SideNavItem("offres");
+        SideNavItem offres = new SideNavItem("Offres");
         offres.addItem(new SideNavItem("liste", OffresPanel.class));
         offres.addItem(new SideNavItem("nouvelle", NouvelleOffrePanel.class));
-        SideNavItem etudiant = new SideNavItem("etudiant");
+        SideNavItem etudiant = new SideNavItem("Étudiant");
         etudiant.addItem(new SideNavItem("liste", EtudiantPanel.class));
-        etudiant.addItem(new SideNavItem("nouveau", NouveauEtudiantPanel.class));       
+        etudiant.addItem(new SideNavItem("nouveau", NouveauEtudiantPanel.class));   
+        SideNavItem candidatures = new SideNavItem("Candidatures");
+        
+//        candidatures.addItem(new SideNavItem("liste", CandidaturesPanel.class));
+        
         SideNavItem debug = new SideNavItem("debug");
         debug.addItem(new SideNavItem("test driver", TestDriverPanel.class));
         debug.addItem(new SideNavItem("raz BdD", RAZBdDPanel.class));
@@ -61,7 +59,7 @@ import fr.insa.toto.moveINSA.gui.vues.TestDriverPanel;
         SideNavItem jeux = new SideNavItem("jeux");
         jeux.addItem(new SideNavItem("boite à coucou", BoiteACoucou.class));
         jeux.addItem(new SideNavItem("trouve", TrouveEntier.class));
-       this.addItem(main,etudiant,partenaires,offres,jeux,debug);
+       this.addItem(main,etudiant,partenaires,offres,candidatures,jeux,debug);
     }
 }
 

@@ -349,8 +349,8 @@ public class GestionBdD {
                     System.out.println(ListUtils.enumerateList(users, (elem) -> elem.toString()));
                         }
                         else if (rep1 == l++) {
-                    Candidature candidature;
-                    candidature.creeConsole(con, etudiant);
+//                    Candidature candidature;
+//                    candidature.creeConsole(con, etudiant);
                         }
                     
                 } catch (Exception ex) {

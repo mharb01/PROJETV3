@@ -16,7 +16,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.insa.toto.moveINSA.gui.vues;
+package fr.insa.toto.moveINSA.gui.vueSRI;
+
+import fr.insa.toto.moveINSA.gui.vueSRI.EtudiantGrid;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
@@ -41,50 +43,49 @@ import org.springframework.stereotype.Component;
  *
  * @author HP
  */
+
 @PageTitle("MoveINSA")
-@Route(value = "SRI/vue/etudiant/rechercher/classe", layout = MainLayoutSRI.class)
+@Route(value = "SRI/vue/etudiant/rechercher/ine", layout = MainLayoutSRI.class)
 @Component
-public class EtudiantClasse extends VerticalLayout {
-    private ChoixClasseCombo cbClasse;
+public class EtudiantINE extends VerticalLayout {
+    
+    private TextField tfIne = new TextField("INE");
     private Button bSave;
-    private String classe;
     private EtudiantGrid etudiantGrid;
     
     @Autowired
-    public EtudiantClasse(){
+    public EtudiantINE(){
         
-       this.add(new H3("Recherche d'étudiant par Classe"));
-    this.cbClasse = new ChoixClasseCombo();
-    this.add(this.cbClasse);
+    this.add(new H3("Recherche d'étudiant par INE"));
+    this.add(this.tfIne);
     this.bSave = new Button("Rechercher", (t) -> {
             try (Connection con = ConnectionPool.getConnection()) {
-                
-                this.classe = this.cbClasse.getValue();
-                
                 if (etudiantGrid != null) {
                 this.remove(etudiantGrid);  }  //Efface la liste précédente 
-               
-                etudiantGrid =new EtudiantGrid(EtudiantClasse.rechercherClasse(con, this.classe));
+                               
+                etudiantGrid = new EtudiantGrid(EtudiantINE.rechercherINE(con, this.tfIne.getValue()));
                 this.add(etudiantGrid);
             } catch (SQLException ex) {
                 System.out.println("Probleme : " + ex.getLocalizedMessage());
                 Notification.show("Probleme : " + ex.getLocalizedMessage());
             }
         });
-        this.add(this.bSave); 
+        this.add(this.bSave);
     }
     
-    public static List<Etudiant> rechercherClasse(Connection con, String classe) throws SQLException {
+    public static List<Etudiant> rechercherINE(Connection con, String INE) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-            "select ine,nom,classe,classement,idcoEtudiant,mdpEtudiant from etudiant where classe = ? ")) {
-        pst.setString(1,classe);
+            "select ine,nom,classe,classement,idcoEtudiant,mdpEtudiant from etudiant where ine = ? ")) {
+        pst.setString(1,INE);
         ResultSet rs = pst.executeQuery();
             List<Etudiant> res = new ArrayList<>();
             while (rs.next()) {
                 res.add(new Etudiant(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6)));
             }
-            System.out.println("Voici les étudiants recherchés: ");
+            System.out.println("Voici l'étudiant recherché: ");
             return res;
     }   
     }
 }
+           
+    

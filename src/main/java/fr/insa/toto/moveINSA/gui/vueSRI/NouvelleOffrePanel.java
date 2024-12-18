@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.insa.toto.moveINSA.gui.vues;
+package fr.insa.toto.moveINSA.gui.vueSRI;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
@@ -26,6 +26,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import fr.insa.beuvron.vaadin.utils.ConnectionPool;
 import fr.insa.toto.moveINSA.gui.MainLayout;
+import fr.insa.toto.moveINSA.gui.MainLayout;
+import fr.insa.toto.moveINSA.gui.vues.ChoixPartenaireCombo;
 import fr.insa.toto.moveINSA.model.OffreMobilite;
 import fr.insa.toto.moveINSA.model.Partenaire;
 import java.sql.Connection;

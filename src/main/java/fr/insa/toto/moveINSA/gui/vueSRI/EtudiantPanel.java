@@ -16,8 +16,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.insa.toto.moveINSA.gui.vues;
+package fr.insa.toto.moveINSA.gui.vueSRI;
 
+import fr.insa.toto.moveINSA.gui.vueSRI.EtudiantGrid;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
@@ -83,8 +84,7 @@ public class EtudiantPanel extends VerticalLayout {
              etudiantClasse.setWidthFull();
              etudiantClasse.setHeight("100px");
              etudiantClasse.setText("Rechercher par Classe"); 
-             etudiantClasse.addClickListener(event -> 
-             { choisir("classe");});
+             etudiantClasse.addClickListener(event -> { choisir("classe");});
              
              VerticalLayout buttonLayout = new VerticalLayout (etudiantListe, etudiantINE, etudiantClasse);
              buttonLayout.setSpacing(true);

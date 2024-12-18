@@ -249,6 +249,10 @@ public class OffreMobilite {
         return id;
     }
     
+    public int getNbrPlaces() {
+        return nbrPlaces;
+    }
+    
     public String getClasse() {
         return classe;
     }

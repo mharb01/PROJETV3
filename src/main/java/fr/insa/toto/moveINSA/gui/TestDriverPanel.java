@@ -16,14 +16,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.insa.toto.moveINSA.gui.vues;
+package fr.insa.toto.moveINSA.gui;
 
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import fr.insa.beuvron.vaadin.utils.ConnectionPool;
-import fr.insa.toto.moveINSA.gui.MainLayout;
+import fr.insa.toto.moveINSA.gui.MainLayoutSRI;
 import fr.insa.toto.moveINSA.gui.session.SessionInfo;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -36,7 +36,7 @@ import java.sql.SQLException;
  *
  * @author francois
  */
-@Route(value = "debug/testDriver", layout = MainLayout.class)
+@Route(value = "debug/testDriver", layout = MainLayoutSRI.class)
 public class TestDriverPanel extends VerticalLayout {
 
     public TestDriverPanel() {

@@ -26,12 +26,12 @@ import fr.insa.toto.moveINSA.gui.jeu.TrouveEntier;
 import fr.insa.toto.moveINSA.gui.testDataGrid.TestDataGrid;
 import fr.insa.toto.moveINSA.gui.testDataGrid.TestGridDirect;
 import fr.insa.toto.moveINSA.gui.testDataGrid.TestResultSetGrid;
-import fr.insa.toto.moveINSA.gui.vues.NouveauPartenairePanel;
-import fr.insa.toto.moveINSA.gui.vues.NouvelleOffrePanel;
-import fr.insa.toto.moveINSA.gui.vues.OffresPanel;
-import fr.insa.toto.moveINSA.gui.vues.PartenairesPanel;
-import fr.insa.toto.moveINSA.gui.vues.RAZBdDPanel;
-import fr.insa.toto.moveINSA.gui.vues.TestDriverPanel;
+import fr.insa.toto.moveINSA.gui.vueSRI.NouveauPartenairePanel;
+import fr.insa.toto.moveINSA.gui.vueSRI.NouvelleOffrePanel;
+import fr.insa.toto.moveINSA.gui.vueetudiant.OffresEtPanel;
+import fr.insa.toto.moveINSA.gui.vueSRI.PartenairesPanel;
+import fr.insa.toto.moveINSA.gui.RAZBdDPanel;
+import fr.insa.toto.moveINSA.gui.TestDriverPanel;
 
 /**
  *
@@ -40,12 +40,13 @@ import fr.insa.toto.moveINSA.gui.vues.TestDriverPanel;
 public class MenuGaucheEt extends SideNav {
 
     public MenuGaucheEt() {
-        SideNavItem main = new SideNavItem("main",VuePrincipale.class);
-        SideNavItem partenaires = new SideNavItem("partenaires");
+        SideNavItem main = new SideNavItem("Menu Pricipal",VuePrincipale.class);
+        SideNavItem partenaires = new SideNavItem("Partenaires");
         partenaires.addItem(new SideNavItem("liste", PartenairesPanel.class));
-        SideNavItem offres = new SideNavItem("offres");
-        offres.addItem(new SideNavItem("liste", OffresPanel.class));
+        SideNavItem offres = new SideNavItem("Offres");
+        offres.addItem(new SideNavItem("liste", OffresEtPanel.class));
+        SideNavItem candidatures = new SideNavItem("Mes Candidatures");
 
-       this.addItem(main,partenaires,offres);
+       this.addItem(main,partenaires,offres, candidatures);
     }
 }

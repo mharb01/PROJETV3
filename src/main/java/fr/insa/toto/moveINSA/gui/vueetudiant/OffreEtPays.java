@@ -16,7 +16,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.insa.toto.moveINSA.gui.vues;
+package fr.insa.toto.moveINSA.gui.vueetudiant;
+
+/**
+ *
+ * @author HP
+ */
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H3;
@@ -27,8 +32,14 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.beuvron.utils.ConsoleFdB;
 import fr.insa.beuvron.vaadin.utils.ConnectionPool;
-import fr.insa.toto.moveINSA.gui.MainLayoutSRI;
-import fr.insa.toto.moveINSA.model.Etudiant;
+import fr.insa.toto.moveINSA.gui.MainLayoutEt;
+import fr.insa.toto.moveINSA.gui.vueSRI.EtudiantClasse;
+import fr.insa.toto.moveINSA.gui.vues.ChoixClasseCombo;
+import fr.insa.toto.moveINSA.gui.vueetudiant.OffreEtGrid;
+import fr.insa.toto.moveINSA.gui.vueSRI.PartenaireGrid;
+import fr.insa.toto.moveINSA.model.OffreMobilite;
+import fr.insa.toto.moveINSA.model.Partenaire;
+import fr.insa.toto.moveINSA.gui.vues.ChoixPaysCombo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,53 +49,52 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- *
- * @author HP
- */
-
 @PageTitle("MoveINSA")
-@Route(value = "SRI/vue/etudiant/rechercher/ine", layout = MainLayoutSRI.class)
+@Route(value = "etudiant/vue/offre/rechercher/pays", layout = MainLayoutEt.class)
 @Component
-public class EtudiantINE extends VerticalLayout {
-    
-    private TextField tfIne = new TextField("INE");
+public class OffreEtPays extends VerticalLayout {
+    private ChoixPaysCombo cpCombo;
     private Button bSave;
-    private EtudiantGrid etudiantGrid;
-    
+    private String pays;
+    private OffreEtGrid offreGrid;
+   
     @Autowired
-    public EtudiantINE(){
+    
+    public OffreEtPays(){
         
-    this.add(new H3("Recherche d'étudiant par INE"));
-    this.add(this.tfIne);
-    this.bSave = new Button("Rechercher", (t) -> {
+        this.add(new H3("Recherche d'offres par pays"));
+        
+       this.cpCombo = new ChoixPaysCombo();
+       this.add(this.cpCombo);
+       this.bSave = new Button("Rechercher", (t) -> {
             try (Connection con = ConnectionPool.getConnection()) {
-                if (etudiantGrid != null) {
-                this.remove(etudiantGrid);  }  //Efface la liste précédente 
-                               
-                etudiantGrid = new EtudiantGrid(EtudiantINE.rechercherINE(con, this.tfIne.getValue()));
-                this.add(etudiantGrid);
+                
+                this.pays = this.cpCombo.getValue().getPays();
+                
+                if (offreGrid != null) {
+                this.remove(offreGrid);  }  //Efface la liste précédente 
+               
+                offreGrid =new OffreEtGrid(OffreEtPays.rechercherPays(con, this.pays));
+                this.add(offreGrid);
             } catch (SQLException ex) {
                 System.out.println("Probleme : " + ex.getLocalizedMessage());
                 Notification.show("Probleme : " + ex.getLocalizedMessage());
             }
         });
-        this.add(this.bSave);
+        this.add(this.bSave); 
     }
     
-    public static List<Etudiant> rechercherINE(Connection con, String INE) throws SQLException {
+    public static List<OffreMobilite> rechercherPays(Connection con, String pays) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-            "select ine,nom,classe,classement,idcoEtudiant,mdpEtudiant from etudiant where ine = ? ")) {
-        pst.setString(1,INE);
+            "select offremobilite.id, offremobilite.nbrplaces, offremobilite.proposepar, offremobilite.classe from offremobilite,partenaire where offremobilite.proposepar = partenaire.id and partenaire.pays = ?   ")) {
+        pst.setString(1,pays);
         ResultSet rs = pst.executeQuery();
-            List<Etudiant> res = new ArrayList<>();
+            List<OffreMobilite> res = new ArrayList<>();
             while (rs.next()) {
-                res.add(new Etudiant(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6)));
+                res.add(new OffreMobilite(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4)));
             }
-            System.out.println("Voici l'étudiant recherché: ");
+            System.out.println("Voici les offres venant provenant du pays: " + pays);
             return res;
     }   
     }
 }
-           
-    

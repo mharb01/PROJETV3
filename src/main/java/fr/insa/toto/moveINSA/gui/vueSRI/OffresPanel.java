@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.insa.toto.moveINSA.gui.vues;
+package fr.insa.toto.moveINSA.gui.vueSRI;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
@@ -33,7 +33,7 @@ import fr.insa.beuvron.vaadin.utils.ConnectionPool;
 import fr.insa.beuvron.vaadin.utils.dataGrid.ColumnDescription;
 import fr.insa.beuvron.vaadin.utils.dataGrid.GridDescription;
 import fr.insa.beuvron.vaadin.utils.dataGrid.ResultSetGrid;
-import fr.insa.toto.moveINSA.gui.MainLayout;
+import fr.insa.toto.moveINSA.gui.MainLayoutSRI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -45,7 +45,7 @@ import java.util.Set;
  * @author francois
  */
 @PageTitle("MoveINSA")
-@Route(value = "offres/liste", layout = MainLayout.class)
+@Route(value = "SRI/vue/offres/liste", layout = MainLayoutSRI.class)
 public class OffresPanel extends VerticalLayout {
 
     /**

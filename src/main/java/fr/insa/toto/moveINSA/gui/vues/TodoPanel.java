@@ -22,14 +22,14 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import fr.insa.toto.moveINSA.gui.MainLayout;
+import fr.insa.toto.moveINSA.gui.MainLayoutSRI;
 
 /**
  *
  * @author francois
  */
 @PageTitle("MoveINSA")
-@Route(value = "debug/todo", layout = MainLayout.class)
+@Route(value = "debug/todo", layout = MainLayoutSRI.class)
 public class TodoPanel extends VerticalLayout{
     
     public TodoPanel() {

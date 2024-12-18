@@ -18,6 +18,7 @@ along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
 package fr.insa.toto.moveINSA.gui.vuepartenaire;
 
+import fr.insa.toto.moveINSA.gui.MainLayoutPart;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;

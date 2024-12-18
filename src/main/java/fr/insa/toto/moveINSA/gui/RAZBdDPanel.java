@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.insa.toto.moveINSA.gui.vues;
+package fr.insa.toto.moveINSA.gui;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H3;
@@ -25,7 +25,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.beuvron.vaadin.utils.ConnectionPool;
-import fr.insa.toto.moveINSA.gui.MainLayout;
+import fr.insa.toto.moveINSA.gui.MainLayoutSRI;
 import fr.insa.toto.moveINSA.gui.session.SessionInfo;
 import fr.insa.toto.moveINSA.model.GestionBdD;
 import java.sql.Connection;
@@ -36,7 +36,7 @@ import java.sql.SQLException;
  * @author francois
  */
 @PageTitle("MoveINSA")
-@Route(value = "debug/RAZBDD", layout = MainLayout.class)
+@Route(value = "debug/RAZBDD", layout = MainLayoutSRI.class)
 public class RAZBdDPanel extends VerticalLayout {
 
     private Button bRAZ;
