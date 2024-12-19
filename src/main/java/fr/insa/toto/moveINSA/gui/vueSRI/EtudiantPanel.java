@@ -18,8 +18,10 @@ along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
 package fr.insa.toto.moveINSA.gui.vueSRI;
 
+import com.vaadin.flow.component.Text;
 import fr.insa.toto.moveINSA.gui.vueSRI.EtudiantGrid;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
@@ -73,9 +75,8 @@ public class EtudiantPanel extends VerticalLayout {
              etudiantINE.setWidthFull();
              etudiantINE.setHeight("100px");
              etudiantINE.setText("Rechercher par INE"); 
-             etudiantINE.addClickListener(event -> 
-             this.getUI().ifPresent(ui ->ui.navigate("SRI/vue/etudiant/rechercher/ine"))
-             );
+             etudiantINE.addClickListener(event -> { choisir("ine");});
+            
              
              Image classe = new Image("https://cdn-icons-png.flaticon.com/512/7092/7092289.png", "Voir Avec Classe");
              classe.setWidth("100px");
@@ -86,7 +87,52 @@ public class EtudiantPanel extends VerticalLayout {
              etudiantClasse.setText("Rechercher par Classe"); 
              etudiantClasse.addClickListener(event -> { choisir("classe");});
              
-             VerticalLayout buttonLayout = new VerticalLayout (etudiantListe, etudiantINE, etudiantClasse);
+             
+             Image supp = new Image("https://icons.veryicon.com/png/o/education-technology/learning-to-bully-the-king/delete-351.png", "Voir selon partenaire");
+             supp.setWidth("100px");
+             supp.setHeight("100px");
+             Button supprimer = new Button (supp);
+             supprimer.setWidthFull();
+             supprimer.setHeight("100px");
+             supprimer.setText("Supprimer toutes les profils"); 
+             supprimer.addClickListener(event -> { // Créer le dialog
+                Dialog dialog = new Dialog();
+                dialog.setWidth("400px");  // Définir la largeur du dialog
+
+                // Ajouter un message de confirmation
+                VerticalLayout layout = new VerticalLayout();
+                layout.add(new H3("Attention"));
+                layout.add(new Text("Êtes-vous sûr de vouloir supprimer tous les profils étudiants ?"));
+                
+                // Boutons pour confirmer ou annuler
+                Button confirmButton = new Button("Oui", e -> {
+                    
+                    try (Connection con = ConnectionPool.getConnection()) {
+                    Etudiant.supprallConsole(con);
+                    Notification.show("Toutes les profils étudiants ont été supprimées avec succès ! ");
+                    dialog.close(); // Fermer le dialog
+                
+                    } catch (SQLException ex) {
+                System.out.println("Probleme : " + ex.getLocalizedMessage());
+                Notification.show("Probleme : " + ex.getLocalizedMessage());
+            }
+                    });
+                
+                Button cancelButton = new Button("Non", e -> {
+                    dialog.close(); // Fermer le dialog sans faire d'action
+                });
+
+                // Ajouter les boutons au layout
+                layout.add(confirmButton, cancelButton);
+
+                // Ajouter le layout au dialog
+                dialog.add(layout);
+
+                // Afficher le dialog
+                dialog.open();
+            });
+             
+             VerticalLayout buttonLayout = new VerticalLayout (etudiantListe, etudiantINE, etudiantClasse, supprimer);
              buttonLayout.setSpacing(true);
              this.add(buttonLayout);
         }

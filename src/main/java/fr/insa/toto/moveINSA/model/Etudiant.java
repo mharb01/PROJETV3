@@ -35,7 +35,7 @@ import java.util.List;
  * @author lbsb
  */
 public class Etudiant {
-        private int idEtudiant;
+    private int idEtudiant;
     private String ine; // voir si fusionne ine et idetudiant
     private String nom ; // voir si besoin prénom
     private String classe ;
@@ -54,6 +54,13 @@ public class Etudiant {
 
     /**
      * création d'une Offre retrouvée dans la base de donnée.
+     * @param id
+     * @param ine
+     * @param nom
+     * @param classe
+     * @param classement
+     * @param mdp
+     * @param idco
      */
     public Etudiant(int id, String ine, String nom,String classe, int classement, String idco, String mdp) {
         this.idEtudiant = id;
@@ -106,11 +113,11 @@ public class Etudiant {
 
     public static List<Etudiant> tousLesEtudiants(Connection con) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-                "select ine,nom,classe,classement,idcoEtudiant,mdpEtudiant from etudiant")) {
+                "select idEtudiant, ine, nom, classe, classement, idcoEtudiant,mdpEtudiant from etudiant")) {
             ResultSet rs = pst.executeQuery();
             List<Etudiant> res = new ArrayList<>();
             while (rs.next()) {
-                res.add(new Etudiant(rs.getString(1), rs.getString(2), rs.getString(3),rs.getInt(4),rs.getString(5),rs.getString(6)));
+                res.add(new Etudiant(rs.getInt(1), rs.getString(2), rs.getString(3),rs.getString(4),rs.getInt(5),rs.getString(6), rs.getString(7)));
             }
             return res;
         }

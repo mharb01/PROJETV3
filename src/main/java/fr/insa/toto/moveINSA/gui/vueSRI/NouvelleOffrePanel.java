@@ -25,8 +25,7 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import fr.insa.beuvron.vaadin.utils.ConnectionPool;
-import fr.insa.toto.moveINSA.gui.MainLayout;
-import fr.insa.toto.moveINSA.gui.MainLayout;
+import fr.insa.toto.moveINSA.gui.MainLayoutSRI;
 import fr.insa.toto.moveINSA.gui.vues.ChoixPartenaireCombo;
 import fr.insa.toto.moveINSA.model.OffreMobilite;
 import fr.insa.toto.moveINSA.model.Partenaire;
@@ -39,7 +38,7 @@ import java.util.logging.Logger;
  *
  * @author francois
  */
-@Route(value = "offres/nouveau",layout= MainLayout.class)
+@Route(value = "offres/nouveau",layout= MainLayoutSRI.class)
 public class NouvelleOffrePanel extends VerticalLayout {
 
     private ChoixPartenaireCombo cbPartenaire;
@@ -51,7 +50,7 @@ public class NouvelleOffrePanel extends VerticalLayout {
         this.cbPartenaire = new ChoixPartenaireCombo();
         this.ifPlaces = new IntegerField("nombre de places");
         this.tfClasse = new TextField("classe cible");
-        this.bSave = new Button("Save");
+        this.bSave = new Button("Sauvegarder");
         this.bSave.addClickListener((t) -> {
             Partenaire selected = this.cbPartenaire.getValue();
             if (selected == null) {

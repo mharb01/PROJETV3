@@ -148,11 +148,11 @@ public class Partenaire implements Serializable{
 
     public static List<Partenaire> tousLesPartaires(Connection con) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-                "select id,refPartenaire, pays from partenaire")) {
+                "select id,refPartenaire, pays, idcoPartenaire, mdpPartenaire from partenaire")) {
             ResultSet rs = pst.executeQuery();
             List<Partenaire> res = new ArrayList<>();
             while (rs.next()) {
-                res.add(new Partenaire(rs.getInt(1), rs.getString(2), rs.getString(3)));
+                res.add(new Partenaire(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)));
             }
             return res;
         }
@@ -161,14 +161,13 @@ public class Partenaire implements Serializable{
     public static Optional<Partenaire> trouvePartaire(Connection con,
             String refPart, String pays) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-                "select id,refPartenaire,pays from partenaire"
+                "select id,refPartenaire,pays, idcoPartenaire, mdpPartenaire from partenaire"
                 + " where refPartenaire = ? and pays = ? ")) {
             pst.setString(1, refPart);
             pst.setString(2, pays);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
-                return Optional.of(new Partenaire(rs.getInt(1),
-                        rs.getString(2), rs.getString(3)));
+                return Optional.of(new Partenaire(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)));
             } else {
                 return Optional.empty();
             }
@@ -257,6 +256,15 @@ public class Partenaire implements Serializable{
                 tousLesPartaires(con), (elem) -> elem.getPays());
     }
     
+    
+    public static void suppALLConsole(Connection con) throws SQLException {
+        try (PreparedStatement update = con.prepareStatement(
+                "delete from partenaire")){
+                 update.executeUpdate();       
+                 }
+        System.out.println("Toutes les partenaires ont ete supprimes avec succes !");
+    }
+    
     /**
      * @return the refPartenaire
      */
@@ -285,7 +293,7 @@ public class Partenaire implements Serializable{
         return id;
     }
 public String getidco() {
-        return pays;
+        return idcoPartenaire;
     }
 
     public void setidco(String idco) {

@@ -58,9 +58,9 @@ public class OffreGrid extends Grid <OffreMobilite> {
                 this.addColumn(OffreMobilite::getClasse).setHeader("Classe cible").setSortable(true).setResizable(true);
                 // Ajouter une colonne pour le bouton "Candidater"
         this.addComponentColumn(offre -> {
-            Button candidaterButton = new Button("Modifier");
+            Button modifButton = new Button("Modifier");
 
-            candidaterButton.addClickListener(event -> {
+            modifButton.addClickListener(event -> {
                 // Créer le dialog
                 Dialog dialog = new Dialog();
                 dialog.setWidth("400px");  // Définir la largeur du dialog
@@ -113,18 +113,14 @@ public class OffreGrid extends Grid <OffreMobilite> {
                 dialog.open();
             });
 
-            return candidaterButton;
+            return modifButton;
         });
-        
-
-        // Définir les éléments de la grille
-        this.setItems(offremobilite);
         
         
         this.addComponentColumn(offre -> {
-            Button candidaterButton = new Button("Supprimer");
+            Button suppButton = new Button("Supprimer");
 
-            candidaterButton.addClickListener(event -> {
+            suppButton.addClickListener(event -> {
                 // Créer le dialog
                 Dialog dialog = new Dialog();
                 dialog.setWidth("400px");  // Définir la largeur du dialog
@@ -162,8 +158,11 @@ public class OffreGrid extends Grid <OffreMobilite> {
                 dialog.open();
             });
 
-            return candidaterButton;
+            return suppButton;
         });
+        
+        // Définir les éléments de la grille
+        this.setItems(offremobilite);
 }
    
    public static void supprimer(Connection con, OffreMobilite offre) throws SQLException {

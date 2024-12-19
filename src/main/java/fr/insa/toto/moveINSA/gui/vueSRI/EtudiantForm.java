@@ -34,7 +34,7 @@ public class EtudiantForm extends FormLayout {
     private TextField tfNom = new TextField("Nom");
     private TextField tfClasse = new TextField("Classe");
     private NumberField nfClassement = new NumberField("Classement");
-    private TextField tfIdcoEtudiant = new TextField("IdcoEtudiant");
+    private TextField tfIdcoEtudiant = new TextField("Identifiant");
     private TextField tfMdpEtudiant = new TextField("Mot de Passe");
     
     public EtudiantForm(Etudiant model, boolean modifiable) {
