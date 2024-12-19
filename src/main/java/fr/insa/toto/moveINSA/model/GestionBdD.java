@@ -832,22 +832,29 @@ public class GestionBdD {
         int r = ConsoleFdB.entreeEntier("Enter your choice : "); 
     switch (r) {
         case 0:
-                System.out.println("faire le retour");
+            menuConnection(con);
             break;
         case 1:
-            OffreMobilite.toutesLesOffres(con);
+            List<OffreMobilite> users = OffreMobilite.toutesLesOffres(con);
+            System.out.println(users.size() + " offres : ");
+            System.out.println(ListUtils.enumerateList(users, (elem) -> elem.toString()));
+            menuPrincipalPartenaire(con, partenaire);
             break;
         case 2:
-            OffreMobilite.creeConsoleang(con,id); // recuperer id partenaire lors de la connection
+            OffreMobilite.creeConsoleang(con,id); 
+            menuPrincipalPartenaire(con, partenaire);
             break;
         case 3:
                 OffreMobilite.creeConsoleang(con, id);
+                menuPrincipalPartenaire(con, partenaire);
             break;
             case 4:
                 OffreMobilite.suppConsoleang(con, id);
+                menuPrincipalPartenaire(con, partenaire);
             break;
             case 5:
                 OffreMobilite.suppALLConsoleang(con, id);
+                menuPrincipalPartenaire(con, partenaire);
             break;
         case 6:
             menuBdD(con);
