@@ -183,6 +183,19 @@ public class Candidature {
     return classeEtudiant.equals(classeOffre);
 }
 
+    public static Boolean compteCandidature(Connection con, String ine) throws SQLException{
+        String rech = "SELECT COUNT (*) AS total FROM candidature WHERE = ?";
+        try (PreparedStatement pst = con.prepareStatement(rech)){
+            pst.setString(1, ine);
+            try (ResultSet rs = pst.executeQuery()){
+                if (rs.next()){
+                    int totalCandidatures = rs.getInt("total");
+                    return totalCandidatures < 5; 
+                }
+            }
+        }
+        return false;
+    }
     
     public static int creeConsole(Connection con, Etudiant etudiant) throws SQLException {
         String ine = etudiant.getIne();
@@ -195,7 +208,7 @@ public class Candidature {
         int idOffre = ConsoleFdB.entreeEntier("Saisir l'id de l'offre voulue: ");
         offre = getOffre(con, idOffre);
         
-        if (controleCandidature(con, ine, offre.getId()) == true){
+        if (controleCandidature(con, ine, offre.getId()) == true && compteCandidature(con, ine)){
             LocalDate dateNow = LocalDate.now();
             Date dateCandidature;
             dateCandidature = java.sql.Date.valueOf(dateNow);
