@@ -136,69 +136,9 @@ public class Etudiant {
         return nouveau.saveInDB(con);
     }
 
-    /**
-     * @return the id
-     */
-
-    public int getId() {
-        return idEtudiant;
-    }
-
-    public String getIne() {
-        return ine;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public String getClasse() {
-        return classe;
-    }
-
-    public int getClassement() {
-        return classement;
-    }
-
-    public String getIdcoEtudiant() {
-        return idcoEtudiant;
-    }
-
-    public String getMdpEtudiant() {
-        return mdpEtudiant;
-    }
-
-    public void setIdEtudiant(int idEtudiant) {
-        this.idEtudiant = idEtudiant;
-    }
-
-    public void setIne(String ine) {
-        this.ine = ine;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public void setClasse(String classe) {
-        this.classe = classe;
-    }
-
-    public void setClassement(int classement) {
-        this.classement = classement;
-    }
-
-    public void setIdcoEtudiant(String idcoEtudiant) {
-        this.idcoEtudiant = idcoEtudiant;
-    }
-
-    public void setMdpEtudiant(String mdpEtudiant) {
-        this.mdpEtudiant = mdpEtudiant;
-    }
-    
-    
     public static void modifConsoleparSRI(Connection con) throws SQLException {
-    String inemodif = ConsoleFdB.entreeString("INE du profil élève à modifier:");
+    Etudiant etudiantmodif = selectInConsole(con);
+    String inemodif = etudiantmodif.getIne();
     String nouveline = ConsoleFdB.entreeString("Nouvel INE (laisser vide si vous souhaitez conserver l'ancien):");
     String nouveaunom = ConsoleFdB.entreeString("Nouveau nom (laisser vide si vous souhaitez conserver l'ancien):");
     String nouvelleclasse = EntiteDejaSauvegardee.selectInConsoleClasse();
@@ -343,15 +283,66 @@ public class Etudiant {
         return ListUtils.selectOne("choisissez un etudiant :",
                 tousLesEtudiants(con), (elem) -> elem.getIne());
     }
-      public static List<Etudiant> tousLesEtudiants(Connection con) throws SQLException {
-        try (PreparedStatement pst = con.prepareStatement(
-                "select id,ine, nom, classe, classement, idcoEtudiant, mdpEtudiant from partenaire")) {
-            ResultSet rs = pst.executeQuery();
-            List<Etudiant> res = new ArrayList<>();
-            while (rs.next()) {
-                res.add(new Etudiant(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getString(6), rs.getString(7)));
-            }
-            return res;
-        }
+      
+          /**
+     * @return the id
+     */
+
+    public int getId() {
+        return idEtudiant;
     }
+
+    public String getIne() {
+        return ine;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public String getClasse() {
+        return classe;
+    }
+
+    public int getClassement() {
+        return classement;
+    }
+
+    public String getIdcoEtudiant() {
+        return idcoEtudiant;
+    }
+
+    public String getMdpEtudiant() {
+        return mdpEtudiant;
+    }
+
+    public void setIdEtudiant(int idEtudiant) {
+        this.idEtudiant = idEtudiant;
+    }
+
+    public void setIne(String ine) {
+        this.ine = ine;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public void setClasse(String classe) {
+        this.classe = classe;
+    }
+
+    public void setClassement(int classement) {
+        this.classement = classement;
+    }
+
+    public void setIdcoEtudiant(String idcoEtudiant) {
+        this.idcoEtudiant = idcoEtudiant;
+    }
+
+    public void setMdpEtudiant(String mdpEtudiant) {
+        this.mdpEtudiant = mdpEtudiant;
+    }
+    
+    
 }
