@@ -81,6 +81,8 @@ public class Partenaire implements Serializable{
      *
      * @param refPartenaire
      * @param pays
+     * @param idcoPartenaire
+     * @param mdpPartenaire
      */
     public Partenaire(String refPartenaire, String pays, String idcoPartenaire, String mdpPartenaire) {
         this(-1,refPartenaire,pays,idcoPartenaire,mdpPartenaire);
@@ -111,7 +113,7 @@ public class Partenaire implements Serializable{
 
     @Override
     public String toString() {
-        return "Partenaire{" + "id =" + this.getId() + " ; refPartenaire=" + refPartenaire + "; pays =" + pays +'}';
+        return "Partenaire{" + "id =" + this.getId() + " ; refPartenaire=" + refPartenaire + "; pays =" + pays + "; idcoPartenaire =" + idcoPartenaire + "; mdpPartenaire =" + mdpPartenaire +'}';
     }
 
     /**
@@ -189,7 +191,7 @@ public class Partenaire implements Serializable{
         Partenaire partenairemodif = selectInConsole(con);
         int idPartenaire = partenairemodif.getId();
         String nouvelleref = ConsoleFdB.entreeString("Référence du nouveau  partenaire (laisser vide si vous souhaitez conserver l'ancien):");
-        String nouveaupays = ConsoleFdB.entreeString("Pays du nouveau partenaire (laisser vide si vous souhaitez conserver l'ancien):");
+        String nouveaupays = EntiteDejaSauvegardee.selectInConsolePays();
         String nouveauidco = ConsoleFdB.entreeString("Identifiant de connexion du nouveau partenaire (laisser vide si vous souhaitez conserver l'ancien):");
         String nouveaumdp = ConsoleFdB.entreeString("Mot de passe provisoire du nouveau partenaire (laisser vide si vous souhaitez conserver l'ancien):");
         StringBuilder ordresql = new StringBuilder("update partenaire set");

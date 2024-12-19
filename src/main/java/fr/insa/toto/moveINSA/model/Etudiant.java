@@ -23,6 +23,8 @@ package fr.insa.toto.moveINSA.model;
  * @author lbsb
  */
 import fr.insa.beuvron.utils.ConsoleFdB;
+import fr.insa.beuvron.utils.list.ListUtils;
+import static fr.insa.toto.moveINSA.model.Partenaire.tousLesPartaires;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -199,7 +201,7 @@ public class Etudiant {
     String inemodif = ConsoleFdB.entreeString("INE du profil élève à modifier:");
     String nouveline = ConsoleFdB.entreeString("Nouvel INE (laisser vide si vous souhaitez conserver l'ancien):");
     String nouveaunom = ConsoleFdB.entreeString("Nouveau nom (laisser vide si vous souhaitez conserver l'ancien):");
-    String nouvelleclasse = ConsoleFdB.entreeString("Nouvelle classe (laisser vide si vous souhaitez conserver l'ancienne):");
+    String nouvelleclasse = EntiteDejaSauvegardee.selectInConsoleClasse();
     int nouveauclassement = ConsoleFdB.entreeInt("Nouveau classement (0 vous souhaitez conserver l'ancien):");
     String nouveauidco = ConsoleFdB.entreeString("Nouvel identifiant de connexion (laisser vide si vous souhaitez conserver l'ancien):");
     String nouveaumdp = ConsoleFdB.entreeString("Nouveau mot de passe provisoire (laisser vide si vous souhaitez conserver l'ancien):");
@@ -218,13 +220,12 @@ public class Etudiant {
             first = false ;
             ordresql.append("nom = ?");
         }
-        if (!nouvelleclasse.isEmpty()) {
             if (first=false){
                 ordresql.append(", ");
             }
             first = false ;
-            ordresql.append("classe = ?");
-        }
+            ordresql.append("classe = ?"); // selection dans une liste directement
+            
         if (nouveauclassement!=0) {
             if (first = false){
                 ordresql.append(", ");
@@ -337,5 +338,20 @@ public class Etudiant {
             System.out.println("Voici l'étudiant recherché: ");
             return res;
     }   
+    }
+      public static Etudiant selectInConsole(Connection con) throws SQLException {
+        return ListUtils.selectOne("choisissez un etudiant :",
+                tousLesEtudiants(con), (elem) -> elem.getIne());
+    }
+      public static List<Etudiant> tousLesEtudiants(Connection con) throws SQLException {
+        try (PreparedStatement pst = con.prepareStatement(
+                "select id,ine, nom, classe, classement, idcoEtudiant, mdpEtudiant from partenaire")) {
+            ResultSet rs = pst.executeQuery();
+            List<Etudiant> res = new ArrayList<>();
+            while (rs.next()) {
+                res.add(new Etudiant(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getString(6), rs.getString(7)));
+            }
+            return res;
+        }
     }
 }

@@ -176,7 +176,8 @@ public class SRI {
                  String idcoSRI = ConsoleFdB.entreeString("new idcoSRI: ");
                  String refSRI = ConsoleFdB.entreeString("new refSRI: ");
                  String mdpSRI = ConsoleFdB.entreeString("new mdpSRI: ");
-                 String lastrefSRI = ConsoleFdB.entreeString("last refSRI: ");
+                 SRI ancienSRI = selectInConsole(con);
+                 String lastrefSRI = ancienSRI.getrefSRI();
                  update.setString(1,idcoSRI);
                  update.setString(2,refSRI);
                  update.setString(3,mdpSRI);
@@ -189,7 +190,8 @@ public class SRI {
     public static void suppConsole(Connection con) throws SQLException {
         try (PreparedStatement update = con.prepareStatement(
                 "delete from SRI where refSRI = ? ")){ 
-                 String refSRI = ConsoleFdB.entreeString("refSRI: ");
+                 SRI membre = selectInConsole(con);
+                 String refSRI = membre.getrefSRI();
                  update.setString(1,refSRI);
                  update.execute();       
                  }

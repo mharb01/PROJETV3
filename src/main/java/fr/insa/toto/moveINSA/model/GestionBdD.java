@@ -70,7 +70,7 @@ public class GestionBdD {
                     + " classe varchar(50) not null,\n "
                     + " classement int not null unique,\n "
                     + " idcoEtudiant varchar(50) not null unique,\n "        
-                    + " mdpEtudiant varchar(50) not null unique\n"
+                    + " mdpEtudiant varchar(50) not null \n"
                     + ")");
             st.executeUpdate(
                     "create table candidature ( \n"
@@ -84,7 +84,8 @@ public class GestionBdD {
                     + ConnectionSimpleSGBD.sqlForGeneratedKeys(con, "id") + ",\n"
                     + " nbrplaces int not null,\n"
                     + " classe varchar(50) not null,\n"    
-                    + " proposepar int not null\n"
+                    + " proposepar int not null,\n"
+                    + " annee varchar(50) not null,\n"
                     + ")");
             // création des liens
             st.executeUpdate(
@@ -184,18 +185,10 @@ public class GestionBdD {
         for (var p : partenaires) {
             p.saveInDB(con);
         }
-        List<Etudiant> etudiants;
-        etudiants = List.of(
-                new Etudiant("A0000000001", "Yassine","GT2E2",32,"yassine01","provisoire1"),
-                new Etudiant("A0000000002", "Toto","GM4",52,"toto01","provisoire2")
-        );
-        for (var e : etudiants) {
-            e.saveInDB(con);
-        }
         List<OffreMobilite> offres = List.of(
-                new OffreMobilite(1, partenaires.get(0).getId(), "GT2E2"),
-                new OffreMobilite(2, partenaires.get(0).getId(), "MIQ2"),
-                new OffreMobilite(5, partenaires.get(1).getId(), "GC2")
+                new OffreMobilite(1, partenaires.get(0).getId(), "GT2E2", "undergraduate"),
+                new OffreMobilite(2, partenaires.get(0).getId(), "MIQ2","postgraduate"),
+                new OffreMobilite(5, partenaires.get(1).getId(), "GC2","both")
         );
         for (var o : offres) {
             o.saveInDB(con);
@@ -208,6 +201,17 @@ public class GestionBdD {
             s.saveInDB(con);
 
     }
+        List<Etudiant> etudiants;
+        etudiants = List.of(
+                new Etudiant("A0000000001", "Lila","GT2E2",32,"lila01","provisoire"),
+                new Etudiant("A0000000002", "Mohamad","GT2E2",16,"mahomad01","provisoire"),
+                new Etudiant("A0000000003", "Yassine","GT2E2",20,"yassine01","provisoire"),
+                new Etudiant("A0000000004", "Noé","GE2",15,"noe1",",provisoire"),
+                new Etudiant("A0000000005", "Toto","GM4",52,"toto01","provisoire")
+        );
+        for (var e : etudiants) {
+            e.saveInDB(con);
+        }
     }
 
     public static void razBDD(Connection con) throws SQLException {
@@ -236,6 +240,16 @@ public class GestionBdD {
             }
         }
     }
+    public static boolean verifierDonneesPartenaire(Connection con, String identifiant, String mdp) throws SQLException{
+        String rech = "SELECT 1 FROM partenaire WHERE idcoPartenaire =? AND mdpPartenaire = ? LIMIT 1";
+        try (PreparedStatement pst = con.prepareStatement(rech)){
+            pst.setString(1, identifiant);
+            pst.setString(2, mdp);
+            try (ResultSet rs = pst.executeQuery()){
+                return rs.next();
+            }
+        }
+    }
 
     public static Etudiant getEtudiant(Connection con, String idcoEtudiant) throws SQLException{
         String rech = "SELECT * FROM etudiant WHERE idcoEtudiant = ?";
@@ -251,6 +265,22 @@ public class GestionBdD {
                     String mdpEtudiant = rs.getString("mdpEtudiant");
                     
                     return new Etudiant(id, ine, nom, classe, classement, idcoEtudiant, mdpEtudiant);
+                }
+            }     
+        }
+        return null;
+    }
+    public static Partenaire getPartenaire(Connection con, String idcoPartenaire) throws SQLException{
+        String rech = "SELECT * FROM partenaire WHERE idcoPartenaire = ?";
+        try(PreparedStatement pst = con.prepareStatement(rech)){
+            pst.setString(1, idcoPartenaire);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("id");
+                    String ref = rs.getString("refPartenaire");
+                    String pays = rs.getString("pays");
+                    String mdpPartenaire = rs.getString("mdpPartenaire");
+                    return new Partenaire(id, ref, pays, idcoPartenaire, mdpPartenaire);
                 }
             }     
         }
@@ -275,7 +305,7 @@ public class GestionBdD {
         return null;
     }
     
-    public static void menuPartenaire(Connection con) {
+    public static void menuPartenaireSRI(Connection con) {
         int rep = -1;
         while (rep != 0) {
             int i = 1;
@@ -752,100 +782,70 @@ int rep1 = -1;
             System.out.println("0) Déconnexion");
             rep1 = ConsoleFdB.entreeEntier("Votre choix : ");
             if (rep1 == 1){
+            System.out.println("Connection OK");
                 int i = 1;
-                int r;
                 System.out.println((i++) + ") Acceder au menu ETUDIANT");
                 System.out.println((i++) + ") Acceder au menu PARTENAIRE");
                 System.out.println((i++) + ") Acceder au menu CANDIDATURE");
                 System.out.println(((i++) + ") Gestion de la base de donnees"));
-                r = ConsoleFdB.entreeEntier("Votre choix : "); 
-                int j = 1;
-                if (j==r){
-                    menuEtudiantSRI(con);
-                }
-                else if (r == 3){
-                    try {
-                        menuCandidatureSRI(con);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(GestionBdD.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                else if (r == 4){
-                    menuBdD(con);
-                }
-                else{
-                    System.out.println("Page en cours de création!");
-                }
+                int r = ConsoleFdB.entreeEntier("Votre choix : "); 
+    switch (r) {
+        case 1:
+            menuEtudiantSRI(con);
+            break;
+        case 2:
+            menuPartenaireSRI(con);
+            break;
+        case 3:
+            try {
+                menuCandidatureSRI(con);
+            } catch (SQLException ex) {
+                Logger.getLogger(GestionBdD.class.getName()).log(Level.SEVERE, null, ex);
             }
-        System.out.println("Connection OK");
-             }            
+            break;
+        case 4:
+            menuBdD(con);
+            break;
+            }
+            }
+            }            
    
     public static void menuPrincipalPartenaire(Connection con) throws SQLException {
-        System.out.println("Bienvenue cher Partenaire!");
-        System.out.println("Veuillez selectionner une option");
+        //int id 
+        System.out.println("Welcome dear partner!");
+        System.out.println("Select an option");
         int i = 1;
-        System.out.println((i++) + ") Consulter les offres publiees");
-        System.out.println((i++) + ") Publier une nouvelle offre");
-        System.out.println("0) Retour");
-        int r = ConsoleFdB.entreeEntier("Votre choix");
-        int j = 1;
-        if (r == 1){
-            List<OffreMobilite> offres = OffreMobilite.toutesLesOffres(con);
-            System.out.println(offres.size() + " offres : ");
-            System.out.println(ListUtils.enumerateList(offres, (elem) -> elem.toString()));
-        }
-        else if (r == 2){
-            int nbrPlaces = ConsoleFdB.entreeEntier("Nombre de places offertes:");
-            int proposePar = ConsoleFdB.entreeEntier("id de votre Etablissement:");
-            String classe = ConsoleFdB.entreeString("classe ciblee: ");
-            OffreMobilite offre = new OffreMobilite(nbrPlaces, proposePar, classe);
-            offre.saveInDB(con);
-        }
-//        int rep = -1;
-//        Connection con = null;
-//        try {
-//            con = ConnectionSimpleSGBD.defaultCon();
-//            System.out.println("Connection OK");
-//        } catch (SQLException ex) {
-//            System.out.println("Problème de connection : " + ex.getLocalizedMessage());
-//            throw new Error(ex);
-//        }
-//        while (rep != 0) {
-//            int i = 1;
-//            System.out.println("Menu principal");
-//            System.out.println("==================");
-//            System.out.println((i++) + ") test driver mysql");
-//            System.out.println((i++) + ") menu gestion BdD");
-//            System.out.println((i++) + ") menu partenaires");
-//            System.out.println((i++) + ") menu offres");
-//            System.out.println((i++) + ") menu SRI");
-//            System.out.println("0) Fin");
-//            rep = ConsoleFdB.entreeEntier("Votre choix : ");
-//            try {
-//                int j = 1;
-//                if (rep == j++) {
-//                    try {
-//                        Class<Driver> mysqlDriver = (Class<Driver>) Class.forName("com.mysql.cj.jdbc.Driver");
-//                    } catch (ClassNotFoundException ex) {
-//                        System.out.println("com.mysql.cj.jdbc.Driver not found");
-//                    }
-//                    DatabaseMetaData meta = con.getMetaData();
-//                    System.out.println("jdbc driver version : " + meta.getDriverName() + " ; " + meta.getDriverVersion());
-//                } else if (rep == j++) {
-//                    menuBdD(con);
-//                } else if (rep == j++) {
-//                    menuPartenaire(con);
-//                } else if (rep == j++) {
-//                    menuOffre(con);
-//                }
-//                else if (rep == j++) {
-//                    menuSRI(con);
-//                }
-//            } catch (Exception ex) {
-//                System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
-//            }
-//        }
-    }
+        System.out.println((i++) + ") Consul the published offers ");
+        System.out.println((i++) + ") Publish a new offer");
+        System.out.println((i++) + ") Change an offer");
+        System.out.println((i++) + ") Delete an offer");
+        System.out.println((i++) + ")Delete all your offers");
+        System.out.println("0) Back");
+        int r = ConsoleFdB.entreeEntier("Enter your choice : "); 
+    switch (r) {
+        case 0:
+                System.out.println("faire le retour");
+            break;
+        case 1:
+            OffreMobilite.toutesLesOffres(con);
+            break;
+        case 2:
+            OffreMobilite.creeConsoleang(con,id); // recuperer id partenaire lors de la connection
+            break;
+        case 3:
+                OffreMobilite.creeConsoleang(con, id);
+            break;
+            case 4:
+                OffreMobilite.suppConsoleang(con, id);
+            break;
+            case 5:
+                OffreMobilite.suppALLConsoleang(con, id);
+            break;
+        case 6:
+            menuBdD(con);
+            break;
+            }
+            }
     
    
     
