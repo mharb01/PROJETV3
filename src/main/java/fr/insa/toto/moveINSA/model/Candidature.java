@@ -151,7 +151,7 @@ public class Candidature {
                     String classe = rs.getString("classe");
                     int proposepar = rs.getInt("proposepar");
                     
-                    return new OffreMobilite(id, nbr, proposepar, classe);
+                    return new OffreMobilite(id, nbr, proposepar, classe, "2024");
                 }
             }     
         }
@@ -160,7 +160,7 @@ public class Candidature {
     
     public static Boolean controleCandidature(Connection con, String ine, int idOffre) throws SQLException {
     String rechEtudiant = "SELECT classe FROM etudiant WHERE ine = ?";
-    String rechOffre = "SELECT classeRequise FROM offremobilite WHERE id = ?";
+    String rechOffre = "SELECT classe FROM offremobilite WHERE id = ?";
     
     String classeEtudiant = null;
     String classeOffre = null;
@@ -177,7 +177,7 @@ public class Candidature {
         pstOffre.setInt(1, idOffre);
         try (ResultSet rsOffre = pstOffre.executeQuery()) {
             rsOffre.next(); 
-            classeOffre = rsOffre.getString("classeRequise");
+            classeOffre = rsOffre.getString("classe");
         }
     }
     return classeEtudiant.equals(classeOffre);
@@ -200,6 +200,7 @@ public class Candidature {
             Date dateCandidature;
             dateCandidature = java.sql.Date.valueOf(dateNow);
             Candidature nouveau = new Candidature(ine,offre.getId(),dateCandidature);
+            System.out.println("Candidature envoyee avec succes!");
             return nouveau.saveInDB(con);
         } else {
             System.out.println("Vous ne pouvez pas candidater à cette offre: vous n'etes pas dans la bonne classe");
