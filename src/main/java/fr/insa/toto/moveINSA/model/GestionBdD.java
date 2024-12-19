@@ -257,7 +257,7 @@ public class GestionBdD {
             pst.setString(1, idcoEtudiant);
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    int id = rs.getInt("id");
+                    int id = rs.getInt("idEtudiant");
                     String ine = rs.getString("ine");
                     String nom = rs.getString("nom");
                     String classe = rs.getString("classe");
@@ -378,16 +378,16 @@ public class GestionBdD {
                     System.out.println(users.size() + " offres : ");
                     System.out.println(ListUtils.enumerateList(users, (elem) -> elem.toString()));
                         }
-                        else if (rep1 == l++) {
-//                    Candidature candidature;
-//                    candidature.creeConsole(con, etudiant);
-                        }
+                        
                     
                 } catch (Exception ex) {
                 System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
-                }            
+                }         
                 }
+                } else if (rep == j++) {
+                    int resultat = Candidature.creeConsole(con, etudiant);
                 }
+               
                  
             }catch (Exception ex) {
                 System.out.println(ExceptionsUtils.messageEtPremiersAppelsDansPackage(ex, "fr.insa", 3));
@@ -576,7 +576,15 @@ public class GestionBdD {
             if (rep2 == 1){
                 String identifiant = ConsoleFdB.entreeString("Entrez votre identifiant: ");
                 String mdp = ConsoleFdB.entreeString("Entrez votre mot de passe:");
-                menuPrincipalPartenaire(con);
+                boolean OK = verifierDonneesPartenaire(con, identifiant, mdp);
+                if(OK){
+                    Partenaire partenaire = getPartenaire(con, identifiant);
+                    menuPrincipalPartenaire(con, partenaire);
+                } else {
+                    System.out.println("Identifiant ou mot de passe incorrect, veuillez réessayer");
+                    menuConnection(con);
+                }
+                
             }
             else if (rep2 == 2){
                 String refPartenaire = ConsoleFdB.entreeString("Veuillez indiquer votre reference Partenaire:");
@@ -584,7 +592,7 @@ public class GestionBdD {
                 String mdpP = ConsoleFdB.entreeString("Veuillez indiquer votre mot de passe:");
                 Partenaire nouveauPartenaire = new Partenaire(-1, refPartenaire, pays, refPartenaire,mdpP);
                 nouveauPartenaire.saveInDB(con);
-                menuPrincipalPartenaire(con);
+                menuPrincipalPartenaire(con, nouveauPartenaire);
             }
         } else if (r == j++) {
             String identifiant = ConsoleFdB.entreeString("Entrez votre identifiant: ");
@@ -769,7 +777,7 @@ public class GestionBdD {
     }
     
     public static void menuPrincipalSRI() {
-int rep1 = -1;
+        int rep1 = -1;
         Connection con = null;
         try {
             con = ConnectionSimpleSGBD.defaultCon();
@@ -810,16 +818,16 @@ int rep1 = -1;
             }
             }            
    
-    public static void menuPrincipalPartenaire(Connection con) throws SQLException {
-        //int id 
+    public static void menuPrincipalPartenaire(Connection con, Partenaire partenaire) throws SQLException {
+        int id = partenaire.getId();
         System.out.println("Welcome dear partner!");
         System.out.println("Select an option");
         int i = 1;
-        System.out.println((i++) + ") Consul the published offers ");
+        System.out.println((i++) + ") Consult the published offers ");
         System.out.println((i++) + ") Publish a new offer");
         System.out.println((i++) + ") Change an offer");
         System.out.println((i++) + ") Delete an offer");
-        System.out.println((i++) + ")Delete all your offers");
+        System.out.println((i++) + ") Delete all your offers");
         System.out.println("0) Back");
         int r = ConsoleFdB.entreeEntier("Enter your choice : "); 
     switch (r) {
