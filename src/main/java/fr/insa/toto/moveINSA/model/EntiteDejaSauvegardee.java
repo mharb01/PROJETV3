@@ -32,7 +32,7 @@ public class EntiteDejaSauvegardee extends SQLException {
     public EntiteDejaSauvegardee() {
         super("L'entité à déjà été sauvegardée (id != -1");
     }
-    public List ListePays() {
+    public static List ListePays() {
         List<String> pays = new ArrayList<>();
         pays.add("France");
         pays.add("Allemagne");
