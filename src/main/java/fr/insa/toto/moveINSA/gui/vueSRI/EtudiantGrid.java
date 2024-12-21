@@ -51,8 +51,8 @@ public class EtudiantGrid extends Grid <Etudiant>{
                 this.addColumn(Etudiant::getNom).setHeader("Nom").setSortable(true).setResizable(true);
                 this.addColumn(Etudiant::getClasse).setHeader("Classe").setSortable(true).setResizable(true);
                 this.addColumn(Etudiant::getClassement).setHeader("Classement").setSortable(true).setResizable(true);
-                this.addColumn(Etudiant::getIdcoEtudiant).setHeader("Identifiant").setSortable(true).setResizable(true);
-                this.addColumn(Etudiant::getMdpEtudiant).setHeader("Mot de passe").setSortable(true).setResizable(true);
+                this.addColumn(Etudiant::getidco).setHeader("Identifiant").setSortable(true).setResizable(true);
+                this.addColumn(Etudiant::getmdp).setHeader("Mot de passe").setSortable(true).setResizable(true);
                 
                 this.addComponentColumn(etudiant -> {
             Button modifButton = new Button("Modifier");
@@ -82,10 +82,10 @@ public class EtudiantGrid extends Grid <Etudiant>{
                 classementField.setValue(String.valueOf(etudiant.getClassement()));
                 
                 TextField idcoField = new TextField("Nouvel Identifiant");
-                idcoField.setValue(etudiant.getIdcoEtudiant());
+                idcoField.setValue(etudiant.getidco());
                 
                 TextField mdpField = new TextField("Nouveau Mot De Passe");
-                mdpField.setValue(etudiant.getMdpEtudiant());
+                mdpField.setValue(etudiant.getmdp());
                 
                 layout.add(ineField, nomField, classeField, classementField, idcoField, mdpField);
 
@@ -96,8 +96,8 @@ public class EtudiantGrid extends Grid <Etudiant>{
                      String newNom = nomField.getValue().isEmpty() ? etudiant.getNom(): nomField.getValue();
                      String newClasse = classeField.getValue().isEmpty() ? etudiant.getClasse(): classeField.getValue();
                      int newClassement = classementField.getValue().isEmpty() ? etudiant.getClassement(): Integer.parseInt(classementField.getValue());
-                     String newIdco = idcoField.getValue().isEmpty() ? etudiant.getIdcoEtudiant(): idcoField.getValue();
-                     String newMdp = mdpField.getValue().isEmpty() ? etudiant.getMdpEtudiant(): mdpField.getValue();
+                     String newIdco = idcoField.getValue().isEmpty() ? etudiant.getidco(): idcoField.getValue();
+                     String newMdp = mdpField.getValue().isEmpty() ? etudiant.getmdp(): mdpField.getValue();
                     
                      try (Connection con = ConnectionPool.getConnection()) {
  

@@ -617,13 +617,13 @@ public class GestionBdD {
         System.out.println("Classe : " + etudiant.getClasse());
         System.out.println("INE : " + etudiant.getIne());
         System.out.println("Classement : " + etudiant.getClassement());
-        System.out.println("ID de connecxion : " + etudiant.getIdcoEtudiant());
-        System.out.println("Mot de passe : " + etudiant.getMdpEtudiant());
+        System.out.println("ID de connecxion : " + etudiant.getidco());
+        System.out.println("Mot de passe : " + etudiant.getmdp());
         System.out.println("Veuillez choisir une action :");
         System.out.println( i + ") Changer de mot de passe");
         System.out.println("0) Deconnexion");
         if (i == 1){
-            Etudiant.modifConsolemdpEtudiant(con, etudiant.getIdcoEtudiant());
+            Etudiant.modifConsolemdpEtudiant(con, etudiant.getidco());
         }
     }
     

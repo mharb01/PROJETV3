@@ -59,8 +59,8 @@ public class EtudiantForm extends FormLayout {
         this.model.setNom(this.tfNom.getValue());
         this.model.setClasse(this.tfClasse.getValue());
         this.model.setClassement(this.nfClassement.getValue().intValue());
-        this.model.setIdcoEtudiant(this.tfIdcoEtudiant.getValue());
-        this.model.setMdpEtudiant(this.tfMdpEtudiant.getValue());        
+        this.model.setidco(this.tfIdcoEtudiant.getValue());
+        this.model.setmdp(this.tfMdpEtudiant.getValue());        
     }
     
     public void updateView() {
@@ -68,8 +68,8 @@ public class EtudiantForm extends FormLayout {
         this.tfNom.setValue(this.model.getNom());
         this.tfClasse.setValue(this.model.getClasse());
         this.nfClassement.setValue((double) this.model.getClassement());
-        this.tfIdcoEtudiant.setValue(this.model.getIdcoEtudiant());
-        this.tfMdpEtudiant.setValue(this.model.getMdpEtudiant());
+        this.tfIdcoEtudiant.setValue(this.model.getidco());
+        this.tfMdpEtudiant.setValue(this.model.getmdp());
     }
 
 }

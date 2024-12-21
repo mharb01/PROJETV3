@@ -308,11 +308,11 @@ public class Etudiant {
         return classement;
     }
 
-    public String getIdcoEtudiant() {
+    public String getidco() {
         return idcoEtudiant;
     }
 
-    public String getMdpEtudiant() {
+    public String getmdp() {
         return mdpEtudiant;
     }
 
@@ -336,11 +336,11 @@ public class Etudiant {
         this.classement = classement;
     }
 
-    public void setIdcoEtudiant(String idcoEtudiant) {
+    public void setidco(String idcoEtudiant) {
         this.idcoEtudiant = idcoEtudiant;
     }
 
-    public void setMdpEtudiant(String mdpEtudiant) {
+    public void setmdp(String mdpEtudiant) {
         this.mdpEtudiant = mdpEtudiant;
     }
     

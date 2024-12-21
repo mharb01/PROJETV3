@@ -46,6 +46,8 @@ public class OffreEtGrid extends Grid <OffreMobilite> {
                 this.addColumn(OffreMobilite::getNbrPlaces).setHeader("Nombre de places").setSortable(true).setResizable(true);
                 this.addColumn(OffreMobilite::getPartenaire).setHeader("Proposé par").setSortable(true).setResizable(true);
                 this.addColumn(OffreMobilite::getClasse).setHeader("Classe cible").setSortable(true).setResizable(true);
+                this.addColumn(OffreMobilite::getAnnee).setHeader("Année").setSortable(true).setResizable(true);
+                
                 // Ajouter une colonne pour le bouton "Candidater"
         this.addComponentColumn(offre -> {
             Button candidaterButton = new Button("Candidater");

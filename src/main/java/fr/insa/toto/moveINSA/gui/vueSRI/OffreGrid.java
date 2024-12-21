@@ -49,6 +49,7 @@ import java.util.List;
 public class OffreGrid extends Grid <OffreMobilite> {
     private TextField ifPlaces;
     private TextField tfClasse; 
+    private TextField tfAnnee;
     private Button bSave;
    public OffreGrid(List<OffreMobilite> offremobilite){
         this.setColumnReorderingAllowed(true);
@@ -56,6 +57,8 @@ public class OffreGrid extends Grid <OffreMobilite> {
                 this.addColumn(OffreMobilite::getNbrPlaces).setHeader("Nombre de places").setSortable(true).setResizable(true);
                 this.addColumn(OffreMobilite::getPartenaire).setHeader("Proposé par").setSortable(true).setResizable(true);
                 this.addColumn(OffreMobilite::getClasse).setHeader("Classe cible").setSortable(true).setResizable(true);
+                this.addColumn(OffreMobilite::getAnnee).setHeader("Année").setSortable(true).setResizable(true);
+                
                 // Ajouter une colonne pour le bouton "Candidater"
         this.addComponentColumn(offre -> {
             Button modifButton = new Button("Modifier");
@@ -72,23 +75,27 @@ public class OffreGrid extends Grid <OffreMobilite> {
                 layout.add(new Text("Veuillez remplir uniquement le(s) champ(s) à modifier "));
 
                 
-                TextField nbrPlacesField = new TextField("Nombre de places");
+                TextField nbrPlacesField = new TextField("Nouveau nombre de places");
                 nbrPlacesField.setValue(String.valueOf(offre.getNbrPlaces())); // Valeur existante
 
-                TextField classeField = new TextField("Classe cible");
+                TextField classeField = new TextField("Nouvelle classe cible");
                 classeField.setValue(offre.getClasse()); // Valeur existante
+                
+                TextField AnneeField = new TextField("Nouvelle année");
+                AnneeField.setValue(String.valueOf(offre.getAnnee()));
 
-                layout.add(nbrPlacesField, classeField);
+                layout.add(nbrPlacesField, classeField, AnneeField);
 
                 // Boutons pour confirmer ou annuler
                 Button confirmButton = new Button("Confirmer", e -> {
                     
                      int newNbrPlaces = nbrPlacesField.getValue().isEmpty() ? offre.getNbrPlaces() : Integer.parseInt(nbrPlacesField.getValue());
                      String newClasse = classeField.getValue().isEmpty() ? offre.getClasse() : classeField.getValue();
+                     String newAnnee = AnneeField.getValue().isEmpty() ? offre.getAnnee() : AnneeField.getValue();
                      
                     try (Connection con = ConnectionPool.getConnection()) {
  
-                        OffreGrid.modifier(con, offre.getId(), newNbrPlaces, newClasse);
+                        OffreGrid.modifier(con, offre.getId(), newNbrPlaces, newClasse, newAnnee);
                         
                         Notification.show("Offre : " + offre.getId() + " modifiée avec succès ! ");
                         dialog.close(); // Fermer le dialog
@@ -167,24 +174,21 @@ public class OffreGrid extends Grid <OffreMobilite> {
    
    public static void supprimer(Connection con, OffreMobilite offre) throws SQLException {
         try (PreparedStatement update = con.prepareStatement(
-                "delete from offremobilite where nbrplaces = ? and proposepar = ?  and classe = ? ")){ 
-                 int nbrPlaces = offre.getNbrPlaces();             
-                 String classe = offre.getClasse();
-                 int proposepar = offre.getProposePar();
-                 update.setInt(1,nbrPlaces);
-                 update.setInt(2, proposepar);
-                 update.setString(3, classe);
+                "delete from offremobilite where id = ? ")){ 
+                 int id = offre.getId();
+                 update.setInt(1,id);
                  update.execute();       
                  }
         System.out.println("Offre supprimee avec succes !");
     }
    
-   public static void modifier(Connection con, int id, int nbrPlaces, String classe) throws SQLException {
-    String sql = "update offremobilite set nbrplaces = ?, classe = ? where id = ?";
+   public static void modifier(Connection con, int id, int nbrPlaces, String classe, String annee) throws SQLException {
+    String sql = "update offremobilite set nbrplaces = ? , classe = ? , annee = ? where id = ?";
     try (PreparedStatement update = con.prepareStatement(sql)) {
         update.setInt(1, nbrPlaces);
         update.setString(2, classe);
-        update.setInt(3, id); // Identifiant de l'offre à modifier
+        update.setString(3, annee);
+        update.setInt(4, id); // Identifiant de l'offre à modifier
         update.executeUpdate();
     }
     System.out.println("Offre modifiée avec succès !");

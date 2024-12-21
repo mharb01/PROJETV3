@@ -52,7 +52,7 @@ public class VueEtudiant extends VerticalLayout {
     
     
     this.add(new H3("Mov'INSA: l'application de l'avenir"));
-    this.add(new H3("Bienvenu cher étudiant !"));
+    this.add(new H3("Bienvenue cher étudiant !"));
     this.add(new H3("Que voulez vous faire ?"));
     
     

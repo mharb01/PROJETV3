@@ -52,7 +52,7 @@ public class VueSRI extends VerticalLayout {
        add(SRI);
        
     this.add(new H3("Mov'INSA: l'application de l'avenir"));
-    this.add(new H3("Bienvenu !"));
+    this.add(new H3("Bienvenue !"));
     this.add(new H3("Que voulez vous faire ?"));
     }
 }

@@ -75,15 +75,15 @@ public class SRI {
         this.mdpSRI = mdpSRI;
     }
     
-     public int getidSRI() {
+     public int getId() {
         return idSRI;
     }
      
-     public String getidcoSRI(){
+     public String getidco(){
          return idcoSRI;   
      }
      
-     public String getmdpSRI() {
+     public String getmdp() {
         return mdpSRI;
     }
      
@@ -105,7 +105,7 @@ public class SRI {
     
     @Override
     public String toString() {
-        return "Membre SRI{" + "idSRI =" + this.getidSRI() +" ; idcoSRI = " + this.getidcoSRI() + " ; refSRI = " + this.getrefSRI() + " ; mdpSRI = " + this.getmdpSRI() +'}';
+        return "Membre SRI{" + "idSRI =" + this.getId() +" ; idcoSRI = " + this.getidco() + " ; refSRI = " + this.getrefSRI() + " ; mdpSRI = " + this.getmdp() +'}';
     }
     
     
@@ -122,7 +122,7 @@ public class SRI {
      * @throws SQLException si autre problème avec la BdD
      */
     public int saveInDB(Connection con) throws SQLException {
-        if (this.getidSRI() != -1) {
+        if (this.getId() != -1) {
             throw new fr.insa.toto.moveINSA.model.EntiteDejaSauvegardee();
         }
         try (PreparedStatement insert = con.prepareStatement(
@@ -135,7 +135,7 @@ public class SRI {
             try (ResultSet rid = insert.getGeneratedKeys()) {
                 rid.next();
                 this.idSRI = rid.getInt(1);
-                return this.getidSRI();
+                return this.getId();
             }
         }
     }

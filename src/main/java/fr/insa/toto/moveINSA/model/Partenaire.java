@@ -308,4 +308,6 @@ public String getidco() {
     public void setmdp(String mdp) {
         this.mdpPartenaire = mdp;
     }
+   
+    
 }

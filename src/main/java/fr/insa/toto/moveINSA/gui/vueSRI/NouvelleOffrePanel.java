@@ -38,18 +38,20 @@ import java.util.logging.Logger;
  *
  * @author francois
  */
-@Route(value = "offres/nouveau",layout= MainLayoutSRI.class)
+@Route(value = "SRI/vue/offres/nouveau",layout= MainLayoutSRI.class)
 public class NouvelleOffrePanel extends VerticalLayout {
 
     private ChoixPartenaireCombo cbPartenaire;
     private IntegerField ifPlaces;
     private TextField tfClasse; 
+    private TextField tfAnnee;
     private Button bSave;
 
     public NouvelleOffrePanel() {
         this.cbPartenaire = new ChoixPartenaireCombo();
         this.ifPlaces = new IntegerField("nombre de places");
         this.tfClasse = new TextField("classe cible");
+        this.tfAnnee = new TextField("Année");
         this.bSave = new Button("Sauvegarder");
         this.bSave.addClickListener((t) -> {
             Partenaire selected = this.cbPartenaire.getValue();
@@ -58,11 +60,12 @@ public class NouvelleOffrePanel extends VerticalLayout {
             } else {
                 Integer places = this.ifPlaces.getValue();
                 String classe = this.tfClasse.getValue();
+                String annee = this.tfAnnee.getValue();
                 if (places == null || places <= 0) {
                     Notification.show("vous devez préciser un nombre de places valide");
                 } else {
                     int partId = selected.getId();
-                    OffreMobilite nouvelle = new OffreMobilite(places, partId, classe);
+                    OffreMobilite nouvelle = new OffreMobilite(places, partId, classe, annee);
                     try (Connection con = ConnectionPool.getConnection()) {
                         nouvelle.saveInDB(con);
                         Notification.show("Nouvelle offre enregistrée !");
@@ -72,7 +75,7 @@ public class NouvelleOffrePanel extends VerticalLayout {
                 }
             }
         });
-        this.add(this.cbPartenaire, this.ifPlaces, this.tfClasse, this.bSave);
+        this.add(this.cbPartenaire, this.ifPlaces, this.tfClasse, this.tfAnnee, this.bSave);
     }
 
 }

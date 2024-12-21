@@ -79,6 +79,9 @@ public class VuePrincipale extends VerticalLayout {
         this.add(buttonLayout);
     }
     
+    
+    
+    
     private void choisirRole(String role) {
         SessionInfo sessionInfo = SessionInfo.getOrCreateCurSessionInfo();
         sessionInfo.setUserRole(role);

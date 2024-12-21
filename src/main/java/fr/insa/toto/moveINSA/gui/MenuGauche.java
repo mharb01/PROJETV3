@@ -39,7 +39,7 @@ import fr.insa.toto.moveINSA.gui.vues.TodoPanel;
 public class MenuGauche extends SideNav {
 
     public MenuGauche() {
-        SideNavItem main = new SideNavItem("Main",VuePrincipale.class);
+        SideNavItem main = new SideNavItem("Menu Principal",VuePrincipale.class);
        this.addItem(main);
     }
 }

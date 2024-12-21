@@ -68,33 +68,19 @@ public class SessionInfo implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-    /**
-     * identificateur du partenaire actuellement connecté, null si aucun
-     * partenaire connecté.
-     */
     private Integer loggedPart;
-
-    /**
-     * le refPartenaire du partenaire connecté; null si non connecté.
-     */
     private String partRef;
-    
     private Integer loggedEtudiantld;
-    
-    private String userRole;  //"partenaire","etudiant","SRI"
-    
+    private String loggedSRIId;
+    private String userRole; // "partenaire", "etudiant", "SRI"
 
     public SessionInfo() {
         this.loggedPart = null;
         this.partRef = null;
+        this.loggedEtudiantld = null;
+        this.loggedSRIId = null;
     }
 
-    /**
-     * get the SessionInfo associated with the current session or create a new
-     * SessionInfo and associate it with the current session.
-     *
-     * @return the SessionInfo associated with current session
-     */
     public static SessionInfo getOrCreateCurSessionInfo() {
         VaadinSession curS = VaadinSession.getCurrent();
         SessionInfo res = curS.getAttribute(SessionInfo.class);
@@ -125,20 +111,40 @@ public class SessionInfo implements Serializable {
         return cur.loggedPart;
     }
 
-    /**
-     * @return the partRef
-     */
     public static String getLoggedPartRef() {
         SessionInfo cur = getOrCreateCurSessionInfo();
         return cur.partRef;
     }
 
     public String getUserRole() {
-        SessionInfo cur = getOrCreateCurSessionInfo();
         return userRole;
     }
-    
-    public void setUserRole(String userRole){
+
+    public void setUserRole(String userRole) {
         this.userRole = userRole;
+    }
+
+    public Integer getLoggedEtudiantId() {
+        return loggedEtudiantld;
+    }
+
+    public void setLoggedEtudiantId(Integer loggedEtudiantld) {
+        this.loggedEtudiantld = loggedEtudiantld;
+    }
+
+    public String getPartRef() {
+        return partRef;
+    }
+
+    public void setPartRef(String partRef) {
+        this.partRef = partRef;
+    }
+
+    public String getLoggedSRIId() {
+        return loggedSRIId;
+    }
+
+    public void setLoggedSRIId(String loggedSRIId) {
+        this.loggedSRIId = loggedSRIId;
     }
 }
