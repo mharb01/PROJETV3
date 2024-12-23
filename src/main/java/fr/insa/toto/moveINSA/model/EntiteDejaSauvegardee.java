@@ -45,10 +45,10 @@ public class EntiteDejaSauvegardee extends SQLException {
         return pays;
         //chercher comment ajouter un pays
     }
-    public static String selectInConsolePays() throws SQLException {
+    /*public static String selectInConsolePays() throws SQLException {
         return ListUtils.selectOne("choisissez un pays :",
                 ListePays(),(elem) );
-    }
+    }*/
     public List ListeClasse() {
         List<String> classe = new ArrayList<>();
         classe.add("GT2E2");
