@@ -44,7 +44,7 @@ public class VuePart extends VerticalLayout{
     add(partenaire);
     
     this.add(new H3("Mov'INSA: l'application de l'avenir"));
-    this.add(new H3("Bienvenu cher étudiant !"));
+    this.add(new H3("Bienvenu cher partenaire !"));
     this.add(new H3("Que voulez vous faire ?"));
     }
 }
