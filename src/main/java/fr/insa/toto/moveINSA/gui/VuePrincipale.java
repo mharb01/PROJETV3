@@ -79,23 +79,15 @@ public class VuePrincipale extends VerticalLayout {
         this.add(buttonLayout);
     }
     
-    
-    
-    
     private void choisirRole(String role) {
-        SessionInfo sessionInfo = SessionInfo.getOrCreateCurSessionInfo();
-        sessionInfo.setUserRole(role);
-        
-        switch (role) {
-            case "Etudiant" -> this.getUI().ifPresent(ui ->ui.navigate("etudiant/vue"));
-            case "Partenaire" -> this.getUI().ifPresent(ui ->ui.navigate("partenaire/vue"));
-            case "SRI" -> this.getUI().ifPresent(ui ->ui.navigate("SRI/vue"));
-            default -> 
-                this.add(new Paragraph("Erreur : Role inconnu"));
-               
-                }
-        }
-        
+    SessionInfo sessionInfo = SessionInfo.getOrCreateCurSessionInfo();
+    sessionInfo.setUserRole(role); 
+    System.out.println("Rôle choisi dans VuePrincipale : " + role);
+    
+    this.getUI().ifPresent(ui -> ui.navigate("connexion"));
     }
+}
+        
+    
     
 
