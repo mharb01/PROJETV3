@@ -122,7 +122,19 @@ public class OffreMobilite {
             return res;
         }
     }
-
+    public static List<OffreMobilite> toutesLesOffresPartenaire(Connection con, Partenaire partenaire) throws SQLException {
+        int id = partenaire.getId();
+        try (PreparedStatement pst = con.prepareStatement(
+                "select id,nbrplaces,proposepar,classe,annee from offremobilite where proposepar = ?")) {
+            pst.setInt(1, id); 
+            ResultSet rs = pst.executeQuery();
+            List<OffreMobilite> res = new ArrayList<>();
+            while (rs.next()) {
+                res.add(new OffreMobilite(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4), rs.getString(5)));
+            }
+            return res;
+        }
+    }
     
     public static int creeConsole(Connection con) throws SQLException {
         Partenaire p = Partenaire.selectInConsole(con);
@@ -147,7 +159,7 @@ public class OffreMobilite {
     public static int creeConsoleang(Connection con, int id) throws SQLException {
         int nbr = ConsoleFdB.entreeInt("number of places : ");
         String clss = ConsoleFdB.entreeString ("Class :"); //modifier pour choisir dans une liste
-        int an = ConsoleFdB.entreeInt("If the offer is for : unedergraduate = 1, postgraduate = 2, les deux = 3"); //proposer sous forme de liste
+        int an = ConsoleFdB.entreeInt("If the offer is for : unedergraduate = 1, postgraduate = 2, both = 3"); //proposer sous forme de liste
         String annee = null;
         while (an !=1 || an!=2 || an!=3){
         if (an == 1){

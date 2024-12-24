@@ -551,7 +551,7 @@ public class GestionBdD {
         int i = 1;
         System.out.println("Vous connecter en tant que:");
         System.out.println((i++) + ") Etudiant");
-        System.out.println((i++) + ") Partenaire");
+        System.out.println((i++) + ") Partner");
         System.out.println((i++) + ") Membre SRI");
         int r = ConsoleFdB.entreeEntier("Votre choix : "); 
         int j = 1;
@@ -570,26 +570,26 @@ public class GestionBdD {
             }
         } else if (r == j++) {
             int k = 1;
-            System.out.println((k++) + ") Connection à votre compte Partenaire");
-            System.out.println((k++) +") Creation d'un compte Partenaire");
-            int rep2 = ConsoleFdB.entreeEntier("Votre choix : "); 
+            System.out.println((k++) + ") Connection to your Partner account");
+            System.out.println((k++) +") Creation of your account");
+            int rep2 = ConsoleFdB.entreeEntier("Votre choice: "); 
             if (rep2 == 1){
-                String identifiant = ConsoleFdB.entreeString("Entrez votre identifiant: ");
-                String mdp = ConsoleFdB.entreeString("Entrez votre mot de passe:");
+                String identifiant = ConsoleFdB.entreeString("Enter your login: ");
+                String mdp = ConsoleFdB.entreeString("Enter your password:");
                 boolean OK = verifierDonneesPartenaire(con, identifiant, mdp);
                 if(OK){
                     Partenaire partenaire = getPartenaire(con, identifiant);
                     menuPrincipalPartenaire(con, partenaire);
                 } else {
-                    System.out.println("Identifiant ou mot de passe incorrect, veuillez réessayer");
+                    System.out.println("Incorrect login or password, please try again");
                     menuConnection(con);
                 }
                 
             }
             else if (rep2 == 2){
-                String refPartenaire = ConsoleFdB.entreeString("Veuillez indiquer votre reference Partenaire:");
-                String pays = ConsoleFdB.entreeString("Veuillez indiquer votre pays :");
-                String mdpP = ConsoleFdB.entreeString("Veuillez indiquer votre mot de passe:");
+                String refPartenaire = ConsoleFdB.entreeString("Please enter your reference Partner:");
+                String pays = ConsoleFdB.entreeString("Please enter your country:");
+                String mdpP = ConsoleFdB.entreeString("Please enter your password:");
                 Partenaire nouveauPartenaire = new Partenaire(-1, refPartenaire, pays, refPartenaire,mdpP);
                 nouveauPartenaire.saveInDB(con);
                 menuPrincipalPartenaire(con, nouveauPartenaire);
@@ -616,8 +616,8 @@ public class GestionBdD {
         System.out.println("Nom : " + etudiant.getNom());
         System.out.println("Classe : " + etudiant.getClasse());
         System.out.println("INE : " + etudiant.getIne());
-        System.out.println("Classement : " + etudiant.getClassement());
-        System.out.println("ID de connecxion : " + etudiant.getidco());
+        //System.out.println("Classement : " + etudiant.getClassement());
+        System.out.println("ID de connexion : " + etudiant.getidco());
         System.out.println("Mot de passe : " + etudiant.getmdp());
         System.out.println("Veuillez choisir une action :");
         System.out.println( i + ") Changer de mot de passe");
@@ -628,12 +628,12 @@ public class GestionBdD {
     }
     
     //à faire
-    public static void menuProfil(Connection con) {
-        System.out.println("TO DO profil");
-        // mettre les infos type nom, idconnection, mdp et modifier mdp. pour étudiant, mettre en plus classe et ine. Photo de profil ?
+    public static void menuProfilPartenaire(Connection con, Partenaire partenaire) {
+        System.out.println("TO DO profil partenaire");
+        
     }
     
-    //à modifier pour partenaire et sri, utiliser le même ?
+
     public static void menuOffre(Connection con) { 
         int rep = -1;
         while (rep != 0) {
@@ -828,14 +828,15 @@ public class GestionBdD {
         System.out.println((i++) + ") Change an offer");
         System.out.println((i++) + ") Delete an offer");
         System.out.println((i++) + ") Delete all your offers");
-        System.out.println("0) Back");
+        System.out.println((i++) + ") Profile");
+        System.out.println("0) Disconnection");
         int r = ConsoleFdB.entreeEntier("Enter your choice : "); 
     switch (r) {
         case 0:
             menuConnection(con);
             break;
         case 1:
-            List<OffreMobilite> users = OffreMobilite.toutesLesOffres(con);
+            List<OffreMobilite> users = OffreMobilite.toutesLesOffresPartenaire(con,partenaire);
             System.out.println(users.size() + " offres : ");
             System.out.println(ListUtils.enumerateList(users, (elem) -> elem.toString()));
             menuPrincipalPartenaire(con, partenaire);
@@ -857,7 +858,8 @@ public class GestionBdD {
                 menuPrincipalPartenaire(con, partenaire);
             break;
         case 6:
-            menuBdD(con);
+                menuProfilPartenaire(con, partenaire);
+                menuPrincipalPartenaire(con, partenaire);
             break;
             }
             }
