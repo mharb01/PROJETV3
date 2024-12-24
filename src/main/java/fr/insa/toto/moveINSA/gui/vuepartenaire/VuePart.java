@@ -43,8 +43,8 @@ public class VuePart extends VerticalLayout{
     partenaire.setHeight("100px");
     add(partenaire);
     
-    this.add(new H3("Mov'INSA: l'application de l'avenir"));
-    this.add(new H3("Bienvenu cher partenaire !"));
-    this.add(new H3("Que voulez vous faire ?"));
+    this.add(new H3("Mov'INSA: the application of the future"));
+    this.add(new H3("Welcome dear partner !"));
+    this.add(new H3("What do you want to do ?"));
     }
 }
