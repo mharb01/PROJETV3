@@ -70,8 +70,8 @@ public class EntiteDejaSauvegardee extends SQLException {
         classe.add("MIQ4");
         return classe;
     }
-    public static String selectInConsoleClasse() throws SQLException {
-        return ListUtils.selectOne("choisissez un pays :",
-                ListeClasse(),(elem) );
-    }
+//    public static String selectInConsoleClasse() throws SQLException {
+//        return ListUtils.selectOne("choisissez un pays :",
+//                ListeClasse(),(elem) );
+//    }
 }
