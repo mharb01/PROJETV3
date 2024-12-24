@@ -143,7 +143,9 @@ public class OffreMobilite {
         int an = ConsoleFdB.entreeInt("Si l'offre est proposée au niveau : unedergraduate = 1, postgraduate = 2, les deux = 3");
         String annee = null;
         while (an !=1 & an!=2 & an!=3){
-            switch (an) {
+           System.out.println("Réessayez, unedergraduate = 1, postgraduate = 2, les deux = 3");
+        }
+        switch (an) {
                 case 1:
                     annee = "undergraduate";
                     break;
@@ -154,7 +156,6 @@ public class OffreMobilite {
                     annee = "both";    
                     break;
             }
-        }
         OffreMobilite nouveau = new OffreMobilite(nbr, p.getId(), clss,annee);
         System.out.println("La nouvelle offre a bien été créée !");
         return nouveau.saveInDB(con);
@@ -164,7 +165,7 @@ public class OffreMobilite {
         String clss = ConsoleFdB.entreeString ("Class :"); //modifier pour choisir dans une liste
         int an = ConsoleFdB.entreeInt("If the offer is for : unedergraduate = 1, postgraduate = 2, both = 3"); //proposer sous forme de liste
         String annee = null;
-        while (an !=1 || an!=2 || an!=3){
+        while (an !=1 & an!=2 & an!=3){
           System.out.println("Try again, unedergraduate = 1, postgraduate = 2, both = 3");
         }
         switch (an) {
@@ -185,7 +186,6 @@ public class OffreMobilite {
     }
 // faire version anglaise modif console, peut pas changer le partenaire
     public static void modifConsole(Connection con) throws SQLException {
-
         System.out.println("Selectionner l'offre à modifier");
         OffreMobilite offremodif = selectInConsoleOffre(con);
         int nouveaunbrplaces = ConsoleFdB.entreeInt("Nouveau nombre de places (0 si vous souhaitez conserver l'ancien):");
@@ -237,6 +237,57 @@ public class OffreMobilite {
             update.executeUpdate();
         }
         System.out.println("Offre modifiée avec succès !");
+    }
+    public static void modifConsoleang(Connection con, Partenaire nouveaupartenaire) throws SQLException {
+        System.out.println("Select the offer to modify");
+        OffreMobilite offremodif = selectInConsoleOffre(con);
+        int nouveaunbrplaces = ConsoleFdB.entreeInt("New number of places (0 if you want to keep the old one):");
+        String nouvelleclasse = ConsoleFdB.entreeString("New class (leave blank if you want to keep the old one):");
+        String nouvelleannee = ConsoleFdB.entreeString("New level undergraduate/postgraduate/both (leave blank if you want to keep the old one):");
+        
+        StringBuilder ordresql = new StringBuilder("update offremobilite set");
+        Boolean first = true;
+        int i = 1;
+        if (nouveaunbrplaces!=0) {
+            ordresql.append("nbrplaces = ?");
+            first = false;  // La première colonne a été ajoutée
+        }
+        if (!nouvelleclasse.isEmpty()) {
+            if (first=false){
+                ordresql.append(", ");
+            }
+            first = false ;
+            ordresql.append("classe = ?");
+        }
+        if (!nouvelleannee.isEmpty()) {
+            if (first=false){
+                ordresql.append(", ");
+            }
+            first = false ;
+            ordresql.append("annee = ?");
+        }
+        ordresql.append("proposepar = ? where id = ?");
+        String resultatordre = ordresql.toString();
+        try (PreparedStatement update = con.prepareStatement(
+            resultatordre)) {
+            if (nouveaunbrplaces!=0) {
+            update.setInt(i, nouveaunbrplaces);
+            i++;
+            }
+            if (!nouvelleclasse.isEmpty()) {
+            update.setString(i, nouvelleclasse); 
+            i++;
+            }
+            if (!nouvelleclasse.isEmpty()) {
+            update.setString(i, nouvelleannee); 
+            i++;
+            }
+            update.setInt(i, nouveaupartenaire.getId());
+            i++;
+            update.setInt(i, offremodif.getId());
+            update.executeUpdate();
+        }
+        System.out.println("The offer has been modified with success !");
     }
     //voir si peut choisir dans liste à supprimer
       public static void suppConsole(Connection con) throws SQLException {
