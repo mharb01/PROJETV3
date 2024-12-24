@@ -142,7 +142,7 @@ public class OffreMobilite {
         String clss = ConsoleFdB.entreeString ("Classe :");
         int an = ConsoleFdB.entreeInt("Si l'offre est proposée au niveau : unedergraduate = 1, postgraduate = 2, les deux = 3");
         String annee = null;
-        while (an !=1 || an!=2 || an!=3){
+        while (an !=1 & an!=2 & an!=3){
             switch (an) {
                 case 1:
                     annee = "undergraduate";
