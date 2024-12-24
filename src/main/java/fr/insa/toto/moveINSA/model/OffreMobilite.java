@@ -238,9 +238,9 @@ public class OffreMobilite {
         }
         System.out.println("Offre modifiée avec succès !");
     }
-    public static void modifConsoleang(Connection con, Partenaire nouveaupartenaire) throws SQLException {
+    public static void modifConsoleang(Connection con, Partenaire partenaire) throws SQLException {
         System.out.println("Select the offer to modify");
-        OffreMobilite offremodif = selectInConsoleOffre(con);
+        OffreMobilite offremodif = selectInConsoleOffreang(con, partenaire);
         int nouveaunbrplaces = ConsoleFdB.entreeInt("New number of places (0 if you want to keep the old one):");
         String nouvelleclasse = ConsoleFdB.entreeString("New class (leave blank if you want to keep the old one):");
         String nouvelleannee = ConsoleFdB.entreeString("New level undergraduate/postgraduate/both (leave blank if you want to keep the old one):");
@@ -282,7 +282,7 @@ public class OffreMobilite {
             update.setString(i, nouvelleannee); 
             i++;
             }
-            update.setInt(i, nouveaupartenaire.getId());
+            update.setInt(i, partenaire.getId());
             i++;
             update.setInt(i, offremodif.getId());
             update.executeUpdate();
@@ -307,18 +307,18 @@ public class OffreMobilite {
         System.out.println("Offre supprimee avec succes !");
     }
       //voir si peut juste mettre selectionner dans la liste des offres
-      public static void suppConsoleang(Connection con, int id) throws SQLException {
+      public static void suppConsoleang(Connection con, Partenaire partenaire) throws SQLException {
+        int id = partenaire.getId();
         try (PreparedStatement update = con.prepareStatement(
-                "delete from offremobilite where nbrplaces = ? and classe = ? and annee = ? and proposepar = "+id)){ 
-            OffreMobilite offre = selectInConsoleOffreang(con);
+                "delete from offremobilite where nbrplaces = ? and classe = ? and annee = ? and proposepar = ?")){ 
+            OffreMobilite offre = selectInConsoleOffreang(con, partenaire);
             int nbrPlaces = offre.getId();
-            String partenaire = offre.getPartenaire();
             String classe = offre.getClasse();
             String annee = offre.getAnnee();
                  update.setInt(1,nbrPlaces);
-                 update.setString(2, partenaire);
-                 update.setString(3, classe);
+                 update.setString(2, classe);
                  update.setString(3, annee);
+                 update.setInt(4,id);
                  update.execute();       
                  }
         System.out.println("Offer deleted with success!");
@@ -428,17 +428,25 @@ public class OffreMobilite {
         return annee;
     }
     // les selects in console sont à revoir pour faire apparaitre les bon éléments, pour classe et annee, creer les listes avec les possiblités
-    public static OffreMobilite selectInConsoleOffre(Connection con) throws SQLException {
-        return ListUtils.selectOne("choisissez une offre :",
-                toutesLesOffres(con), (elem) -> elem.getPartenaire()); //a voir si compréhensible
+    public static ListUtils selectInConsoleOffre(Connection con) throws SQLException {
+    List<OffreMobilite> offres = toutesLesOffres(con);
+    for (int i = 0; i < offres.size(); i++) {
+        System.out.println((i + 1) + ": " + offres.get(i).toString());  // Affiche tous les attributs
     }
-    public static OffreMobilite selectInConsoleOffreang(Connection con) throws SQLException {
+        return ListUtils.selectOne("choisissez une offre :",
+                toutesLesOffres(con), (elem) -> elem.getid()); //a voir si compréhensible
+    }
+    public static OffreMobilite selectInConsoleOffreang(Connection con, Partenaire partenaire) throws SQLException {
+    List<OffreMobilite> offres = toutesLesOffresPartenaire(con, partenaire);
+    for (int i = 0; i < offres.size(); i++) {
+        System.out.println((i + 1) + ": " + offres.get(i).toString());  // Affiche tous les attributs
+    }
         return ListUtils.selectOne("choose an offer :",
-                toutesLesOffres(con), (elem) -> elem.getPartenaire()); 
+                toutesLesOffresPartenaire(con,partenaire), (elem) -> elem.getId()); 
     }
     public static OffreMobilite selectInConsoleClasse(Connection con) throws SQLException {
         return ListUtils.selectOne("choisissez une classe :",
-                toutesLesOffres(con), (elem) -> elem.getClasse());
+                toutesLesOffres(con), (elem) -> elem.getClasse()); //à changer pour utiliser liste définie dans entite deja sauvegardée
     }
     public static OffreMobilite selectInConsoleClasseang(Connection con) throws SQLException {
         return ListUtils.selectOne("choose a class :",
