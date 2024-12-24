@@ -60,7 +60,7 @@ public class GestionBdD {
                     + ConnectionSimpleSGBD.sqlForGeneratedKeys(con, "idSRI") + ",\n"
                     + " idcoSRI varchar(50) not null unique,\n "        
                     + " refSRI varchar(50) not null unique,\n"
-                    + " mdpSRI varchar(50) not null unique\n"
+                    + " mdpSRI varchar(50) not null\n"
                     + ")");
             st.executeUpdate(
                     "create table etudiant ( \n"
@@ -85,7 +85,7 @@ public class GestionBdD {
                     + " nbrplaces int not null,\n"
                     + " classe varchar(50) not null,\n"    
                     + " proposepar int not null,\n"
-                    + " annee varchar(50) not null,\n"
+                    + " annee varchar(50) not null\n"
                     + ")");
             // création des liens
             st.executeUpdate(
@@ -179,8 +179,8 @@ public class GestionBdD {
      */
     public static void initBdDTest(Connection con) throws SQLException {
         List<Partenaire> partenaires = List.of(
-                new Partenaire("MIT", "USA","MIT","provisoire"),
-                new Partenaire("Oxford", "Angleterre","Oxford","provisoire")
+                new Partenaire("MIT", "USA","MIT","mdp"),
+                new Partenaire("Oxford", "Angleterre","Oxford","mdp")
         );
         for (var p : partenaires) {
             p.saveInDB(con);
@@ -194,8 +194,8 @@ public class GestionBdD {
             o.saveInDB(con);
         }
         List<SRI> SRI = List.of(
-                new SRI("SRI1", "SRI1", "mdp1"),
-                new SRI("SRI2", "SRI2", "mdp2")
+                new SRI("SRI1", "SRI1", "mdp"),
+                new SRI("SRI2", "SRI2", "mdp")
         );
         for (var s : SRI) {
             s.saveInDB(con);
@@ -203,11 +203,11 @@ public class GestionBdD {
     }
         List<Etudiant> etudiants;
         etudiants = List.of(
-                new Etudiant("A0000000001", "Lila","GT2E2",32,"lila01","provisoire"),
-                new Etudiant("A0000000002", "Mohamad","GT2E2",16,"mahomad01","provisoire"),
-                new Etudiant("A0000000003", "Yassine","GT2E2",20,"yassine01","provisoire"),
-                new Etudiant("A0000000004", "Noé","GE2",15,"noe1",",provisoire"),
-                new Etudiant("A0000000005", "Toto","GM4",52,"toto01","provisoire")
+                new Etudiant("A0000000001", "Lila","GT2E2",32,"lila01","mdp"),
+                new Etudiant("A0000000002", "Mohamad","GT2E2",16,"mohamad01","mdp"),
+                new Etudiant("A0000000003", "Yassine","GT2E2",20,"yassine01","mdp"),
+                new Etudiant("A0000000004", "Noé","GE2",15,"noe1",",mdp"),
+                new Etudiant("A0000000005", "Toto","GM4",52,"toto01","mdp")
         );
         for (var e : etudiants) {
             e.saveInDB(con);
@@ -572,7 +572,7 @@ public class GestionBdD {
             int k = 1;
             System.out.println((k++) + ") Connection to your Partner account");
             System.out.println((k++) +") Creation of your account");
-            int rep2 = ConsoleFdB.entreeEntier("Votre choice: "); 
+            int rep2 = ConsoleFdB.entreeEntier("Your choice: "); 
             if (rep2 == 1){
                 String identifiant = ConsoleFdB.entreeString("Enter your login: ");
                 String mdp = ConsoleFdB.entreeString("Enter your password:");
