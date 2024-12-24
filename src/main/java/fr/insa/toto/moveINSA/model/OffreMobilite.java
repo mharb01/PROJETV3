@@ -165,7 +165,9 @@ public class OffreMobilite {
         int an = ConsoleFdB.entreeInt("If the offer is for : unedergraduate = 1, postgraduate = 2, both = 3"); //proposer sous forme de liste
         String annee = null;
         while (an !=1 || an!=2 || an!=3){
-            switch (an) {
+          System.out.println("Try again, unedergraduate = 1, postgraduate = 2, both = 3");
+        }
+        switch (an) {
                 case 1:
                     annee = "undergraduate";
                     break;
@@ -176,7 +178,7 @@ public class OffreMobilite {
                     annee = "both";    
                     break;
             }
-        }
+        
         OffreMobilite nouveau = new OffreMobilite(nbr, id, clss,annee);
         System.out.println("the offer has been created with success !");
         return nouveau.saveInDB(con);
