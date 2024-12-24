@@ -20,8 +20,6 @@ package fr.insa.toto.moveINSA.model;
 
 import fr.insa.beuvron.utils.ConsoleFdB;
 import fr.insa.beuvron.utils.list.ListUtils;
-import static fr.insa.toto.moveINSA.model.Partenaire.selectInConsole;
-import static fr.insa.toto.moveINSA.model.Partenaire.tousLesPartaires;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

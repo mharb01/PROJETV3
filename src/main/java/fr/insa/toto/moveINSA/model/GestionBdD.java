@@ -795,6 +795,7 @@ public class GestionBdD {
                 System.out.println((i++) + ") Acceder au menu ETUDIANT");
                 System.out.println((i++) + ") Acceder au menu PARTENAIRE");
                 System.out.println((i++) + ") Acceder au menu CANDIDATURE");
+                System.out.println((i++) + ") Acceder au menu OFFRE");
                 System.out.println(((i++) + ") Gestion de la base de donnees"));
                 int r = ConsoleFdB.entreeEntier("Votre choix : "); 
     switch (r) {
@@ -846,11 +847,11 @@ public class GestionBdD {
             menuPrincipalPartenaire(con, partenaire);
             break;
         case 3:
-                OffreMobilite.creeConsoleang(con, id);
+                OffreMobilite.modifConsole(con);
                 menuPrincipalPartenaire(con, partenaire);
             break;
             case 4:
-                OffreMobilite.suppConsoleang(con, id);
+                OffreMobilite.suppConsoleang(con, partenaire);
                 menuPrincipalPartenaire(con, partenaire);
             break;
             case 5:

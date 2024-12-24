@@ -24,7 +24,6 @@ package fr.insa.toto.moveINSA.model;
  */
 import fr.insa.beuvron.utils.ConsoleFdB;
 import fr.insa.beuvron.utils.list.ListUtils;
-import static fr.insa.toto.moveINSA.model.Partenaire.tousLesPartaires;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -141,7 +140,8 @@ public class Etudiant {
     String inemodif = etudiantmodif.getIne();
     String nouveline = ConsoleFdB.entreeString("Nouvel INE (laisser vide si vous souhaitez conserver l'ancien):");
     String nouveaunom = ConsoleFdB.entreeString("Nouveau nom (laisser vide si vous souhaitez conserver l'ancien):");
-    String nouvelleclasse = EntiteDejaSauvegardee.selectInConsoleClasse();
+    List classes = EntiteDejaSauvegardee.ListeClasse();
+    String nouvelleclasse = (String) ListUtils.selectOne("Selectionner la nouvelle classe", classes, (elem) -> elem.toString());
     int nouveauclassement = ConsoleFdB.entreeInt("Nouveau classement (0 vous souhaitez conserver l'ancien):");
     String nouveauidco = ConsoleFdB.entreeString("Nouvel identifiant de connexion (laisser vide si vous souhaitez conserver l'ancien):");
     String nouveaumdp = ConsoleFdB.entreeString("Nouveau mot de passe provisoire (laisser vide si vous souhaitez conserver l'ancien):");
