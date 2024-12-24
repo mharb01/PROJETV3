@@ -49,7 +49,7 @@ public class EntiteDejaSauvegardee extends SQLException {
         return ListUtils.selectOne("choisissez un pays :",
                 ListePays(),(elem) );
     }*/
-    public List ListeClasse() {
+    public static List ListeClasse() {
         List<String> classe = new ArrayList<>();
         classe.add("GT2E2");
         classe.add("GT2E3");
