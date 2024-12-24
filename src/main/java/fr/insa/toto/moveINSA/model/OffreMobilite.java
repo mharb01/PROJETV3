@@ -143,17 +143,20 @@ public class OffreMobilite {
         int an = ConsoleFdB.entreeInt("Si l'offre est proposée au niveau : unedergraduate = 1, postgraduate = 2, les deux = 3");
         String annee = null;
         while (an !=1 || an!=2 || an!=3){
-        if (an == 1){
-            annee = "undergraduate";
-        }
-        else if (an==2){
-            annee = "postgraduate";
-        }
-        else {
-            annee = "both";
-        }    
+            switch (an) {
+                case 1:
+                    annee = "undergraduate";
+                    break;
+                case 2:
+                    annee = "postgraduate";
+                    break;
+                default:
+                    annee = "both";    
+                    break;
+            }
         }
         OffreMobilite nouveau = new OffreMobilite(nbr, p.getId(), clss,annee);
+        System.out.println("La nouvelle offre a bien été créée !");
         return nouveau.saveInDB(con);
     }
     public static int creeConsoleang(Connection con, int id) throws SQLException {
@@ -162,17 +165,20 @@ public class OffreMobilite {
         int an = ConsoleFdB.entreeInt("If the offer is for : unedergraduate = 1, postgraduate = 2, both = 3"); //proposer sous forme de liste
         String annee = null;
         while (an !=1 || an!=2 || an!=3){
-        if (an == 1){
-            annee = "undergraduate";
-        }
-        else if (an==2){
-            annee = "postgraduate";
-        }
-        else {
-            annee = "both";
-        }    
+            switch (an) {
+                case 1:
+                    annee = "undergraduate";
+                    break;
+                case 2:
+                    annee = "postgraduate";
+                    break;
+                default:
+                    annee = "both";    
+                    break;
+            }
         }
         OffreMobilite nouveau = new OffreMobilite(nbr, id, clss,annee);
+        System.out.println("the offer has been created with success !");
         return nouveau.saveInDB(con);
     }
 // faire version anglaise modif console, peut pas changer le partenaire
