@@ -40,7 +40,7 @@ import fr.insa.toto.moveINSA.gui.TestDriverPanel;
 public class MenuGaucheEt extends SideNav {
 
     public MenuGaucheEt() {
-        SideNavItem main = new SideNavItem("Menu Pricipal",VuePrincipale.class);
+        SideNavItem main = new SideNavItem("Menu Principal",VuePrincipale.class);
         SideNavItem offres = new SideNavItem("Offres");
         offres.addItem(new SideNavItem("liste", OffresEtPanel.class));
         SideNavItem candidatures = new SideNavItem("Mes Candidatures");

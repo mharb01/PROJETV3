@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.insa.toto.moveINSA.gui.vueSRI;
+package fr.insa.toto.moveINSA.gui.vuepartenaire;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.grid.Grid;
@@ -42,27 +42,28 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+
 /**
  *
  * @author HP
  */
-public class OffreGrid extends Grid <OffreMobilite> {
+public class OffresPartGrid extends Grid <OffreMobilite> {
     private TextField ifPlaces;
     private TextField tfClasse; 
     private TextField tfAnnee;
     private Button bSave;
     
-   public OffreGrid(List<OffreMobilite> offremobilite){
+    public OffresPartGrid(List<OffreMobilite> offremobilite){
+        
         this.setColumnReorderingAllowed(true);
                 this.addColumn(OffreMobilite::getId).setHeader("id").setSortable(true).setResizable(true);
-                this.addColumn(OffreMobilite::getNbrPlaces).setHeader("Nombre de places").setSortable(true).setResizable(true);
-                this.addColumn(OffreMobilite::getPartenaire).setHeader("Proposé par").setSortable(true).setResizable(true);
-                this.addColumn(OffreMobilite::getClasse).setHeader("Classe cible").setSortable(true).setResizable(true);
-                this.addColumn(OffreMobilite::getAnnee).setHeader("Année").setSortable(true).setResizable(true);
+                this.addColumn(OffreMobilite::getNbrPlaces).setHeader("Number of places").setSortable(true).setResizable(true);
+                this.addColumn(OffreMobilite::getClasse).setHeader("Targeted class").setSortable(true).setResizable(true);
+                this.addColumn(OffreMobilite::getAnnee).setHeader("Year").setSortable(true).setResizable(true);
                 
                 // Ajouter une colonne pour le bouton "Candidater"
         this.addComponentColumn(offre -> {
-            Button modifButton = new Button("Modifier");
+            Button modifButton = new Button("Modify");
 
             modifButton.addClickListener(event -> {
                 // Créer le dialog
@@ -73,22 +74,22 @@ public class OffreGrid extends Grid <OffreMobilite> {
                 VerticalLayout layout = new VerticalLayout();
                 
                 layout.add(new H3("Modification"));
-                layout.add(new Text("Veuillez remplir uniquement le(s) champ(s) à modifier "));
+                layout.add(new Text("Please only complete the field(s) to be modified "));
 
                 
-                TextField nbrPlacesField = new TextField("Nouveau nombre de places");
+                TextField nbrPlacesField = new TextField("New number of places");
                 nbrPlacesField.setValue(String.valueOf(offre.getNbrPlaces())); // Valeur existante
 
-                TextField classeField = new TextField("Nouvelle classe cible");
+                TextField classeField = new TextField("New class targeted");
                 classeField.setValue(offre.getClasse()); // Valeur existante
                 
-                TextField AnneeField = new TextField("Nouvelle année");
+                TextField AnneeField = new TextField("New year");
                 AnneeField.setValue(String.valueOf(offre.getAnnee()));
 
                 layout.add(nbrPlacesField, classeField, AnneeField);
 
                 // Boutons pour confirmer ou annuler
-                Button confirmButton = new Button("Confirmer", e -> {
+                Button confirmButton = new Button("Confirm", e -> {
                     
                      int newNbrPlaces = nbrPlacesField.getValue().isEmpty() ? offre.getNbrPlaces() : Integer.parseInt(nbrPlacesField.getValue());
                      String newClasse = classeField.getValue().isEmpty() ? offre.getClasse() : classeField.getValue();
@@ -96,18 +97,18 @@ public class OffreGrid extends Grid <OffreMobilite> {
                      
                     try (Connection con = ConnectionPool.getConnection()) {
  
-                        OffreGrid.modifier(con, offre.getId(), newNbrPlaces, newClasse, newAnnee);
+                        OffresPartGrid.modifier(con, offre.getId(), newNbrPlaces, newClasse, newAnnee);
                         
-                        Notification.show("Offre : " + offre.getId() + " modifiée avec succès ! ");
+                        Notification.show("Offer : " + offre.getId() + " modified with success ! ");
                         dialog.close(); // Fermer le dialog
                         
                     } catch (SQLException ex) {
-                        Notification.show("Erreur lors de la modification : " + ex.getLocalizedMessage());
+                        Notification.show("Error in the modification : " + ex.getLocalizedMessage());
                     }
 
                 });
                 
-                Button cancelButton = new Button("Annuler", e -> {
+                Button cancelButton = new Button("Cancel", e -> {
                     dialog.close(); // Fermer le dialog sans faire d'action
                 });
 
@@ -126,7 +127,7 @@ public class OffreGrid extends Grid <OffreMobilite> {
         
         
         this.addComponentColumn(offre -> {
-            Button suppButton = new Button("Supprimer");
+            Button suppButton = new Button("Delete");
 
             suppButton.addClickListener(event -> {
                 // Créer le dialog
@@ -135,15 +136,15 @@ public class OffreGrid extends Grid <OffreMobilite> {
 
                 // Ajouter un message de confirmation
                 VerticalLayout layout = new VerticalLayout();
-                layout.add(new H3("Attention"));
-                layout.add(new Text("Êtes-vous sûr de vouloir supprimer l'offre : " + offre.getId() + " proposée par " + offre.getPartenaire() + " ? "));
+                layout.add(new H3("Caution"));
+                layout.add(new Text("Are you sure you want to delete the offer : " + offre.getId() + " ? "));
                 
                 // Boutons pour confirmer ou annuler
-                Button confirmButton = new Button("Oui", e -> {
+                Button confirmButton = new Button("Yes", e -> {
                                        
                     try (Connection con = ConnectionPool.getConnection()) {
-                    OffreGrid.supprimer(con, offre);
-                    Notification.show("Offre : " + offre.getId() + " supprimée avec succès ! ");
+                    OffresPartGrid.supprimer(con, offre);
+                    Notification.show("Offer : " + offre.getId() + " deleted with success ! ");
                     dialog.close(); // Fermer le dialog
                 
                     } catch (SQLException ex) {
@@ -152,7 +153,7 @@ public class OffreGrid extends Grid <OffreMobilite> {
             }
                     });
                 
-                Button cancelButton = new Button("Non", e -> {
+                Button cancelButton = new Button("No", e -> {
                     dialog.close(); // Fermer le dialog sans faire d'action
                 });
 
@@ -180,7 +181,7 @@ public class OffreGrid extends Grid <OffreMobilite> {
                  update.setInt(1,id);
                  update.execute();       
                  }
-        System.out.println("Offre supprimee avec succes !");
+        System.out.println("Offer deleted with success !");
     }
    
    public static void modifier(Connection con, int id, int nbrPlaces, String classe, String annee) throws SQLException {
@@ -192,6 +193,6 @@ public class OffreGrid extends Grid <OffreMobilite> {
         update.setInt(4, id); // Identifiant de l'offre à modifier
         update.executeUpdate();
     }
-    System.out.println("Offre modifiée avec succès !");
-}
+    System.out.println("Offer modified with success !");
+    }
 }

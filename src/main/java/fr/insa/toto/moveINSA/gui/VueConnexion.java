@@ -22,25 +22,38 @@ package fr.insa.toto.moveINSA.gui;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.toto.moveINSA.gui.session.SessionInfo;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import fr.insa.toto.moveINSA.gui.MainLayout;
 
-@Route("connexion")
+@PageTitle("MoveINSA")
+@Route( value = "connexion", layout = MainLayout.class)
 public class VueConnexion extends VerticalLayout {
 
     public VueConnexion() throws SQLException {
         
-        this.setWidthFull();
+        this.setSizeFull();
         this.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         this.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);      
 
+        Image login = new Image("https://cdn-icons-png.flaticon.com/512/5087/5087579.png", "Etudiant");
+        login.setWidth("150px");
+        login.setHeight("150px");
+        
+        H3 titre = new H3("Veuillez vous identifier / Login ");
+        titre.getStyle().set("font-weight", "bold"); 
+        titre.getStyle().set("color", "pink");       
+        
         String role = SessionInfo.getOrCreateCurSessionInfo().getUserRole();
         System.out.println("Rôle reçu dans VueConnexion : " + role);
 
@@ -48,7 +61,7 @@ public class VueConnexion extends VerticalLayout {
         PasswordField passwordField = new PasswordField("Mot de passe");
         Button loginButton = new Button("Se connecter");
         
-        add(usernameField, passwordField, loginButton);
+        add(login, titre, usernameField, passwordField, loginButton);
 
         loginButton.addClickListener(event -> {
     String username = usernameField.getValue().trim();

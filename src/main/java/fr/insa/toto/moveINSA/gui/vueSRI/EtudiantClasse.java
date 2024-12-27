@@ -78,12 +78,12 @@ public class EtudiantClasse extends VerticalLayout {
     
     public static List<Etudiant> rechercherClasse(Connection con, String classe) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-            "select ine,nom,classe,classement,idcoEtudiant,mdpEtudiant from etudiant where classe = ? ")) {
+            "select id,ine,nom,classe,classement,idcoEtudiant,mdpEtudiant from etudiant where classe = ? ")) {
         pst.setString(1,classe);
         ResultSet rs = pst.executeQuery();
             List<Etudiant> res = new ArrayList<>();
             while (rs.next()) {
-                res.add(new Etudiant(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6)));
+                res.add(new Etudiant(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getString(6), rs.getString(7)));
             }
             System.out.println("Voici les étudiants recherchés: ");
             return res;

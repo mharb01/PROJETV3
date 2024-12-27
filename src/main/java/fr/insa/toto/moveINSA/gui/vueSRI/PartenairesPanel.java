@@ -93,7 +93,7 @@ public class PartenairesPanel extends VerticalLayout {
              Button supprimer = new Button (supp);
              supprimer.setWidthFull();
              supprimer.setHeight("100px");
-             supprimer.setText("Supprimer toutes les partenaires"); 
+             supprimer.setText("Supprimer tous les partenaires"); 
              supprimer.addClickListener(event -> { // Créer le dialog
                 Dialog dialog = new Dialog();
                 dialog.setWidth("400px");  // Définir la largeur du dialog

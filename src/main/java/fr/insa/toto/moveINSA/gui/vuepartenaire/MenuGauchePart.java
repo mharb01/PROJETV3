@@ -41,12 +41,10 @@ public class MenuGauchePart extends SideNav {
     
     public MenuGauchePart() {
         SideNavItem main = new SideNavItem("Main",VuePrincipale.class);
-        SideNavItem partenaires = new SideNavItem("Partenaires");
-        partenaires.addItem(new SideNavItem("liste", PartenairesPanel.class));
-        SideNavItem offres = new SideNavItem("Offres");
-        offres.addItem(new SideNavItem("liste", OffresPanel.class));
-        offres.addItem(new SideNavItem("nouvelle", NouvelleOffrePanel.class));
-        SideNavItem candidatures = new SideNavItem("Candidatures");
-        this.addItem(main,partenaires,offres, candidatures);
+        SideNavItem offres = new SideNavItem("Offers");
+        offres.addItem(new SideNavItem("my offers", OffresPartPanel.class));
+        offres.addItem(new SideNavItem("new", NouvelleOffrePartPanel.class));
+        SideNavItem candidatures = new SideNavItem("Applications");
+        this.addItem(main, offres, candidatures);
     }
 }

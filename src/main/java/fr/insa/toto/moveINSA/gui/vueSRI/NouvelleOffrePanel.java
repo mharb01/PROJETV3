@@ -23,6 +23,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.beuvron.vaadin.utils.ConnectionPool;
 import fr.insa.toto.moveINSA.gui.MainLayoutSRI;
@@ -38,6 +39,7 @@ import java.util.logging.Logger;
  *
  * @author francois
  */
+@PageTitle("MoveINSA")
 @Route(value = "SRI/vue/offres/nouveau",layout= MainLayoutSRI.class)
 public class NouvelleOffrePanel extends VerticalLayout {
 
