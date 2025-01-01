@@ -115,13 +115,14 @@ public class Candidature {
             throw new EntiteDejaSauvegardee();
         }
         try (PreparedStatement insert = con.prepareStatement(
-                "insert into candidature (ine, idOffreMobilite, date) values (?,?,?)",
+                "INSERT INTO candidature (ine, idOffreMobilite, date) VALUES (?,?,?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
             insert.setString(1, this.getINE());
             insert.setInt(2, this.getIdOffreMobilite());
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String now = dateFormat.format(new Date()); 
             insert.setString(3, now);
+            System.out.println("Requete SQL: INSERT INTO candidature (ine, idOffreMobilite, date) VALUES (" + this.getINE() + "," + this.getIdOffreMobilite()+","+now+")    ");
             insert.executeUpdate();
             System.out.println("Requête d'insertion exécutée avec succès !");
             try (ResultSet rid = insert.getGeneratedKeys()) {
