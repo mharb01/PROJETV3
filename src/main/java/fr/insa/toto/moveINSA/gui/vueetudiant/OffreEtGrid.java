@@ -1,92 +1,118 @@
-/*
-Copyright 2000- Francois de Bertrand de Beuvron
-
-This file is part of CoursBeuvron.
-
-CoursBeuvron is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-CoursBeuvron is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
- */
 package fr.insa.toto.moveINSA.gui.vueetudiant;
 
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import fr.insa.toto.moveINSA.model.OffreMobilite;
-import fr.insa.toto.moveINSA.model.Partenaire;
+import fr.insa.toto.moveINSA.model.Etudiant;
+import fr.insa.toto.moveINSA.model.Candidature;
+import java.sql.Connection;
+import java.sql.SQLException;
+import fr.insa.toto.moveINSA.gui.vueetudiant.CandidatureManager;
+import fr.insa.toto.moveINSA.gui.SimpleAuthService;
+import fr.insa.toto.moveINSA.gui.session.SessionInfo;
+import fr.insa.toto.moveINSA.model.ConnectionSimpleSGBD;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.util.List;
 /**
  *
  * @author HP
  */
-public class OffreEtGrid extends Grid <OffreMobilite> {
-    public OffreEtGrid(List<OffreMobilite> offremobilite){
-        this.setColumnReorderingAllowed(true);
-                this.addColumn(OffreMobilite::getId).setHeader("id").setSortable(true).setResizable(true);
-                this.addColumn(OffreMobilite::getNbrPlaces).setHeader("Nombre de places").setSortable(true).setResizable(true);
-                this.addColumn(OffreMobilite::getPartenaire).setHeader("Proposé par").setSortable(true).setResizable(true);
-                this.addColumn(OffreMobilite::getClasse).setHeader("Classe cible").setSortable(true).setResizable(true);
-                this.addColumn(OffreMobilite::getAnnee).setHeader("Année").setSortable(true).setResizable(true);
+public class OffreEtGrid extends Grid<OffreMobilite> {
+
+    private final List<OffreMobilite> offres;
+
+    public OffreEtGrid(List<OffreMobilite> offres) {
+        super(OffreMobilite.class); 
+        this.offres = offres;
+
+        this.addColumn(OffreMobilite::getId).setHeader("ID");
+        this.addColumn(OffreMobilite::getNbrPlaces).setHeader("Nombre de Places");
+        this.addColumn(OffreMobilite::getProposePar).setHeader("Proposé Par");
+        this.addColumn(OffreMobilite::getClasse).setHeader("Classe");
+        this.addColumn(OffreMobilite::getAnnee).setHeader("Année");
+
+        this.addComponentColumn(this::createCandidaterButton).setHeader("Actions");
+
+        this.setItems(this.offres);
+
+        System.out.println("Offres transmises à la grille : " + offres);
+    }
+
+    private Button createCandidaterButton(OffreMobilite offre) {
+        Button candidaterButton = new Button("Candidater");
+
+        candidaterButton.addClickListener(event -> {
+            try (Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://92.222.25.165:3306/m3_mharb01", 
+                    "m3_mharb01", 
+                    "0db5200c")) {
+    
+                Etudiant etudiant = getEtudiantActuel();
                 
-                // Ajouter une colonne pour le bouton "Candidater"
-        this.addComponentColumn(offre -> {
-            Button candidaterButton = new Button("Candidater");
+                if (CandidatureManager.candidatureExiste(con, etudiant.getIne(), offre.getId())) {
+                    Notification.show("Vous avez déjà candidaté à cette offre !");
+                } else if (!CandidatureManager.peutCandidater(con, etudiant.getIne())) {
+                    Notification.show("Vous ne remplissez pas les conditions pour candidater !");
+                } else {
+                    CandidatureManager.creerCandidature(con, etudiant.getIne(), offre.getId());
+                    Notification.show("Candidature enregistrée avec succès !");
+                }
+            } catch (SQLException ex) {
+                System.err.println("Erreur lors de la création de la candidature : " + ex.getMessage());
+                Notification.show("Erreur : " + ex.getLocalizedMessage());
+            }
+        });
 
-            candidaterButton.addClickListener(event -> {
-                // Créer le dialog
-                Dialog dialog = new Dialog();
-                dialog.setWidth("400px");  // Définir la largeur du dialog
+        return candidaterButton;
+    }
 
-                // Ajouter un message de confirmation
-                VerticalLayout layout = new VerticalLayout();
-                layout.add(new H3("Attention"));
-                layout.add(new Text("Êtes-vous sûr de candidater pour l'offre : " + offre.getId() + " proposée par " + offre.getPartenaire() + " ? "));
-                
-                // Boutons pour confirmer ou annuler
-                Button confirmButton = new Button("Oui", e -> {
-                    
-                    Notification.show("Candidature envoyée pour l'offre : " + offre.getId() + " ! ");
-                    dialog.close(); // Fermer le dialog
-                });
-                
-                Button cancelButton = new Button("Non", e -> {
-                    dialog.close(); // Fermer le dialog sans faire d'action
-                });
+    private Etudiant getEtudiantActuel() {
+        
+    SessionInfo sessionInfo = SessionInfo.getOrCreateCurSessionInfo();
+    Integer loggedEtudiantId = sessionInfo.getLoggedEtudiantId();
+    
+    System.out.println("SessionInfo : " + sessionInfo);
+    System.out.println("Logged Etudiant ID: " + loggedEtudiantId);
 
-                // Ajouter les boutons au layout
-                layout.add(confirmButton, cancelButton);
+    if (sessionInfo == null) {
+        throw new IllegalStateException("La session de l'étudiant est nulle.");
+    }   
+    
+    if (loggedEtudiantId == null) {
+        throw new IllegalStateException("Aucun étudiant n'est connecté.");
+    }
 
-                // Ajouter le layout au dialog
-                dialog.add(layout);
-
-                // Afficher le dialog
-                dialog.open();
-            });
-
-            return candidaterButton;
-        }).setHeader("Action");
-
-        // Définir les éléments de la grille
-        this.setItems(offremobilite);
+    try (Connection connection = ConnectionSimpleSGBD.defaultCon()) {
+        String query = "SELECT * FROM etudiant WHERE idEtudiant = ?";
+        System.out.println("Exécution de la requête : " + query + " avec ID = " + loggedEtudiantId);
+    try (PreparedStatement pst = connection.prepareStatement(query)) {
+            pst.setInt(1, loggedEtudiantId);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    System.out.println("Étudiant trouvé : " + rs.getString("nom"));
+                    int idEtudiant = rs.getInt("idEtudiant");
+                    String ine = rs.getString("ine");
+                    String classe = rs.getString("classe");
+                    String nom = rs.getString("nom");
+                    String idcoEtudiant = rs.getString("idcoEtudiant");
+                    int classement = rs.getInt("classement");
+                    String mdpEtudiant = rs.getString("mdpEtudiant");
+                    return new Etudiant(idEtudiant, ine, nom, classe, classement, idcoEtudiant, mdpEtudiant); 
+                } else {
+                    throw new IllegalStateException("Étudiant non trouvé dans la base de données.");
+                }
+            }
+        }
+    } catch (SQLException ex) {
+        // Ajout d'un log plus détaillé
+        throw new RuntimeException("Erreur lors de la récupération de l'étudiant: " + ex.getMessage(), ex);
+    }
 }
+
+
 }
