@@ -35,6 +35,10 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import fr.insa.toto.moveINSA.gui.MainLayout;
+import fr.insa.toto.moveINSA.model.ConnectionSimpleSGBD;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 @PageTitle("MoveINSA")
 @Route( value = "connexion", layout = MainLayout.class)
@@ -74,7 +78,25 @@ public class VueConnexion extends VerticalLayout {
 
         if (verif) {
             switch (role) {
-                case "Etudiant" -> UI.getCurrent().navigate("etudiant/vue");
+                case "Etudiant" -> {
+                try (Connection connection = ConnectionSimpleSGBD.defaultCon()) {
+                String query = "SELECT idEtudiant FROM etudiant WHERE idcoEtudiant = ? AND mdpEtudiant = ?";
+                try (PreparedStatement pst = connection.prepareStatement(query)) {
+                    pst.setString(1, username);
+                    pst.setString(2, password);
+                    try (ResultSet rs = pst.executeQuery()) {
+                        if (rs.next()) {
+                            Integer idEtudiant = rs.getInt("idEtudiant");
+                            SessionInfo.getOrCreateCurSessionInfo().setLoggedEtudiantId(idEtudiant);
+                            System.out.println("Étudiant connecté avec ID : " + idEtudiant);
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(VueConnexion.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            UI.getCurrent().navigate("etudiant/vue");
+        }
                 case "Partenaire" -> UI.getCurrent().navigate("partenaire/vue");
                 case "SRI" -> UI.getCurrent().navigate("SRI/vue");
                 default -> Notification.show("Erreur de rôle");
