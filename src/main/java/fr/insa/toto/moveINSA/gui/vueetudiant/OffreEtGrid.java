@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import fr.insa.toto.moveINSA.gui.vueetudiant.CandidatureManager;
 import fr.insa.toto.moveINSA.gui.SimpleAuthService;
 import fr.insa.toto.moveINSA.gui.session.SessionInfo;
+import fr.insa.toto.moveINSA.gui.ConfirmDialog;
 import fr.insa.toto.moveINSA.model.ConnectionSimpleSGBD;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -44,32 +45,64 @@ public class OffreEtGrid extends Grid<OffreMobilite> {
     }
 
     private Button createCandidaterButton(OffreMobilite offre) {
-        Button candidaterButton = new Button("Candidater");
+    Button candidaterButton = new Button("Candidater");
+    System.out.println("ID de l'offre récupéré : " + offre.getId());
 
-        candidaterButton.addClickListener(event -> {
-            try (Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://92.222.25.165:3306/m3_mharb01", 
-                    "m3_mharb01", 
-                    "0db5200c")) {
-    
-                Etudiant etudiant = getEtudiantActuel();
-                
-                if (CandidatureManager.candidatureExiste(con, etudiant.getIne(), offre.getId())) {
-                    Notification.show("Vous avez déjà candidaté à cette offre !");
-                } else if (!CandidatureManager.peutCandidater(con, etudiant.getIne())) {
-                    Notification.show("Vous ne remplissez pas les conditions pour candidater !");
-                } else {
+    candidaterButton.addClickListener(event -> {
+        Etudiant etudiant = getEtudiantActuel();
+        System.out.println("INE récupéré : " + etudiant.getIne());
+
+        if (!CandidatureManager.estCompatibleAvecClasse(etudiant.getClasse(), offre.getClasse())) {
+            Notification.show("Vous ne pouvez pas candidater à cette offre. Classe non compatible !");
+            return;
+        }
+
+        try (Connection con = DriverManager.getConnection(
+                "jdbc:mysql://92.222.25.165:3306/m3_mharb01",
+                "m3_mharb01",
+                "0db5200c")) {
+
+            if (CandidatureManager.candidatureExiste(con, etudiant.getIne(), offre.getId())) {
+                Notification.show("Vous avez déjà candidaté à cette offre.");
+                return;
+            }
+
+            if (!CandidatureManager.peutCandidater(con, etudiant.getIne())) {
+                Notification.show("Vous avez atteint la limite de 5 candidatures !");
+                return;
+            }
+
+        } catch (SQLException ex) {
+            System.err.println("Erreur SQL lors de la vérification des candidatures : " + ex.getMessage());
+            Notification.show("Erreur : " + ex.getLocalizedMessage());
+            return;
+        }
+
+        ConfirmDialog dialog = new ConfirmDialog(
+            "Êtes-vous sûr de vouloir candidater à cette offre ?",
+            () -> {
+                try (Connection con = DriverManager.getConnection(
+                        "jdbc:mysql://92.222.25.165:3306/m3_mharb01",
+                        "m3_mharb01",
+                        "0db5200c")) {
+
                     CandidatureManager.creerCandidature(con, etudiant.getIne(), offre.getId());
                     Notification.show("Candidature enregistrée avec succès !");
-                }
-            } catch (SQLException ex) {
-                System.err.println("Erreur lors de la création de la candidature : " + ex.getMessage());
-                Notification.show("Erreur : " + ex.getLocalizedMessage());
-            }
-        });
 
-        return candidaterButton;
-    }
+                } catch (SQLException ex) {
+                    System.err.println("Erreur lors de la création de la candidature : " + ex.getMessage());
+                    Notification.show("Erreur : " + ex.getLocalizedMessage());
+                }
+            }
+        );
+
+        dialog.open();
+    });
+
+    return candidaterButton;
+}
+
+
 
     private Etudiant getEtudiantActuel() {
         
@@ -109,7 +142,6 @@ public class OffreEtGrid extends Grid<OffreMobilite> {
             }
         }
     } catch (SQLException ex) {
-        // Ajout d'un log plus détaillé
         throw new RuntimeException("Erreur lors de la récupération de l'étudiant: " + ex.getMessage(), ex);
     }
 }
