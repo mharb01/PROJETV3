@@ -28,6 +28,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
@@ -114,12 +115,15 @@ public class Candidature {
             throw new EntiteDejaSauvegardee();
         }
         try (PreparedStatement insert = con.prepareStatement(
-                "insert into candidature (INE, idOffreMobilite, date) values (?,?,?)",
+                "insert into candidature (ine, idOffreMobilite, date) values (?,?,?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
             insert.setString(1, this.getINE());
             insert.setInt(2, this.getIdOffreMobilite());
-            insert.setDate(3, (java.sql.Date) this.getDate());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String now = dateFormat.format(new Date()); 
+            insert.setString(3, now);
             insert.executeUpdate();
+            System.out.println("Requête d'insertion exécutée avec succès !");
             try (ResultSet rid = insert.getGeneratedKeys()) {
                 rid.next();
                 this.idCandidature = rid.getInt(1);
