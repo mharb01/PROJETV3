@@ -110,6 +110,20 @@ public class GestionBdD {
                         foreign key (INE) references etudiant(ine)
                         on delete restrict on update restrict 
                     """);
+            st.executeUpdate(
+                    """
+                    alter table offremobilite
+                        add constraint fk_offremobilite_partenaire
+                        foreign key (proposepar) references partenaire(id)
+                        on delete restrict on update restrict 
+                    """);
+            st.executeUpdate(
+                    """
+                    alter table candidature
+                        add constraint fk_candidature_partenaire
+                        foreign key (idPartenaire) references partenaire(id)
+                        on delete restrict on update restrict 
+                    """);
             con.commit();
         } catch (SQLException ex) {
             con.rollback();
