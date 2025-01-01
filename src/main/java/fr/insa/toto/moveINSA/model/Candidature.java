@@ -69,6 +69,7 @@ public class Candidature {
     private String INE;
     private int idOffreMobilite;
     private Date date;
+    private int idPartenaire;
 
     /**
      * création d'une nouvelle Candidature en mémoire, non existant dans la Base de
@@ -77,8 +78,8 @@ public class Candidature {
      * @param id
      */
     
-    public Candidature(String INE, int idOffreMobilite, Date date){
-        this(-1,INE, idOffreMobilite, date);
+    public Candidature(String INE, int idOffreMobilite, Date date, int idPartenaire){
+        this(-1,INE, idOffreMobilite, date, idPartenaire);
     }
    
     /**
@@ -86,11 +87,12 @@ public class Candidature {
      *
      * @param INE, idOffreMobilite
      */
-    public Candidature(int idCandidature, String INE, int idOffreMobilite, Date date){
+    public Candidature(int idCandidature, String INE, int idOffreMobilite, Date date, int idPartenaire){
         this.idCandidature = idCandidature;
         this.INE = INE;
         this.idOffreMobilite = idOffreMobilite;
         this.date = date;
+        this.idPartenaire = idPartenaire;
     }
 
     @Override
@@ -115,13 +117,14 @@ public class Candidature {
             throw new EntiteDejaSauvegardee();
         }
         try (PreparedStatement insert = con.prepareStatement(
-                "INSERT INTO candidature (ine, idOffreMobilite, date) VALUES (?,?,?)",
+                "INSERT INTO candidature (ine, idOffreMobilite, date,idPartenaire) VALUES (?,?,?,?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
             insert.setString(1, this.getINE());
             insert.setInt(2, this.getIdOffreMobilite());
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String now = dateFormat.format(new Date()); 
             insert.setString(3, now);
+            insert.setInt(4, this.getIdPartenaire());
             System.out.println("Requete SQL: INSERT INTO candidature (ine, idOffreMobilite, date) VALUES (" + this.getINE() + "," + this.getIdOffreMobilite()+","+now+")    ");
             insert.executeUpdate();
             System.out.println("Requête d'insertion exécutée avec succès !");
@@ -135,11 +138,11 @@ public class Candidature {
 
     public static List<Candidature> toutesLesCandidatures(Connection con) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-                "select idCandidature,INE,idOffreMobilite,date from candidature")) {
+                "select idCandidature,ine,idOffreMobilite,date,idPartenaire from candidature")) {
             ResultSet rs = pst.executeQuery();
             List<Candidature> res = new ArrayList<>();
             while (rs.next()) {
-                res.add(new Candidature(rs.getInt(1), rs.getString(2),rs.getInt(3), rs.getDate(4)));
+                res.add(new Candidature(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getDate(4), rs.getInt(5)));
             }
             return res;
         }
@@ -159,6 +162,23 @@ public class Candidature {
                     return new OffreMobilite(id, nbr, proposepar, classe, "2024");
                 }
             }     
+        }
+        return null;
+    }
+    
+    public static Partenaire getPartenaire(Connection con, int idPartenaire) throws SQLException {
+        String rech = "SELECT * FROM partenaire WHERE id = ?";
+        try(PreparedStatement pst = con.prepareStatement(rech)){
+            pst.setInt(1,idPartenaire);
+            try(ResultSet rs = pst.executeQuery()){
+                if(rs.next()){
+                    String refPart = rs.getString("refPartenaire");
+                    String pays = rs.getString("pays");
+                    String idcoPartenaire = rs.getString("idcoPartenaire");
+                    String mdpPartenaire = rs.getString("mdpPartenaire");
+                    return new Partenaire (idPartenaire, refPart, pays, idcoPartenaire, mdpPartenaire);
+                }
+            }
         }
         return null;
     }
@@ -217,7 +237,7 @@ public class Candidature {
             LocalDate dateNow = LocalDate.now();
             Date dateCandidature;
             dateCandidature = java.sql.Date.valueOf(dateNow);
-            Candidature nouveau = new Candidature(ine,offre.getId(),dateCandidature);
+            Candidature nouveau = new Candidature(ine,offre.getId(),dateCandidature, offre.getProposePar());
             System.out.println("Candidature envoyee avec succes!");
             return nouveau.saveInDB(con);
         } else {
@@ -319,5 +339,9 @@ public class Candidature {
 
     public void setIdOffreMobilite(int idOffreMobilite) {
         this.idOffreMobilite = idOffreMobilite;
+    }
+
+    public int getIdPartenaire() {
+        return idPartenaire;
     }
 }
