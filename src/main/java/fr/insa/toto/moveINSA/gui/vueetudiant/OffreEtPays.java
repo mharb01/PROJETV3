@@ -85,7 +85,7 @@ public class OffreEtPays extends VerticalLayout {
     
     public static List<OffreMobilite> rechercherPays(Connection con, String pays) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-            "select offremobilite.id, offremobilite.nbrplaces, offremobilite.proposepar, offremobilite.classe, offreMobilite.annee from offremobilite,partenaire where offremobilite.proposepar = partenaire.id and partenaire.pays = ? ")) {
+            "select offremobilite.id, offremobilite.nbrplaces, offremobilite.proposepar, offremobilite.classe, offremobilite.annee from offremobilite,partenaire where offremobilite.proposepar = partenaire.id and partenaire.pays = ? ")) {
         pst.setString(1,pays);
         ResultSet rs = pst.executeQuery();
             List<OffreMobilite> res = new ArrayList<>();
