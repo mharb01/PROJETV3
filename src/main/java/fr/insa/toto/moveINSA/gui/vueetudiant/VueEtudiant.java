@@ -30,6 +30,11 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import fr.insa.toto.moveINSA.gui.MainLayout;
+import fr.insa.toto.moveINSA.gui.VueConnexion;
+import fr.insa.toto.moveINSA.gui.vueetudiant.OffreEtGrid;
+import fr.insa.toto.moveINSA.gui.session.SessionInfo;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -40,6 +45,10 @@ import fr.insa.toto.moveINSA.gui.MainLayout;
 public class VueEtudiant extends VerticalLayout {
     
     public VueEtudiant (){
+    
+    SessionInfo sessionInfo = SessionInfo.getOrCreateCurSessionInfo();
+    String loggedEtudiantNom = sessionInfo.getLoggedEtudiantNom();
+
         
     this.setWidthFull();
     this.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -52,7 +61,7 @@ public class VueEtudiant extends VerticalLayout {
     
     
     this.add(new H3("Mov'INSA: l'application de l'avenir"));
-    this.add(new H3("Bienvenue cher étudiant !"));
+    this.add(new H3("Bienvenue " + loggedEtudiantNom + " ! "));
     this.add(new H3("Que voulez vous faire ?"));
     
     

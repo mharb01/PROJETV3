@@ -80,14 +80,18 @@ public class VueConnexion extends VerticalLayout {
             switch (role) {
                 case "Etudiant" -> {
                 try (Connection connection = ConnectionSimpleSGBD.defaultCon()) {
-                String query = "SELECT idEtudiant FROM etudiant WHERE idcoEtudiant = ? AND mdpEtudiant = ?";
+                String query = "SELECT idEtudiant, nom , ine FROM etudiant WHERE idcoEtudiant = ? AND mdpEtudiant = ?";
                 try (PreparedStatement pst = connection.prepareStatement(query)) {
                     pst.setString(1, username);
                     pst.setString(2, password);
                     try (ResultSet rs = pst.executeQuery()) {
                         if (rs.next()) {
                             Integer idEtudiant = rs.getInt("idEtudiant");
+                            String nom = rs.getString("nom");
+                            String ine = rs.getString("ine");
                             SessionInfo.getOrCreateCurSessionInfo().setLoggedEtudiantId(idEtudiant);
+                            SessionInfo.getOrCreateCurSessionInfo().setLoggedEtudiantNom(nom);
+                            SessionInfo.getOrCreateCurSessionInfo().setLoggedEtudiantINE(ine);                            
                             System.out.println("Étudiant connecté avec ID : " + idEtudiant);
                         }
                     }
@@ -97,8 +101,49 @@ public class VueConnexion extends VerticalLayout {
             }
             UI.getCurrent().navigate("etudiant/vue");
         }
-                case "Partenaire" -> UI.getCurrent().navigate("partenaire/vue");
-                case "SRI" -> UI.getCurrent().navigate("SRI/vue");
+                case "Partenaire" -> { 
+                    try (Connection connection = ConnectionSimpleSGBD.defaultCon()) {
+                String rech = "SELECT id, refPartenaire FROM partenaire WHERE idcoPartenaire =? AND mdpPartenaire = ? LIMIT 1";
+            try (PreparedStatement pst = connection.prepareStatement(rech)){
+                pst.setString(1, username);
+                pst.setString(2, password);                   
+                    try (ResultSet rs = pst.executeQuery()) {
+                        if (rs.next()) {
+                            Integer id = rs.getInt("id");
+                            String refPartenaire = rs.getString("refPartenaire");
+                            SessionInfo.getOrCreateCurSessionInfo().setPartId(id);
+                            SessionInfo.getOrCreateCurSessionInfo().setPartRef(refPartenaire);
+                            System.out.println("Partenaire connecté avec ID : " + id);
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(VueConnexion.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                    UI.getCurrent().navigate("partenaire/vue");
+                }
+                case "SRI" -> {
+                    
+                    try (Connection connection = ConnectionSimpleSGBD.defaultCon()) {
+                    String rech = "SELECT idSRI, refSRI FROM SRI WHERE idcoSRI =? AND mdpSRI = ? LIMIT 1";
+            try (PreparedStatement pst = connection.prepareStatement(rech)){
+                pst.setString(1, username);
+                pst.setString(2, password);
+                try (ResultSet rs = pst.executeQuery()){
+                    if (rs.next()) {
+                        int idSRI = rs.getInt("idSRI");
+                        String refSRI = rs.getString("refSRI");
+                        SessionInfo.getOrCreateCurSessionInfo().setLoggedSRIId(idSRI);
+                        SessionInfo.getOrCreateCurSessionInfo().setLoggedSRIref(refSRI);                        
+                        System.out.println("Profil SRI connecté avec ID : " + idSRI);
+                    }
+                }
+            }  
+                    UI.getCurrent().navigate("SRI/vue");
+                    
+                }
+                    
+                }
                 default -> Notification.show("Erreur de rôle");
             }
         } else {

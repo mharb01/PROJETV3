@@ -68,17 +68,23 @@ public class SessionInfo implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-    private Integer loggedPart;
+    private Integer loggedPartId;
     private String partRef;
     private Integer loggedEtudiantld;
-    private String loggedSRIId;
+    private String loggedEtudiantNom;
+    private String loggedEtudiantINE;
+    private Integer loggedSRIId;
+    private String loggedSRIref;
     private String userRole; // "partenaire", "etudiant", "SRI"
 
     public SessionInfo() {
-        this.loggedPart = null;
+        this.loggedPartId = null;
         this.partRef = null;
-        this.loggedEtudiantld = null;
+        this.loggedEtudiantld = null;  
+        this.loggedEtudiantNom = null;
+        this.loggedEtudiantINE = null;
         this.loggedSRIId = null;
+        this.loggedSRIref = null;
     }
 
     public static SessionInfo getOrCreateCurSessionInfo() {
@@ -91,15 +97,10 @@ public class SessionInfo implements Serializable {
         return res;
     }
 
-    public static void doLogin(Partenaire p) {
-        SessionInfo cur = getOrCreateCurSessionInfo();
-        cur.loggedPart = p.getId();
-        cur.partRef = p.getRefPartenaire();
-    }
 
     public static boolean connected() {
         SessionInfo cur = getOrCreateCurSessionInfo();
-        return cur.loggedPart != null;
+        return cur.loggedPartId != null;
     }
 
     public static void doLogout() {
@@ -108,7 +109,7 @@ public class SessionInfo implements Serializable {
 
     public static Integer getLoggedPartId() {
         SessionInfo cur = getOrCreateCurSessionInfo();
-        return cur.loggedPart;
+        return cur.loggedPartId;
     }
 
     public static String getLoggedPartRef() {
@@ -127,6 +128,22 @@ public class SessionInfo implements Serializable {
     public Integer getLoggedEtudiantId() {
         return loggedEtudiantld;
     }
+    
+    public String getLoggedEtudiantNom() {
+        return loggedEtudiantNom;
+    }
+    
+    public String getLoggedEtudiantINE() {
+        return loggedEtudiantINE;
+    } 
+    
+    public void setLoggedEtudiantINE(String loggedEtudiantINE) {
+        this.loggedEtudiantINE = loggedEtudiantINE;
+    }    
+    
+    public void setLoggedEtudiantNom(String loggedEtudiantNom) {
+        this.loggedEtudiantNom = loggedEtudiantNom;
+    }
 
     public void setLoggedEtudiantId(Integer loggedEtudiantld) {
         this.loggedEtudiantld = loggedEtudiantld;
@@ -140,11 +157,28 @@ public class SessionInfo implements Serializable {
         this.partRef = partRef;
     }
 
-    public String getLoggedSRIId() {
+     public Integer getPartId() {
+        return loggedPartId;
+    }
+     
+    public void setPartId(Integer partId) {
+        this.loggedPartId = partId;
+    }
+ 
+     
+    public Integer getLoggedSRIId() {
         return loggedSRIId;
     }
 
-    public void setLoggedSRIId(String loggedSRIId) {
+    public void setLoggedSRIId(Integer loggedSRIId) {
         this.loggedSRIId = loggedSRIId;
+    }
+    
+    public String getLoggedSRIref() {
+        return loggedSRIref;
+    }
+    
+    public void setLoggedSRIref( String loggedSRIref) {
+        this.loggedSRIref = loggedSRIref;
     }
 }

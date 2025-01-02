@@ -44,6 +44,7 @@ public class MenuGaucheEt extends SideNav {
         SideNavItem offres = new SideNavItem("Offres");
         offres.addItem(new SideNavItem("liste", OffresEtPanel.class));
         SideNavItem candidatures = new SideNavItem("Mes Candidatures");
+        candidatures.addItem(new SideNavItem("liste", CandidatureEtPanel.class));
 
        this.addItem(main,offres, candidatures);
     }

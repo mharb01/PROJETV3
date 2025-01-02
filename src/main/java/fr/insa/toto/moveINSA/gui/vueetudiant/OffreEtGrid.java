@@ -25,11 +25,11 @@ import java.util.List;
  */
 public class OffreEtGrid extends Grid<OffreMobilite> {
 
-    private final List<OffreMobilite> offres;
+//    private final List<OffreMobilite> offres;
 
     public OffreEtGrid(List<OffreMobilite> offres) {
-        super(OffreMobilite.class); 
-        this.offres = offres;
+//        super(OffreMobilite.class); 
+//        this.offres = offres;
 
         this.addColumn(OffreMobilite::getId).setHeader("ID");
         this.addColumn(OffreMobilite::getNbrPlaces).setHeader("Nombre de Places");
@@ -39,7 +39,7 @@ public class OffreEtGrid extends Grid<OffreMobilite> {
 
         this.addComponentColumn(this::createCandidaterButton).setHeader("Actions");
 
-        this.setItems(this.offres);
+        this.setItems(offres);
 
         System.out.println("Offres transmises à la grille : " + offres);
     }
@@ -86,7 +86,7 @@ public class OffreEtGrid extends Grid<OffreMobilite> {
                         "m3_mharb01",
                         "0db5200c")) {
 
-                    CandidatureManager.creerCandidature(con, etudiant.getIne(), offre.getId());
+                    CandidatureManager.creerCandidature(con, etudiant.getIne(), offre.getId(), offre.getProposePar());
                     Notification.show("Candidature enregistrée avec succès !");
 
                 } catch (SQLException ex) {

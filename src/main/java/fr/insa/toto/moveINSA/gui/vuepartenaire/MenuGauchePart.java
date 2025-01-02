@@ -30,6 +30,7 @@ import fr.insa.toto.moveINSA.gui.vueSRI.NouveauPartenairePanel;
 import fr.insa.toto.moveINSA.gui.vueSRI.NouvelleOffrePanel;
 import fr.insa.toto.moveINSA.gui.vueSRI.OffresPanel;
 import fr.insa.toto.moveINSA.gui.vueSRI.PartenairesPanel;
+import fr.insa.toto.moveINSA.gui.vuepartenaire.CandidaturePartPanel;
 import fr.insa.toto.moveINSA.gui.RAZBdDPanel;
 import fr.insa.toto.moveINSA.gui.TestDriverPanel;
 
@@ -45,6 +46,8 @@ public class MenuGauchePart extends SideNav {
         offres.addItem(new SideNavItem("my offers", OffresPartPanel.class));
         offres.addItem(new SideNavItem("new", NouvelleOffrePartPanel.class));
         SideNavItem candidatures = new SideNavItem("Applications");
+        candidatures.addItem(new SideNavItem("my applications", CandidaturePartPanel.class));
+        
         this.addItem(main, offres, candidatures);
     }
 }

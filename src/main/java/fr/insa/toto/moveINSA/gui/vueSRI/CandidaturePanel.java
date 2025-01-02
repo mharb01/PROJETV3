@@ -32,34 +32,35 @@ import com.vaadin.flow.router.Route;
 import fr.insa.beuvron.vaadin.utils.ConnectionPool;
 import fr.insa.toto.moveINSA.gui.MainLayoutSRI;
 import fr.insa.toto.moveINSA.gui.session.SessionInfo;
+import fr.insa.toto.moveINSA.model.Candidature;
 import fr.insa.toto.moveINSA.model.Etudiant;
 import java.sql.Connection;
 import java.sql.SQLException;
-
 /**
  *
  * @author HP
  */
 @PageTitle("MoveINSA")
-@Route(value = "SRI/vue/etudiant/liste", layout = MainLayoutSRI.class)
-public class EtudiantPanel extends VerticalLayout {
-    private EtudiantGrid etudiantGrid;
-    public EtudiantPanel() {
-
-             Image liste = new Image("https://cdn-icons-png.flaticon.com/512/1472/1472457.png", "Voir tout");
+@Route(value = "SRI/vue/candidature/liste", layout = MainLayoutSRI.class)
+public class CandidaturePanel extends VerticalLayout {
+    private CandidatureGrid CandidatureGrid;
+    
+    public CandidaturePanel() {
+        
+        Image liste = new Image("https://cdn-icons-png.flaticon.com/512/1472/1472457.png", "Voir tout");
              liste.setWidth("100px");
              liste.setHeight("100px");
-             Button etudiantListe = new Button (liste);
-             etudiantListe.setWidthFull();
-             etudiantListe.setHeight("100px");
-             etudiantListe.setText("Voir tous les étudiants"); 
-             etudiantListe.addClickListener(event -> 
+             Button candListe = new Button (liste);
+             candListe.setWidthFull();
+             candListe.setHeight("100px");
+             candListe.setText("Voir toutes les candidatures"); 
+             candListe.addClickListener(event -> 
              {  try (Connection con = ConnectionPool.getConnection()) {                 
-                 if (etudiantGrid != null) {
+                 if (CandidatureGrid != null) {
                 this.removeAll();  }  //Efface la liste précédente 
-                this.add(new H3("Tous les étudiants"));
-                 etudiantGrid = new EtudiantGrid(Etudiant.tousLesEtudiants(con));
-                 this.add(etudiantGrid);
+                this.add(new H3("Voici toutes les candidatures "));
+                 CandidatureGrid = new CandidatureGrid(Candidature.toutesLesCandidatures(con));
+                 this.add(CandidatureGrid);
                 } catch (SQLException ex) {
                     System.out.println("Probleme : " + ex.getLocalizedMessage());
                     Notification.show("Probleme : " + ex.getLocalizedMessage());
@@ -69,21 +70,21 @@ public class EtudiantPanel extends VerticalLayout {
              Image ine = new Image("https://cdn-icons-png.flaticon.com/512/2247/2247882.png", "Voir Avec INE");
              ine.setWidth("100px");
              ine.setHeight("100px");             
-             Button etudiantINE = new Button (ine);
-             etudiantINE.setWidthFull();
-             etudiantINE.setHeight("100px");
-             etudiantINE.setText("Rechercher par INE"); 
-             etudiantINE.addClickListener(event -> { choisir("ine");});
+             Button candINE = new Button (ine);
+             candINE.setWidthFull();
+             candINE.setHeight("100px");
+             candINE.setText("Rechercher par INE"); 
+             candINE.addClickListener(event -> { choisir("ine");});
             
              
-             Image classe = new Image("https://cdn-icons-png.flaticon.com/512/7092/7092289.png", "Voir Avec Classe");
-             classe.setWidth("100px");
-             classe.setHeight("100px"); 
-             Button etudiantClasse = new Button (classe);
-             etudiantClasse.setWidthFull();
-             etudiantClasse.setHeight("100px");
-             etudiantClasse.setText("Rechercher par Classe"); 
-             etudiantClasse.addClickListener(event -> { choisir("classe");});
+             Image partenaire = new Image("https://cdn-icons-png.flaticon.com/512/167/167707.png", "Partenaire");
+             partenaire.setWidth("100px");
+             partenaire.setHeight("100px"); 
+             Button candPartenaire = new Button (partenaire);
+             candPartenaire.setWidthFull();
+             candPartenaire.setHeight("100px");
+             candPartenaire.setText("Rechercher par partenaire"); 
+             candPartenaire.addClickListener(event -> { choisir("partenaire");});
              
              
              Image supp = new Image("https://icons.veryicon.com/png/o/education-technology/learning-to-bully-the-king/delete-351.png", "Voir selon partenaire");
@@ -92,7 +93,7 @@ public class EtudiantPanel extends VerticalLayout {
              Button supprimer = new Button (supp);
              supprimer.setWidthFull();
              supprimer.setHeight("100px");
-             supprimer.setText("Supprimer tous les profils"); 
+             supprimer.setText("Supprimer toutes les candidatures"); 
              supprimer.addClickListener(event -> { // Créer le dialog
                 Dialog dialog = new Dialog();
                 dialog.setWidth("400px");  // Définir la largeur du dialog
@@ -100,14 +101,14 @@ public class EtudiantPanel extends VerticalLayout {
                 // Ajouter un message de confirmation
                 VerticalLayout layout = new VerticalLayout();
                 layout.add(new H3("Attention"));
-                layout.add(new Text("Êtes-vous sûr de vouloir supprimer tous les profils étudiants ?"));
+                layout.add(new Text("Êtes-vous sûr de vouloir supprimer toutes les candidatures ?"));
                 
                 // Boutons pour confirmer ou annuler
                 Button confirmButton = new Button("Oui", e -> {
                     
                     try (Connection con = ConnectionPool.getConnection()) {
-                    Etudiant.supprallConsole(con);
-                    Notification.show("Toutes les profils étudiants ont été supprimées avec succès ! ");
+                    Candidature.deleteAllConsole(con);
+                    Notification.show("Toutes les candidatures ont été supprimées avec succès ! ");
                     dialog.close(); // Fermer le dialog
                 
                     } catch (SQLException ex) {
@@ -130,23 +131,23 @@ public class EtudiantPanel extends VerticalLayout {
                 dialog.open();
             });
              
-             VerticalLayout buttonLayout = new VerticalLayout (etudiantListe, etudiantINE, etudiantClasse, supprimer);
+             VerticalLayout buttonLayout = new VerticalLayout (candListe, candINE, candPartenaire, supprimer);
              buttonLayout.setSpacing(true);
              this.add(buttonLayout);
         }
     
-    private void choisir(String role) {
+     
+        private void choisir(String role) {
         SessionInfo sessionInfo = SessionInfo.getOrCreateCurSessionInfo();
         sessionInfo.setUserRole(role);
         
         switch (role) {
-            case "ine" -> this.getUI().ifPresent(ui ->ui.navigate("SRI/vue/etudiant/rechercher/ine"));
-            case "classe" -> this.getUI().ifPresent(ui ->ui.navigate("SRI/vue/etudiant/rechercher/classe"));
+            case "ine" -> this.getUI().ifPresent(ui ->ui.navigate("SRI/vue/candidature/rechercher/ine"));
+            case "partenaire" -> this.getUI().ifPresent(ui ->ui.navigate("SRI/vue/candidature/rechercher/partenaire"));
             default -> 
                 this.add(new Paragraph("Erreur : Role inconnu"));
                
                 }
         }
     }
-    
 

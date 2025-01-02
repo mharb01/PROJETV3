@@ -34,15 +34,15 @@ public class CandidatureManager {
         return compatible;
     }
 
-    public static void creerCandidature(Connection con, String ine, int idOffre) throws SQLException {
+    public static void creerCandidature(Connection con, String ine, int idOffre, int idPart) throws SQLException {
         try (PreparedStatement insert = con.prepareStatement(
-                "INSERT INTO candidature (ine, idOffreMobilite, date) VALUES (?, ?, ?)")) {
+                "INSERT INTO candidature (ine, idOffreMobilite, date, idPartenaire) VALUES (?, ?, ?, ?)")) {
             insert.setString(1, ine);
             insert.setInt(2, idOffre);
-
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String now = dateFormat.format(new Date());
             insert.setString(3, now);
+            insert.setInt(4, idPart);
 
             insert.executeUpdate();
             System.out.println("Candidature créée avec succès pour ine: " + ine + ", idOffre: " + idOffre);

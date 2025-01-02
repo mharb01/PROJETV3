@@ -31,6 +31,7 @@ import fr.insa.toto.moveINSA.gui.MainLayout;
 
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import fr.insa.toto.moveINSA.gui.MainLayoutEt;
+import fr.insa.toto.moveINSA.gui.session.SessionInfo;
 
 /**
  *
@@ -40,6 +41,9 @@ import fr.insa.toto.moveINSA.gui.MainLayoutEt;
 public class VueSRI extends VerticalLayout {
     
     public VueSRI () {
+    
+    SessionInfo sessionInfo = SessionInfo.getOrCreateCurSessionInfo();
+    String loggedSRIref = sessionInfo.getLoggedSRIref();
         
     this.setWidthFull();
     this.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -52,7 +56,7 @@ public class VueSRI extends VerticalLayout {
        add(SRI);
        
     this.add(new H3("Mov'INSA: l'application de l'avenir"));
-    this.add(new H3("Bienvenue !"));
+    this.add(new H3("Bienvenue " + loggedSRIref + " !"));
     this.add(new H3("Que voulez vous faire ?"));
     }
 }
