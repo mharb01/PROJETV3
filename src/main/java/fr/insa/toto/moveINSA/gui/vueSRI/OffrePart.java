@@ -54,7 +54,7 @@ public class OffrePart extends VerticalLayout {
     @Autowired
     public OffrePart() {
         
-     this.add(new H3("Recherche d'offre par partenaire"));
+     this.add(new H3("Recherche d'offres par partenaire"));
     this.add(this.tfPart);
     this.bSave = new Button("Rechercher", (t) -> {
             try (Connection con = ConnectionPool.getConnection()) {

@@ -2,6 +2,7 @@ package fr.insa.toto.moveINSA.gui.vueetudiant;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
 import fr.insa.toto.moveINSA.model.OffreMobilite;
 import fr.insa.toto.moveINSA.model.Etudiant;
@@ -79,6 +80,7 @@ public class OffreEtGrid extends Grid<OffreMobilite> {
         }
 
         ConfirmDialog dialog = new ConfirmDialog(
+                           
             "Êtes-vous sûr de vouloir candidater à cette offre ?",
             () -> {
                 try (Connection con = DriverManager.getConnection(

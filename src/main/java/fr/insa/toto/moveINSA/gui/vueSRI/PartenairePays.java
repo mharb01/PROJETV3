@@ -65,7 +65,7 @@ public class PartenairePays extends VerticalLayout {
        this.bSave = new Button("Rechercher", (t) -> {
             try (Connection con = ConnectionPool.getConnection()) {
                 
-                this.pays = this.cpCombo.getValue().getPays();
+                this.pays = this.cpCombo.getValue();
                 
                 if (partGrid != null) {
                 this.remove(partGrid);  }  //Efface la liste précédente 

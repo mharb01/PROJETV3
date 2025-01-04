@@ -48,29 +48,29 @@ public class CandidaturePartGrid extends Grid <Candidature> {
     public CandidaturePartGrid (List<Candidature> candidatures) {
         
         this.setColumnReorderingAllowed(true);
-                this.addColumn(Candidature::getIdCandidature).setHeader("Id Candidature").setSortable(true).setResizable(true);
-                this.addColumn(Candidature::getIdOffreMobilite).setHeader("Id Offre").setSortable(true).setResizable(true);
+                this.addColumn(Candidature::getIdCandidature).setHeader("Application Id").setSortable(true).setResizable(true);
+                this.addColumn(Candidature::getIdOffreMobilite).setHeader("Offer Id").setSortable(true).setResizable(true);
                 this.addColumn(Candidature::getDate).setHeader("Date").setSortable(true).setResizable(true);
 
                 this.addComponentColumn(candidature -> {
-            Button suppButton = new Button("Supprimer");
+            Button suppButton = new Button("Refuse");
 
             suppButton.addClickListener(event -> {
                 // Créer le dialog
                 Dialog dialog = new Dialog();
-                dialog.setWidth("400px");  // Définir la largeur du dialog
+                dialog.setWidth("500px");  // Définir la largeur du dialog
 
                 // Ajouter un message de confirmation
                 VerticalLayout layout = new VerticalLayout();
-                layout.add(new H3("Attention"));
-                layout.add(new Text("Êtes-vous sûr de vouloir supprimer la candidature : " + candidature.getIdCandidature() + " ? "));
+                layout.add(new H3("Caution"));
+                layout.add(new Text("Are you sure you want to refuse the application : " + candidature.getIdCandidature() + " ? "));
                 
                 // Boutons pour confirmer ou annuler
-                Button confirmButton = new Button("Oui", e -> {
+                Button confirmButton = new Button("Yes", e -> {
                                        
                     try (Connection con = ConnectionPool.getConnection()) {
                     CandidaturePartGrid.supprimer(con, candidature);
-                    Notification.show("Candidature : " + candidature.getIdCandidature() + " supprimée avec succès ! ");
+                    Notification.show("Application : " + candidature.getIdCandidature() + " deleted with success ! ");
                     dialog.close(); // Fermer le dialog
                 
                     } catch (SQLException ex) {
@@ -79,7 +79,7 @@ public class CandidaturePartGrid extends Grid <Candidature> {
             }
                     });
                 
-                Button cancelButton = new Button("Non", e -> {
+                Button cancelButton = new Button("No", e -> {
                     dialog.close(); // Fermer le dialog sans faire d'action
                 });
 
@@ -105,7 +105,7 @@ public class CandidaturePartGrid extends Grid <Candidature> {
                  update.setInt(1,id);
                  update.execute();       
                  }
-        System.out.println("Candidature supprimee avec succes !");
+        System.out.println("Application deleted with success !");
         
     }
 }

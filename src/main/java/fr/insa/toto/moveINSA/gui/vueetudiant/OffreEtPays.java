@@ -68,7 +68,7 @@ public class OffreEtPays extends VerticalLayout {
        this.bSave = new Button("Rechercher", (t) -> {
             try (Connection con = ConnectionPool.getConnection()) {
                 
-                this.pays = this.cpCombo.getValue().getPays();
+                this.pays = this.cpCombo.getValue();
                 
                 if (offreGrid != null) {
                 this.remove(offreGrid);  }  //Efface la liste précédente 

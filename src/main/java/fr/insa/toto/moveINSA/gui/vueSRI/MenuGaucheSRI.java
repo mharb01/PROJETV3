@@ -56,10 +56,10 @@ import fr.insa.toto.moveINSA.gui.TestDriverPanel;
         debug.addItem(new SideNavItem("test ResultSetGrid", TestResultSetGrid.class));
         debug.addItem(new SideNavItem("test DataGrid", TestDataGrid.class));
         debug.addItem(new SideNavItem("test Grid direct", TestGridDirect.class));
-        SideNavItem jeux = new SideNavItem("jeux");
-        jeux.addItem(new SideNavItem("boite à coucou", BoiteACoucou.class));
-        jeux.addItem(new SideNavItem("trouve", TrouveEntier.class));
-       this.addItem(main,etudiant,partenaires,offres,candidature,jeux,debug);
+//        SideNavItem jeux = new SideNavItem("jeux");
+//        jeux.addItem(new SideNavItem("boite à coucou", BoiteACoucou.class));
+//        jeux.addItem(new SideNavItem("trouve", TrouveEntier.class));
+       this.addItem(main,etudiant,partenaires,offres,candidature,debug);
     }
 }
 

@@ -132,7 +132,7 @@ public class OffresPartGrid extends Grid <OffreMobilite> {
             suppButton.addClickListener(event -> {
                 // Créer le dialog
                 Dialog dialog = new Dialog();
-                dialog.setWidth("400px");  // Définir la largeur du dialog
+                dialog.setWidth("500px");  // Définir la largeur du dialog
 
                 // Ajouter un message de confirmation
                 VerticalLayout layout = new VerticalLayout();

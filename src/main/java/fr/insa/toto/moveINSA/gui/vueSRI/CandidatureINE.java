@@ -48,20 +48,21 @@ import org.springframework.stereotype.Component;
 public class CandidatureINE extends VerticalLayout {
     
     private TextField tfIne = new TextField("INE");
+    private String ine;
     private Button bSave;
     private CandidatureGrid CandidatureGrid;
 
     @Autowired
     public CandidatureINE() {
         
-        this.add(new H3("Recherche d'étudiant par INE"));
+    this.add(new H3("Recherche de candidatures par INE"));
     this.add(this.tfIne);
     this.bSave = new Button("Rechercher", (t) -> {
             try (Connection con = ConnectionPool.getConnection()) {
                 if (CandidatureGrid != null) {
                 this.remove(CandidatureGrid);  }  //Efface la liste précédente 
-                               
-                CandidatureGrid = new CandidatureGrid(CandidatureINE.rechercherINE(con, this.tfIne.getValue()));
+                this.ine = this.tfIne.getValue();
+                CandidatureGrid = new CandidatureGrid(CandidatureINE.rechercherINE(con, this.ine));
                 this.add(CandidatureGrid);
             } catch (SQLException ex) {
                 System.out.println("Probleme : " + ex.getLocalizedMessage());
@@ -73,7 +74,7 @@ public class CandidatureINE extends VerticalLayout {
     
     public static List<Candidature> rechercherINE(Connection con, String INE) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-                "select idCandidature,INE,idOffreMobilite,date from candidature where INE = ?")) {
+                "select idCandidature,ine,idOffreMobilite,date,idPartenaire from candidature where INE = ?")) {
            pst.setString(1, INE);
             ResultSet rs = pst.executeQuery();
             List<Candidature> res = new ArrayList<>();

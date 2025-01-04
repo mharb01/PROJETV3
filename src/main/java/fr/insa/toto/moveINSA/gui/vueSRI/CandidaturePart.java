@@ -79,12 +79,12 @@ public class CandidaturePart extends VerticalLayout {
     
     public static List<Candidature> CandidaturesPart(Connection con, int idPart) throws SQLException {
         try (PreparedStatement pst = con.prepareStatement(
-                "select idCandidature,INE,idOffreMobilite,date from candidature where idPartenaire = ?")) {
+                "select idCandidature,ine,idOffreMobilite,date,idPartenaire from candidature where idPartenaire = ?")) {
            pst.setInt(1, idPart);
             ResultSet rs = pst.executeQuery();
             List<Candidature> res = new ArrayList<>();
             while (rs.next()) {
-                res.add(new Candidature(rs.getInt(1), rs.getString(2),rs.getInt(3), rs.getDate(4), rs.getInt(5)));
+                res.add(new Candidature(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getDate(4), rs.getInt(5)));
             }
             return res;
         }

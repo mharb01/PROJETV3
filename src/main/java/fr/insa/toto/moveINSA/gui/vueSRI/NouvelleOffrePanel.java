@@ -19,6 +19,7 @@ along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
 package fr.insa.toto.moveINSA.gui.vueSRI;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -50,6 +51,7 @@ public class NouvelleOffrePanel extends VerticalLayout {
     private Button bSave;
 
     public NouvelleOffrePanel() {
+        this.add(new H3("Création d'une nouvelle offre"));
         this.cbPartenaire = new ChoixPartenaireCombo();
         this.ifPlaces = new IntegerField("nombre de places");
         this.tfClasse = new TextField("classe cible");

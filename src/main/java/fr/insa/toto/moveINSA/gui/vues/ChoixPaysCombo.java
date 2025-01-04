@@ -24,22 +24,28 @@ import fr.insa.beuvron.vaadin.utils.ConnectionPool;
 import fr.insa.toto.moveINSA.model.Partenaire;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import static javax.management.Query.value;
 /**
  *
  * @author HP
  */
-public class ChoixPaysCombo extends ComboBox<Partenaire> {
+public class ChoixPaysCombo extends ComboBox<String> {
     
     public ChoixPaysCombo() {
        super("Pays");
         try (Connection con = ConnectionPool.getConnection()) {
             List<Partenaire> tous = Partenaire.tousLesPartaires(con);
-            this.setItems(tous);
-            this.setItemLabelGenerator(Partenaire::getPays);
-            if (!tous.isEmpty()) {
-                this.setValue(tous.getFirst());
+            
+            Set<String> PaysUniques = new HashSet<>();
+            for (Partenaire part : tous) {
+                PaysUniques.add(part.getPays());
+            }
+            this.setItems(PaysUniques);
+            if (!PaysUniques.isEmpty()) {
+                this.setValue(PaysUniques.iterator().next());
             }
         } catch (SQLException ex) {
             Notification.show("Probleme interne : " + ex.getLocalizedMessage());
