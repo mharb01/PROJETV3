@@ -191,7 +191,7 @@ public class Partenaire implements Serializable{
         Partenaire partenairemodif = selectInConsole(con);
         int idPartenaire = partenairemodif.getId();
         String nouvelleref = ConsoleFdB.entreeString("Référence du nouveau  partenaire (laisser vide si vous souhaitez conserver l'ancien):");
-        String nouveaupays = EntiteDejaSauvegardee.selectInConsolePays();
+        String nouveaupays = ConsoleFdB.entreeString("Nouveau pays (laisser vide si vous souhaitez conserver l'ancien");
         String nouveauidco = ConsoleFdB.entreeString("Identifiant de connexion du nouveau partenaire (laisser vide si vous souhaitez conserver l'ancien):");
         String nouveaumdp = ConsoleFdB.entreeString("Mot de passe provisoire du nouveau partenaire (laisser vide si vous souhaitez conserver l'ancien):");
         StringBuilder ordresql = new StringBuilder("update partenaire set");
