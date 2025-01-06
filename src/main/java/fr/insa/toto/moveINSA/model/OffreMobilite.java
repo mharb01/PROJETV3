@@ -426,21 +426,60 @@ public class OffreMobilite {
         return annee;
     }
     // les selects in console sont à revoir pour faire apparaitre les bon éléments, pour classe et annee, creer les listes avec les possiblités
-    public static ListUtils selectInConsoleOffre(Connection con) throws SQLException {
+    public static OffreMobilite selectInConsoleOffre(Connection con) throws SQLException {
     List<OffreMobilite> offres = toutesLesOffres(con);
     for (int i = 0; i < offres.size(); i++) {
         System.out.println((i + 1) + ": " + offres.get(i).toString());  // Affiche tous les attributs
     }
-        return ListUtils.selectOne("choisissez une offre :",
-                toutesLesOffres(con), (elem) -> elem.getid()); //a voir si compréhensible
+       /* return ListUtils.selectOne("choisissez une offre :",
+                toutesLesOffres(con), (elem) -> elem.getid());*/ //a voir si compréhensible
+        int idChoisi = ConsoleFdB.entreeEntier("Choisissez l'ID d'une offre : ");
+            String query = "SELECT * FROM offremobilite WHERE id = ?";
+        try (PreparedStatement pst = con.prepareStatement(query)) {
+            pst.setInt(1, idChoisi); // Associe l'ID choisi à la requête SQL
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("id");
+                    int nbrPlaces = rs.getInt("nbrplaces");
+                    int proposePar = rs.getInt("proposepar");
+                    String classe = rs.getString("classe");
+                    String annee = rs.getString("annee");
+
+                    return new OffreMobilite(id, nbrPlaces, proposePar, classe, annee);
+                } else {
+                    System.out.println("Aucune offre trouvée avec cet ID.");
+                    return null;
+                }
+            }
+        }
     }
+    
     public static OffreMobilite selectInConsoleOffreang(Connection con, Partenaire partenaire) throws SQLException {
     List<OffreMobilite> offres = toutesLesOffresPartenaire(con, partenaire);
     for (int i = 0; i < offres.size(); i++) {
         System.out.println((i + 1) + ": " + offres.get(i).toString());  // Affiche tous les attributs
     }
-        return ListUtils.selectOne("choose an offer :",
-                toutesLesOffresPartenaire(con,partenaire), (elem) -> elem.getId()); 
+        /*return ListUtils.selectOne("choose an offer :",
+                toutesLesOffresPartenaire(con,partenaire), (elem) -> elem.getId());*/
+        int idChoisi = ConsoleFdB.entreeEntier("Choose the id of the offer : ");
+            String query = "SELECT * FROM offremobilite WHERE id = ?";
+        try (PreparedStatement pst = con.prepareStatement(query)) {
+            pst.setInt(1, idChoisi); 
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("id");
+                    int nbrPlaces = rs.getInt("nbrplaces");
+                    int proposePar = rs.getInt("proposepar");
+                    String classe = rs.getString("classe");
+                    String annee = rs.getString("annee");
+
+                    return new OffreMobilite(id, nbrPlaces, proposePar, classe, annee);
+                } else {
+                    System.out.println("Aucune offre trouvée avec cet ID.");
+                    return null;
+                }
+            }
+        }
     }
     public static OffreMobilite selectInConsoleClasse(Connection con) throws SQLException {
         return ListUtils.selectOne("choisissez une classe :",
